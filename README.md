@@ -54,7 +54,7 @@ Xem chi tiết trong [setup/README.md](setup/README.md)
 ### Chạy ứng dụng
 1. Khởi động JSON Server:
 ```bash
-json-server --watch src/db.json --port 3000
+json-server src/db.json --port 3000
 ```
 
 2. Mở file `src/index.html` bằng Live Server hoặc trình duyệt

@@ -32,7 +32,7 @@ npm install
 ### Bước 1: Khởi động JSON Server
 Trong thư mục gốc dự án, chạy:
 ```bash
-json-server --watch src/db.json --port 3000
+json-server src/db.json --port 3000
 ```
 
 Server API sẽ chạy tại: http://localhost:3000
@@ -73,7 +73,7 @@ Sau khi chạy JSON Server:
 ### Lỗi: Port 3000 đã được sử dụng
 Giải pháp: Đổi port khác
 ```bash
-json-server --watch src/db.json --port 3001
+json-server src/db.json --port 3001
 ```
 Và cập nhật port trong file `src/js/api.js`
 

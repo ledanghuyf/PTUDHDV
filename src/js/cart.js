@@ -203,13 +203,8 @@ export function updateCartCount() {
     if (cartCountElement) {
         const count = getCartItemCount();
         cartCountElement.textContent = count;
-        
-        // Thêm/xóa class để hiển thị/ẩn badge khi giỏ hàng rỗng
-        if (count > 0) {
-            cartCountElement.style.display = 'inline-block';
-        } else {
-            cartCountElement.style.display = 'inline-block'; // Vẫn hiển thị số 0
-        }
+        // Ẩn badge khi giỏ trống
+        cartCountElement.classList.toggle('is-empty', count === 0);
     }
 }
 

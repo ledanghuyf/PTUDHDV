@@ -1,267 +1,317 @@
 /**
  * Components Module - Các hàm render component UI
- * File này chứa các hàm tạo chuỗi HTML cho các thành phần giao diện
+ * Mỗi hàm trả về chuỗi HTML để chèn vào trang
  */
 
+// Danh mục sản phẩm (id khớp với trường category trong db.json)
+export const CATEGORIES = [
+    { id: 'serum', name: 'Serum', desc: 'Tinh chất dưỡng da',
+      icon: '<path d="M32 8L28 20H36L32 8Z" fill="currentColor" opacity="0.3"/><rect x="24" y="20" width="16" height="4" rx="1" fill="currentColor"/><path d="M26 24H38V52C38 54.2 36.2 56 34 56H30C27.8 56 26 54.2 26 52V24Z" fill="currentColor" opacity="0.7"/><circle cx="32" cy="40" r="6" fill="currentColor" opacity="0.4"/>' },
+    { id: 'kem-duong', name: 'Kem Dưỡng', desc: 'Dưỡng ẩm chuyên sâu',
+      icon: '<ellipse cx="32" cy="44" rx="18" ry="12" fill="currentColor" opacity="0.7"/><ellipse cx="32" cy="36" rx="18" ry="8" fill="currentColor"/><path d="M20 36V44M44 36V44" stroke="currentColor" stroke-width="2" opacity="0.5"/>' },
+    { id: 'sua-rua-mat', name: 'Sữa Rửa Mặt', desc: 'Làm sạch dịu nhẹ',
+      icon: '<path d="M24 16H40L42 20H22L24 16Z" fill="currentColor"/><rect x="22" y="20" width="20" height="36" rx="4" fill="currentColor" opacity="0.7"/><circle cx="32" cy="38" r="8" fill="currentColor" opacity="0.4"/><path d="M28 28H36" stroke="white" stroke-width="2" stroke-linecap="round"/>' },
+    { id: 'chong-nang', name: 'Chống Nắng', desc: 'Bảo vệ da',
+      icon: '<circle cx="32" cy="24" r="12" fill="currentColor" opacity="0.4"/><path d="M32 8V12M32 36V40M44 24H48M16 24H20M41 15L44 12M20 36L23 33M44 36L41 33M20 12L23 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><rect x="24" y="42" width="16" height="14" rx="3" fill="currentColor" opacity="0.7"/><rect x="28" y="38" width="8" height="6" fill="currentColor"/>' },
+    { id: 'mat-na', name: 'Mặt Nạ', desc: 'Chăm sóc đặc biệt',
+      icon: '<ellipse cx="32" cy="36" rx="20" ry="16" fill="currentColor" opacity="0.7"/><ellipse cx="24" cy="32" rx="4" ry="3" fill="white" opacity="0.6"/><ellipse cx="40" cy="32" rx="4" ry="3" fill="white" opacity="0.6"/><path d="M28 42C28 42 30 44 32 44C34 44 36 42 36 42" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.6"/><path d="M16 28C16 28 20 20 32 20C44 20 48 28 48 28" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>' },
+    { id: 'toner', name: 'Toner', desc: 'Cân bằng da',
+      icon: '<rect x="22" y="12" width="20" height="8" rx="2" fill="currentColor"/><path d="M24 20H40V52C40 54.2 38.2 56 36 56H28C25.8 56 24 54.2 24 52V20Z" fill="currentColor" opacity="0.7"/><path d="M28 32L36 32M28 40L36 40" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.5"/><circle cx="32" cy="48" r="3" fill="white" opacity="0.4"/>' },
+    { id: 'tay-trang', name: 'Tẩy Trang', desc: 'Làm sạch lớp trang điểm',
+      icon: '<rect x="12" y="20" width="16" height="6" rx="2" fill="currentColor"/><path d="M14 26H26V52C26 54.2 24.2 56 22 56H18C15.8 56 14 54.2 14 52V26Z" fill="currentColor" opacity="0.7"/><circle cx="44" cy="42" r="12" fill="currentColor" opacity="0.4"/><circle cx="44" cy="42" r="6" stroke="white" stroke-width="2" opacity="0.6"/>' },
+];
+
+export const CATEGORY_NAMES = Object.fromEntries(CATEGORIES.map(c => [c.id, c.name]));
+
+export const SORT_OPTIONS = [
+    ['', 'Mặc định'],
+    ['best-selling', 'Bán chạy nhất'],
+    ['rating', 'Đánh giá cao'],
+    ['price-asc', 'Giá thấp → cao'],
+    ['price-desc', 'Giá cao → thấp'],
+];
+
 /**
- * Format giá tiền sang định dạng VNĐ
- * @param {number} price - Giá cần format
- * @returns {string} Chuỗi giá đã được format (VD: "750.000 ₫")
+ * Format giá tiền sang định dạng VNĐ (VD: "750.000 ₫")
  */
 export function formatPrice(price) {
-    return new Intl.NumberFormat('vi-VN', {
-        style: 'currency',
-        currency: 'VND'
-    }).format(price);
+    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
 }
 
-/**
- * Tạo HTML cho một product card trong danh sách sản phẩm
- * @param {Object} product - Đối tượng sản phẩm
- * @param {number} product.id - ID sản phẩm
- * @param {string} product.name - Tên sản phẩm
- * @param {string} product.brand - Thương hiệu
- * @param {number} product.price - Giá sản phẩm
- * @param {string} product.image - Đường dẫn hình ảnh
- * @param {string} product.description_short - Mô tả ngắn
- * @param {boolean} product.isFeatured - Sản phẩm nổi bật
- * @returns {string} Chuỗi HTML của product card
- */
-export function ProductCard(product) {
-    const featuredBadge = product.isFeatured 
-        ? '<span class="product-badge featured-badge">Nổi bật</span>' 
-        : '';
-    
-    return `
-        <div class="product-card" data-id="${product.id}">
-            ${featuredBadge}
-            <img 
-                src="${product.image}" 
-                alt="${product.name}" 
-                class="product-image" 
-                onclick="window.location.hash = '#/product/${product.id}'"
-                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
-            >
-            <div class="product-image-fallback" style="display: none;">🧴</div>
-            <div class="product-info">
-                <div class="product-brand">${product.brand}</div>
-                <h3 class="product-name" onclick="window.location.hash = '#/product/${product.id}'">${product.name}</h3>
-                <p class="product-description-short">${product.description_short || ''}</p>
-                <div class="product-price">${formatPrice(product.price)}</div>
-                <button class="btn add-to-cart-btn" data-id="${product.id}">
-                    Thêm vào giỏ
-                </button>
-            </div>
-        </div>
-    `;
-}
-
-/**
- * Tạo HTML cho trang chi tiết sản phẩm
- * @param {Object} product - Đối tượng sản phẩm
- * @param {Array} reviews - Mảng các đánh giá của sản phẩm
- * @returns {string} Chuỗi HTML của trang chi tiết sản phẩm
- */
-export function ProductDetail(product, reviews) {
-    return `
-        <div class="product-detail">
-            <div class="product-detail-content">
-                <!-- Cột trái: Hình ảnh sản phẩm -->
-                <div class="product-detail-image-wrapper">
-                    <img 
-                        src="${product.image}" 
-                        alt="${product.name}" 
-                        class="product-detail-image"
-                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
-                    >
-                    <div class="product-detail-image" style="display: none;">🧴</div>
-                </div>
-                
-                <!-- Cột phải: Thông tin sản phẩm -->
-                <div class="product-detail-info">
-                    <div class="product-brand">${product.brand}</div>
-                    <h1 class="product-name">${product.name}</h1>
-                    <div class="product-price">${formatPrice(product.price)}</div>
-                    
-                    <div class="product-description">
-                        <h3>Mô tả sản phẩm</h3>
-                        <p>${product.description_long || product.description_short || 'Không có mô tả'}</p>
-                    </div>
-                    
-                    <div class="stock-info">
-                        ${product.stock > 0
-            ? `<span class="in-stock">✓ Còn ${product.stock} sản phẩm</span>`
-            : `<span class="out-of-stock">✗ Hết hàng</span>`
-        }
-                    </div>
-                    
-                    ${product.stock > 0 ? `
-                        <div class="quantity-selector">
-                            <label for="quantity-input">Số lượng:</label>
-                            <input 
-                                type="number" 
-                                id="quantity-input" 
-                                value="1" 
-                                min="1" 
-                                max="${product.stock}"
-                            >
-                        </div>
-                        
-                        <button class="btn btn-add-to-cart" data-id="${product.id}">
-                            Thêm vào giỏ hàng
-                        </button>
-                    ` : ''}
-                </div>
-            </div>
-            
-            <!-- Khu vực đánh giá -->
-            <div class="reviews-section">
-                <h2>Đánh Giá Của Khách Hàng</h2>
-                
-                <div class="reviews-list" id="reviews-list">
-                    ${reviews.length > 0
-            ? reviews.map(review => ReviewItem(review)).join('')
-            : '<p class="no-reviews">Chưa có đánh giá nào. Hãy là người đầu tiên đánh giá sản phẩm này!</p>'
-        }
-                </div>
-                
-                <!-- Form gửi đánh giá -->
-                <div class="review-form">
-                    <h3>Viết Đánh Giá Của Bạn</h3>
-                    <form id="review-form" data-product-id="${product.id}">
-                        <div class="form-group">
-                            <label for="review-author">Tên của bạn: <span class="required">*</span></label>
-                            <input 
-                                type="text" 
-                                id="review-author" 
-                                name="author" 
-                                required 
-                                placeholder="Nhập tên của bạn"
-                            >
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="review-rating">Đánh giá: <span class="required">*</span></label>
-                            <select id="review-rating" name="rating" required>
-                                <option value="5">⭐⭐⭐⭐⭐ (5 sao - Xuất sắc)</option>
-                                <option value="4">⭐⭐⭐⭐ (4 sao - Tốt)</option>
-                                <option value="3">⭐⭐⭐ (3 sao - Trung bình)</option>
-                                <option value="2">⭐⭐ (2 sao - Kém)</option>
-                                <option value="1">⭐ (1 sao - Rất kém)</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="review-comment">Nhận xét: <span class="required">*</span></label>
-                            <textarea 
-                                id="review-comment" 
-                                name="comment" 
-                                required 
-                                placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm..."
-                                rows="5"
-                            ></textarea>
-                        </div>
-                        
-                        <button type="submit" class="btn">Gửi Đánh Giá</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    `;
-}
-
-/**
- * Tạo HTML cho một item đánh giá
- * @param {Object} review - Đối tượng đánh giá
- * @param {string} review.author - Tên người đánh giá
- * @param {number} review.rating - Số sao (1-5)
- * @param {string} review.comment - Nội dung đánh giá
- * @param {string} review.timestamp - Thời gian đánh giá
- * @returns {string} Chuỗi HTML của review item
- */
 // Escape nội dung do người dùng nhập để chống XSS khi chèn vào innerHTML
-function escapeHtml(str) {
+export function escapeHtml(str) {
     return String(str ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
 
+/**
+ * Dãy 5 sao, tô màu theo điểm trung bình (hỗ trợ sao lẻ)
+ */
+export function Stars(rating) {
+    const value = Math.max(0, Math.min(5, Number(rating) || 0));
+    return `<span class="stars" style="--rating:${value}" role="img" aria-label="${value.toFixed(1)} trên 5 sao"></span>`;
+}
+
+/**
+ * Tóm tắt đánh giá: sao + điểm + số lượt
+ */
+export function RatingSummary(avgRating, reviewCount) {
+    if (!reviewCount) return '<span class="rating-empty">Chưa có đánh giá</span>';
+    return `${Stars(avgRating)}<span class="rating-value">${avgRating.toFixed(1)}</span><span class="rating-count">(${reviewCount} đánh giá)</span>`;
+}
+
+/**
+ * Thẻ sản phẩm trong danh sách
+ */
+export function ProductCard(product) {
+    const soldOut = product.stock <= 0;
+    const badge = soldOut
+        ? '<span class="product-badge soldout-badge">Hết hàng</span>'
+        : product.isFeatured ? '<span class="product-badge featured-badge">Nổi bật</span>' : '';
+    const link = `#/product/${product.id}`;
+
+    return `
+        <article class="product-card${soldOut ? ' is-soldout' : ''}" data-id="${product.id}">
+            ${badge}
+            <a class="product-media" href="${link}" tabindex="-1" aria-hidden="true">
+                <img src="${product.image}" alt="" class="product-image" loading="lazy"
+                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="product-image-fallback" style="display: none;">🧴</div>
+            </a>
+            <div class="product-info">
+                <div class="product-brand">${product.brand}</div>
+                <h3 class="product-name"><a href="${link}">${product.name}</a></h3>
+                <div class="product-rating">${RatingSummary(product.avgRating || 0, product.reviewCount || 0)}</div>
+                <p class="product-description-short">${product.description_short || ''}</p>
+                <div class="product-price">${formatPrice(product.price)}</div>
+                <button class="btn add-to-cart-btn" data-id="${product.id}" ${soldOut ? 'disabled' : ''}>
+                    ${soldOut ? 'Tạm hết hàng' : 'Thêm vào giỏ'}
+                </button>
+            </div>
+        </article>
+    `;
+}
+
+/**
+ * Thanh lọc + lưới sản phẩm + nút xem thêm (dùng chung cho trang chủ và trang sản phẩm)
+ * @param {string} prefix - Tiền tố id để 2 trang không trùng id ('' hoặc 'home-')
+ * @param {string} selectedCategory - Danh mục chọn sẵn
+ */
+export function ProductListing(prefix, selectedCategory = '') {
+    return `
+        <div class="filter-bar">
+            <div class="filter-item filter-search">
+                <label for="${prefix}search-input">Tìm kiếm</label>
+                <input type="search" id="${prefix}search-input" placeholder="Tên sản phẩm hoặc thương hiệu...">
+            </div>
+            <div class="filter-item">
+                <label for="${prefix}category-filter">Danh mục</label>
+                <select id="${prefix}category-filter">
+                    <option value="">Tất cả danh mục</option>
+                    ${CATEGORIES.map(c => `<option value="${c.id}" ${c.id === selectedCategory ? 'selected' : ''}>${c.name}</option>`).join('')}
+                </select>
+            </div>
+            <div class="filter-item">
+                <label for="${prefix}min-price">Khoảng giá (₫)</label>
+                <div class="price-inputs-inline">
+                    <input type="number" id="${prefix}min-price" placeholder="Từ" min="0" step="10000" aria-label="Giá từ">
+                    <span>–</span>
+                    <input type="number" id="${prefix}max-price" placeholder="Đến" min="0" step="10000" aria-label="Giá đến">
+                </div>
+            </div>
+            <div class="filter-item">
+                <label for="${prefix}sort">Sắp xếp</label>
+                <select id="${prefix}sort">
+                    ${SORT_OPTIONS.map(([value, label]) => `<option value="${value}">${label}</option>`).join('')}
+                </select>
+            </div>
+        </div>
+        <p class="result-count" id="${prefix}result-count" aria-live="polite"></p>
+        <div class="products-grid" id="${prefix}products-grid"></div>
+        <div class="load-more-wrapper" id="${prefix}load-more-wrapper">
+            <button class="btn btn-outline load-more-btn" id="${prefix}load-more-btn">Xem thêm sản phẩm</button>
+        </div>
+    `;
+}
+
+export function EmptyResult() {
+    return '<p class="empty-result">Không tìm thấy sản phẩm nào phù hợp. Hãy thử từ khóa hoặc khoảng giá khác.</p>';
+}
+
+/**
+ * Trang danh sách sản phẩm
+ */
+export function ProductsPage(selectedCategory) {
+    const title = CATEGORY_NAMES[selectedCategory] || 'Tất Cả Sản Phẩm';
+    return `
+        <div class="container">
+            <nav class="breadcrumb" aria-label="Breadcrumb">
+                <a href="#/">Trang chủ</a><span>/</span><span aria-current="page">Sản phẩm</span>
+            </nav>
+            <h1 class="page-title">${title}</h1>
+            ${ProductListing('', selectedCategory)}
+        </div>
+    `;
+}
+
+/**
+ * Trang chi tiết sản phẩm
+ */
+export function ProductDetail(product, reviews) {
+    const categoryName = CATEGORY_NAMES[product.category] || 'Sản phẩm';
+    const inStock = product.stock > 0;
+
+    return `
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+            <a href="#/">Trang chủ</a><span>/</span>
+            <a href="#/products?category=${product.category}">${categoryName}</a><span>/</span>
+            <span aria-current="page">${product.name}</span>
+        </nav>
+
+        <div class="product-detail">
+            <div class="product-detail-content">
+                <div class="product-detail-image-wrapper">
+                    <img src="${product.image}" alt="${product.name}" class="product-detail-image"
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="product-detail-image product-image-fallback" style="display: none;">🧴</div>
+                </div>
+
+                <div class="product-detail-info">
+                    <div class="product-brand">${product.brand}</div>
+                    <h1 class="product-name">${product.name}</h1>
+                    <div class="product-rating" id="rating-summary">${RatingSummary(product.avgRating || 0, product.reviewCount || 0)}</div>
+                    <div class="product-price">${formatPrice(product.price)}</div>
+                    <p class="product-lead">${product.description_short || ''}</p>
+
+                    <div class="stock-info">
+                        ${inStock
+                            ? `<span class="in-stock">Còn ${product.stock} sản phẩm</span>`
+                            : '<span class="out-of-stock">Tạm hết hàng</span>'}
+                        ${product.soldCount ? `<span class="sold-count">Đã bán ${product.soldCount}</span>` : ''}
+                    </div>
+
+                    ${inStock ? `
+                        <div class="purchase-row">
+                            <div class="quantity-selector">
+                                <label for="quantity-input" class="visually-hidden">Số lượng</label>
+                                <button type="button" class="qty-step" data-step="-1" aria-label="Giảm số lượng">−</button>
+                                <input type="number" id="quantity-input" value="1" min="1" max="${product.stock}">
+                                <button type="button" class="qty-step" data-step="1" aria-label="Tăng số lượng">+</button>
+                            </div>
+                            <button class="btn btn-add-to-cart" data-id="${product.id}">Thêm vào giỏ hàng</button>
+                        </div>
+                    ` : ''}
+
+                    <ul class="product-perks">
+                        <li>Hàng chính hãng</li>
+                        <li>Thanh toán khi nhận hàng (COD)</li>
+                        <li>Giao hàng toàn quốc</li>
+                    </ul>
+                </div>
+            </div>
+
+            <section class="product-description">
+                <h2>Mô tả sản phẩm</h2>
+                <p>${product.description_long || product.description_short || 'Không có mô tả'}</p>
+            </section>
+
+            <section class="reviews-section">
+                <h2>Đánh giá của khách hàng</h2>
+                <div class="reviews-layout">
+                    <div class="reviews-list" id="reviews-list">${ReviewList(reviews)}</div>
+
+                    <div class="review-form">
+                        <h3>Viết đánh giá của bạn</h3>
+                        <form id="review-form" data-product-id="${product.id}">
+                            <div class="form-group">
+                                <label for="review-author">Tên của bạn <span class="required">*</span></label>
+                                <input type="text" id="review-author" name="author" required maxlength="60" placeholder="Nhập tên của bạn">
+                            </div>
+                            <div class="form-group">
+                                <label for="review-rating">Đánh giá <span class="required">*</span></label>
+                                <select id="review-rating" name="rating" required>
+                                    <option value="5">★★★★★ — Xuất sắc</option>
+                                    <option value="4">★★★★ — Tốt</option>
+                                    <option value="3">★★★ — Trung bình</option>
+                                    <option value="2">★★ — Kém</option>
+                                    <option value="1">★ — Rất kém</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="review-comment">Nhận xét <span class="required">*</span></label>
+                                <textarea id="review-comment" name="comment" required maxlength="1000" rows="4"
+                                          placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm..."></textarea>
+                            </div>
+                            <button type="submit" class="btn">Gửi đánh giá</button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <section class="related-products" id="related-products"></section>
+    `;
+}
+
+export function ReviewList(reviews) {
+    return reviews.length > 0
+        ? reviews.map(ReviewItem).join('')
+        : '<p class="no-reviews">Chưa có đánh giá nào. Hãy là người đầu tiên đánh giá sản phẩm này!</p>';
+}
+
+/**
+ * Một đánh giá
+ */
 export function ReviewItem(review) {
-    const stars = '⭐'.repeat(review.rating);
-    const date = new Date(review.timestamp).toLocaleDateString('vi-VN', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    });
+    const date = new Date(review.timestamp).toLocaleDateString('vi-VN', { year: 'numeric', month: 'long', day: 'numeric' });
+    const author = escapeHtml(review.author);
 
     return `
         <div class="review-item">
             <div class="review-header">
-                <span class="review-author">${escapeHtml(review.author)}</span>
-                <span class="review-rating">${stars}</span>
+                <span class="review-avatar" aria-hidden="true">${escapeHtml(String(review.author || '?').trim().charAt(0).toUpperCase())}</span>
+                <div>
+                    <span class="review-author">${author}</span>
+                    <div class="review-meta">${Stars(review.rating)}<span class="review-date">${date}</span></div>
+                </div>
             </div>
             <p class="review-comment">${escapeHtml(review.comment)}</p>
-            <div class="review-date">${date}</div>
         </div>
     `;
 }
 
 /**
- * Tạo HTML cho một item trong giỏ hàng
- * @param {Object} item - Đối tượng sản phẩm trong giỏ hàng
- * @param {number} item.id - ID sản phẩm
- * @param {string} item.name - Tên sản phẩm
- * @param {string} item.brand - Thương hiệu
- * @param {number} item.price - Giá sản phẩm
- * @param {number} item.quantity - Số lượng trong giỏ
- * @param {string} item.image - Đường dẫn hình ảnh
- * @returns {string} Chuỗi HTML của cart item
+ * Một dòng trong giỏ hàng
  */
 export function CartItem(item) {
-    const itemTotal = item.price * item.quantity;
+    const atStockLimit = item.stock !== undefined && item.quantity >= item.stock;
 
     return `
         <div class="cart-item" data-id="${item.id}">
-            <img 
-                src="${item.image}" 
-                alt="${item.name}" 
-                class="cart-item-image" 
-                onclick="window.location.hash = '#/product/${item.id}'"
-                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
-            >
-            <div class="cart-item-image-fallback" style="display: none;">🧴</div>
-            
+            <a href="#/product/${item.id}" class="cart-item-media">
+                <img src="${item.image}" alt="${item.name}" class="cart-item-image"
+                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="cart-item-image-fallback" style="display: none;">🧴</div>
+            </a>
+
             <div class="cart-item-info">
-                <h3 class="cart-item-name">${item.name}</h3>
                 <div class="cart-item-brand">${item.brand}</div>
-                <div class="cart-item-price">${formatPrice(item.price)} / sản phẩm</div>
+                <h3 class="cart-item-name"><a href="#/product/${item.id}">${item.name}</a></h3>
+                <div class="cart-item-price">${formatPrice(item.price)}</div>
             </div>
-            
+
             <div class="cart-item-actions">
                 <div class="quantity-controls">
-                    <button class="quantity-btn decrease-btn" data-id="${item.id}" ${item.quantity <= 1 ? 'disabled' : ''}>
-                        -
-                    </button>
+                    <button class="quantity-btn decrease-btn" data-id="${item.id}" ${item.quantity <= 1 ? 'disabled' : ''} aria-label="Giảm">−</button>
                     <span class="quantity-display">${item.quantity}</span>
-                    <button class="quantity-btn increase-btn" data-id="${item.id}">
-                        +
-                    </button>
+                    <button class="quantity-btn increase-btn" data-id="${item.id}" ${atStockLimit ? 'disabled' : ''} aria-label="Tăng">+</button>
                 </div>
-                
-                <div class="cart-item-total">
-                    <strong>${formatPrice(itemTotal)}</strong>
-                </div>
-                
-                <button class="btn btn-danger remove-btn" data-id="${item.id}">
-                    Xóa
-                </button>
+                <div class="cart-item-total">${formatPrice(item.price * item.quantity)}</div>
+                <button class="remove-btn" data-id="${item.id}">Xóa</button>
             </div>
         </div>
     `;
 }
 
-/**
- * Tạo HTML cho trang giỏ hàng trống
- * @returns {string} Chuỗi HTML của giỏ hàng trống
- */
 export function EmptyCart() {
     return `
         <div class="cart-empty">
@@ -280,307 +330,180 @@ export function EmptyCart() {
 }
 
 /**
- * Tạo HTML cho phần tóm tắt giỏ hàng
- * @param {number} total - Tổng tiền giỏ hàng
- * @param {number} itemCount - Tổng số sản phẩm
- * @returns {string} Chuỗi HTML của cart summary
+ * Trang giỏ hàng có sản phẩm
  */
-export function CartSummary(total, itemCount) {
+export function CartPage(cartItems, total, itemCount) {
     return `
-        <div class="cart-summary">
-            <h3>Tóm Tắt Đơn Hàng</h3>
-            <div class="summary-row">
-                <span>Số lượng sản phẩm:</span>
-                <span>${itemCount}</span>
+        <h1 class="page-title">Giỏ hàng của bạn</h1>
+        <div class="cart-layout">
+            <div class="cart-items" id="cart-items">
+                ${cartItems.map(CartItem).join('')}
+                <a href="#/products" class="continue-link">← Tiếp tục mua sắm</a>
             </div>
-            <div class="summary-row total-row">
-                <span>Tổng cộng:</span>
-                <span class="cart-total">${formatPrice(total)}</span>
-            </div>
-            <div class="cart-actions">
-                <button class="btn btn-secondary" id="clear-cart-btn">Xóa Giỏ Hàng</button>
-                <button class="btn" id="checkout-btn">Đặt Hàng</button>
-            </div>
+            <aside class="cart-summary">
+                <h3>Tóm tắt đơn hàng</h3>
+                <div class="summary-row"><span>Số lượng sản phẩm</span><span>${itemCount}</span></div>
+                <div class="summary-row total-row"><span>Tổng cộng</span><span class="cart-total">${formatPrice(total)}</span></div>
+                <a href="#/checkout" class="btn btn-checkout">Tiến hành đặt hàng</a>
+                <button class="btn btn-secondary" id="clear-cart-btn">Xóa giỏ hàng</button>
+            </aside>
         </div>
     `;
 }
 
 /**
- * Tạo HTML cho trang thanh toán
- * @param {Array} cartItems - Danh sách sản phẩm trong giỏ hàng
- * @param {number} totalAmount - Tổng tiền đơn hàng
- * @returns {string} Chuỗi HTML của trang thanh toán
+ * Trang thanh toán
  */
 export function CheckoutPage(cartItems, totalAmount) {
     return `
-        <div class="checkout-container">
-            <h2 class="section-title">Thông Tin Thanh Toán</h2>
-            
-            <div class="checkout-content">
-                <!-- Tóm tắt đơn hàng -->
-                <div class="order-summary">
-                    <h3>Tóm Tắt Đơn Hàng</h3>
-                    <div class="order-items">
-                        ${cartItems.map(item => `
-                            <div class="order-item">
-                                <div class="order-item-info">
-                                    <span class="order-item-name">${item.name}</span>
-                                    <span class="order-item-quantity">x${item.quantity}</span>
-                                </div>
-                                <span class="order-item-price">${formatPrice(item.price * item.quantity)}</span>
-                            </div>
-                        `).join('')}
-                    </div>
-                    <div class="order-total">
-                        <span>Tổng cộng:</span>
-                        <span class="total-amount">${formatPrice(totalAmount)}</span>
-                    </div>
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+            <a href="#/cart">Giỏ hàng</a><span>/</span><span aria-current="page">Thanh toán</span>
+        </nav>
+        <h1 class="page-title">Thông tin đặt hàng</h1>
+
+        <div class="checkout-content">
+            <form id="checkout-form" class="checkout-form">
+                <h3>Thông tin giao hàng</h3>
+                <div class="form-group">
+                    <label for="customer-name">Họ và tên <span class="required">*</span></label>
+                    <input type="text" id="customer-name" name="name" required maxlength="80" autocomplete="name" placeholder="Nhập họ và tên của bạn">
                 </div>
-                
-                <!-- Form thông tin giao hàng -->
-                <div class="checkout-form-wrapper">
-                    <form id="checkout-form" class="checkout-form">
-                        <h3>Thông Tin Giao Hàng</h3>
-                        
-                        <div class="form-group">
-                            <label for="customer-name">Họ và Tên <span class="required">*</span></label>
-                            <input 
-                                type="text" 
-                                id="customer-name" 
-                                name="name" 
-                                required
-                                placeholder="Nhập họ và tên của bạn"
-                            >
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="customer-phone">Số Điện Thoại <span class="required">*</span></label>
-                            <input 
-                                type="tel" 
-                                id="customer-phone" 
-                                name="phone" 
-                                required
-                                placeholder="Nhập số điện thoại"
-                                pattern="[0-9]{10,11}"
-                            >
-                            <small>Vui lòng nhập 10-11 chữ số</small>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="customer-address">Địa Chỉ Giao Hàng <span class="required">*</span></label>
-                            <textarea 
-                                id="customer-address" 
-                                name="address" 
-                                rows="3" 
-                                required
-                                placeholder="Nhập địa chỉ chi tiết (số nhà, đường, phường/xã, quận/huyện, tỉnh/thành phố)"
-                            ></textarea>
-                        </div>
-                        
-                        <div class="form-actions">
-                            <a href="#/cart" class="btn btn-secondary">Quay Lại Giỏ Hàng</a>
-                            <button type="submit" class="btn btn-submit-order">Xác Nhận Đặt Hàng</button>
-                        </div>
-                    </form>
+                <div class="form-group">
+                    <label for="customer-phone">Số điện thoại <span class="required">*</span></label>
+                    <input type="tel" id="customer-phone" name="phone" required pattern="[0-9]{10,11}" autocomplete="tel" placeholder="VD: 0901234567">
+                    <small>Gồm 10–11 chữ số</small>
                 </div>
-            </div>
+                <div class="form-group">
+                    <label for="customer-address">Địa chỉ giao hàng <span class="required">*</span></label>
+                    <textarea id="customer-address" name="address" rows="3" required maxlength="300" autocomplete="street-address"
+                              placeholder="Số nhà, đường, phường/xã, quận/huyện, tỉnh/thành phố"></textarea>
+                </div>
+                <div class="payment-note">
+                    <strong>Phương thức thanh toán:</strong> Thanh toán khi nhận hàng (COD)
+                </div>
+                <div class="form-actions">
+                    <a href="#/cart" class="btn btn-secondary">Quay lại giỏ hàng</a>
+                    <button type="submit" class="btn btn-submit-order">Xác nhận đặt hàng</button>
+                </div>
+            </form>
+
+            <aside class="order-summary">
+                <h3>Đơn hàng (${cartItems.length} sản phẩm)</h3>
+                <div class="order-items">${cartItems.map(OrderLine).join('')}</div>
+                <div class="order-total">
+                    <span>Tổng cộng</span>
+                    <span class="total-amount">${formatPrice(totalAmount)}</span>
+                </div>
+            </aside>
         </div>
     `;
 }
 
+function OrderLine(item) {
+    return `
+        <div class="order-item">
+            <div class="order-item-info">
+                <span class="order-item-name">${escapeHtml(item.name)}</span>
+                <span class="order-item-quantity">${formatPrice(item.price)} × ${item.quantity}</span>
+            </div>
+            <span class="order-item-price">${formatPrice(item.price * item.quantity)}</span>
+        </div>
+    `;
+}
 
 /**
- * Tạo HTML cho trang chủ với Hero Banner
- * @returns {string} Chuỗi HTML của trang chủ
+ * Trang xác nhận đặt hàng thành công
+ */
+export function OrderSuccess(order) {
+    const date = new Date(order.timestamp).toLocaleString('vi-VN');
+    const info = order.customerInfo || {};
+    return `
+        <div class="order-success">
+            <div class="success-icon" aria-hidden="true">✓</div>
+            <h1 class="page-title">Đặt hàng thành công!</h1>
+            <p class="success-lead">Cảm ơn bạn đã mua sắm tại Cosmetics Store. Chúng tôi sẽ liên hệ để xác nhận đơn hàng trong thời gian sớm nhất.</p>
+
+            <div class="order-detail-card">
+                <div class="order-meta">
+                    <div><span>Mã đơn hàng</span><strong id="order-code">#${escapeHtml(order.id)}</strong></div>
+                    <div><span>Thời gian</span><strong>${date}</strong></div>
+                    <div><span>Thanh toán</span><strong>COD</strong></div>
+                </div>
+                <div class="order-customer">
+                    <p><strong>${escapeHtml(info.name)}</strong> · ${escapeHtml(info.phone)}</p>
+                    <p>${escapeHtml(info.address)}</p>
+                </div>
+                <div class="order-items">${(order.items || []).map(OrderLine).join('')}</div>
+                <div class="order-total">
+                    <span>Tổng cộng</span>
+                    <span class="total-amount">${formatPrice(order.totalAmount)}</span>
+                </div>
+            </div>
+
+            <a href="#/products" class="btn">Tiếp tục mua sắm</a>
+        </div>
+    `;
+}
+
+/**
+ * Trang chủ
  */
 export function HomePage() {
     return `
         <section class="hero-section">
-            <div class="hero-decoration hero-decoration-1">🌸</div>
-            <div class="hero-decoration hero-decoration-2">🌿</div>
-            <div class="hero-decoration hero-decoration-3">💫</div>
-            
             <div class="container hero-container">
                 <div class="hero-content">
-                    <div class="hero-badge">✨ Natural Beauty</div>
-                    <h1 class="hero-title">Vẻ&nbsp;Đẹp Thuần&nbsp;Khiết<br>Từ&nbsp;Thiên&nbsp;Nhiên</h1>
-                    <p class="hero-subtitle">Khám phá bộ sưu tập mỹ phẩm được tinh chế từ những thành phần tự nhiên, mang lại vẻ đẹp rạng rỡ và bền vững cho làn da của bạn.</p>
-                    <div class="hero-features">
-                        <div class="hero-feature">
-                            <span class="feature-icon">🌱</span>
-                            <span class="feature-text">100% Tự Nhiên</span>
-                        </div>
-                        <div class="hero-feature">
-                            <span class="feature-icon">✓</span>
-                            <span class="feature-text">Chính Hãng</span>
-                        </div>
-                        <div class="hero-feature">
-                            <span class="feature-icon">🚚</span>
-                            <span class="feature-text">Giao Hàng Nhanh</span>
-                        </div>
+                    <span class="hero-eyebrow">Mỹ phẩm chính hãng</span>
+                    <h1 class="hero-title">Chăm sóc làn da<br><em>theo cách của bạn</em></h1>
+                    <p class="hero-subtitle">Tuyển chọn serum, kem dưỡng, chống nắng và làm sạch từ các thương hiệu được tin dùng: La Roche-Posay, CeraVe, Cetaphil, Innisfree, Laneige...</p>
+                    <div class="hero-actions">
+                        <a href="#/products" class="btn btn-lg hero-cta">Mua sắm ngay</a>
+                        <a href="#/products?category=chong-nang" class="btn btn-lg btn-outline">Kem chống nắng</a>
                     </div>
-                    <a href="#/products" class="btn hero-cta">Khám Phá Bộ Sưu Tập</a>
+                    <ul class="hero-features">
+                        <li>Hàng chính hãng</li>
+                        <li>Thanh toán khi nhận hàng</li>
+                        <li>Giao hàng toàn quốc</li>
+                    </ul>
                 </div>
-                <div class="hero-image-container">
-                    <div class="hero-visual">
-                        <div class="hero-circle hero-circle-1"></div>
-                        <div class="hero-circle hero-circle-2"></div>
-                        <div class="hero-circle hero-circle-3"></div>
-                        <div class="hero-icon">✨</div>
-                    </div>
+                <div class="hero-visual" aria-hidden="true">
+                    <div class="hero-arch"></div>
+                    <img class="hero-product hero-product-main" src="assets/images/product-1.jpg" alt="">
+                    <img class="hero-product hero-product-left" src="assets/images/product-4.jpg" alt="">
+                    <img class="hero-product hero-product-right" src="assets/images/product-6.jpg" alt="">
                 </div>
             </div>
         </section>
-        
-        <!-- Section Danh Mục Sản Phẩm -->
+
         <section class="category-section">
             <div class="container">
-                <h2 class="section-title">Danh Mục Sản Phẩm</h2>
+                <h2 class="section-title">Danh mục sản phẩm</h2>
                 <div class="category-grid" id="category-grid">
-                    <div class="category-card" data-category="serum">
-                        <span class="category-icon">
-                            <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M32 8L28 20H36L32 8Z" fill="currentColor" opacity="0.3"/>
-                                <rect x="24" y="20" width="16" height="4" rx="1" fill="currentColor"/>
-                                <path d="M26 24H38V52C38 54.2091 36.2091 56 34 56H30C27.7909 56 26 54.2091 26 52V24Z" fill="currentColor" opacity="0.7"/>
-                                <circle cx="32" cy="40" r="6" fill="currentColor" opacity="0.4"/>
-                            </svg>
-                        </span>
-                        <h3 class="category-name">Serum</h3>
-                        <p class="category-count">Tinh chất dưỡng da</p>
-                    </div>
-                    <div class="category-card" data-category="kem-duong">
-                        <span class="category-icon">
-                            <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <ellipse cx="32" cy="44" rx="18" ry="12" fill="currentColor" opacity="0.7"/>
-                                <ellipse cx="32" cy="36" rx="18" ry="8" fill="currentColor"/>
-                                <path d="M20 36V44" stroke="currentColor" stroke-width="2" opacity="0.5"/>
-                                <path d="M44 36V44" stroke="currentColor" stroke-width="2" opacity="0.5"/>
-                            </svg>
-                        </span>
-                        <h3 class="category-name">Kem Dưỡng</h3>
-                        <p class="category-count">Dưỡng ẩm chuyên sâu</p>
-                    </div>
-                    <div class="category-card" data-category="sua-rua-mat">
-                        <span class="category-icon">
-                            <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M24 16H40L42 20H22L24 16Z" fill="currentColor"/>
-                                <rect x="22" y="20" width="20" height="36" rx="4" fill="currentColor" opacity="0.7"/>
-                                <circle cx="32" cy="38" r="8" fill="currentColor" opacity="0.4"/>
-                                <path d="M28 28H36" stroke="white" stroke-width="2" stroke-linecap="round"/>
-                            </svg>
-                        </span>
-                        <h3 class="category-name">Sữa Rửa Mặt</h3>
-                        <p class="category-count">Làm sạch dịu nhẹ</p>
-                    </div>
-                    <div class="category-card" data-category="chong-nang">
-                        <span class="category-icon">
-                            <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="32" cy="24" r="12" fill="currentColor" opacity="0.4"/>
-                                <path d="M32 8V12M32 36V40M44 24H48M16 24H20M41 15L44 12M20 36L23 33M44 36L41 33M20 12L23 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                                <rect x="24" y="42" width="16" height="14" rx="3" fill="currentColor" opacity="0.7"/>
-                                <rect x="28" y="38" width="8" height="6" fill="currentColor"/>
-                            </svg>
-                        </span>
-                        <h3 class="category-name">Chống Nắng</h3>
-                        <p class="category-count">Bảo vệ da</p>
-                    </div>
-                    <div class="category-card" data-category="mat-na">
-                        <span class="category-icon">
-                            <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <ellipse cx="32" cy="36" rx="20" ry="16" fill="currentColor" opacity="0.7"/>
-                                <ellipse cx="24" cy="32" rx="4" ry="3" fill="white" opacity="0.6"/>
-                                <ellipse cx="40" cy="32" rx="4" ry="3" fill="white" opacity="0.6"/>
-                                <path d="M28 42C28 42 30 44 32 44C34 44 36 42 36 42" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
-                                <path d="M16 28C16 28 20 20 32 20C44 20 48 28 48 28" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                            </svg>
-                        </span>
-                        <h3 class="category-name">Mặt Nạ</h3>
-                        <p class="category-count">Chăm sóc đặc biệt</p>
-                    </div>
-                    <div class="category-card" data-category="toner">
-                        <span class="category-icon">
-                            <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <rect x="22" y="12" width="20" height="8" rx="2" fill="currentColor"/>
-                                <path d="M24 20H40V52C40 54.2091 38.2091 56 36 56H28C25.7909 56 24 54.2091 24 52V20Z" fill="currentColor" opacity="0.7"/>
-                                <path d="M28 32L36 32M28 40L36 40" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
-                                <circle cx="32" cy="48" r="3" fill="white" opacity="0.4"/>
-                            </svg>
-                        </span>
-                        <h3 class="category-name">Toner</h3>
-                        <p class="category-count">Cân bằng da</p>
-                    </div>
-                    <div class="category-card" data-category="tay-trang">
-                        <span class="category-icon">
-                            <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <rect x="12" y="20" width="16" height="6" rx="2" fill="currentColor"/>
-                                <path d="M14 26H26V52C26 54.2091 24.2091 56 22 56H18C15.7909 56 14 54.2091 14 52V26Z" fill="currentColor" opacity="0.7"/>
-                                <circle cx="44" cy="42" r="12" fill="currentColor" opacity="0.4"/>
-                                <circle cx="44" cy="42" r="6" stroke="white" stroke-width="2" opacity="0.6"/>
-                            </svg>
-                        </span>
-                        <h3 class="category-name">Tẩy Trang</h3>
-                        <p class="category-count">Làm sạch lớp trang điểm</p>
-                    </div>
+                    ${CATEGORIES.map(c => `
+                        <a class="category-card" data-category="${c.id}" href="#/products?category=${c.id}">
+                            <span class="category-icon"><svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">${c.icon}</svg></span>
+                            <h3 class="category-name">${c.name}</h3>
+                            <p class="category-count">${c.desc}</p>
+                        </a>
+                    `).join('')}
                 </div>
             </div>
         </section>
-        
-        <!-- Section Sản Phẩm Nổi Bật với Carousel -->
+
         <section class="featured-products container">
-            <h2 class="section-title">Sản Phẩm Nổi Bật</h2>
-            <div class="featured-products-wrapper">
-                <button class="carousel-nav prev" id="carousel-prev" aria-label="Xem sản phẩm trước">❮</button>
-                <div class="featured-products-container" id="featured-product-list">
-                    <!-- Danh sách sản phẩm nổi bật sẽ được JS render vào đây -->
+            <div class="section-head">
+                <h2 class="section-title">Sản phẩm nổi bật</h2>
+                <div class="carousel-controls">
+                    <button class="carousel-nav prev" id="carousel-prev" aria-label="Xem sản phẩm trước">‹</button>
+                    <button class="carousel-nav next" id="carousel-next" aria-label="Xem sản phẩm tiếp theo">›</button>
                 </div>
-                <button class="carousel-nav next" id="carousel-next" aria-label="Xem sản phẩm tiếp theo">❯</button>
             </div>
+            <div class="featured-products-container" id="featured-product-list"></div>
         </section>
-        
-        <!-- Section Tất Cả Sản Phẩm -->
+
         <section class="all-products-section container">
-            <h2 class="section-title">Tất Cả Sản Phẩm</h2>
-            
-            <!-- Bộ lọc thu gọn -->
-            <div class="filter-collapsible">
-                <button class="filter-toggle-btn" id="filter-toggle-btn">
-                    <span class="filter-toggle-text">Bộ lọc sản phẩm</span>
-                    <span class="filter-toggle-arrow">▼</span>
-                </button>
-                <div class="filter-content" id="filter-content">
-                    <div class="filter-grid">
-                        <div class="filter-item">
-                            <label for="home-search-input">Tìm kiếm:</label>
-                            <input type="text" id="home-search-input" placeholder="Nhập tên sản phẩm...">
-                        </div>
-                        <div class="filter-item">
-                            <label for="home-category-filter">Danh mục:</label>
-                            <select id="home-category-filter">
-                                <option value="">Tất cả danh mục</option>
-                            </select>
-                        </div>
-                        <div class="filter-item">
-                            <label>Khoảng giá:</label>
-                            <div class="price-inputs-inline">
-                                <input type="number" id="home-min-price" placeholder="Từ" min="0">
-                                <span>-</span>
-                                <input type="number" id="home-max-price" placeholder="Đến" min="0">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Danh sách sản phẩm -->
-            <div class="all-products-grid" id="all-products-grid">
-                <!-- Sản phẩm sẽ được render bởi JS -->
-            </div>
-            
-            <!-- Nút xem thêm -->
-            <div class="load-more-wrapper" id="load-more-wrapper">
-                <button class="btn load-more-btn" id="load-more-btn">Xem thêm sản phẩm</button>
-            </div>
+            <h2 class="section-title">Tất cả sản phẩm</h2>
+            ${ProductListing('home-')}
         </section>
     `;
 }
