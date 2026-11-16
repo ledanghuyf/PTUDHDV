@@ -1,0 +1,24 @@
+/**
+ * Cấu hình cửa hàng - ĐIỀN THÔNG TIN THẬT CỦA BẠN VÀO ĐÂY
+ * Để trống thì web vẫn chạy: không hiện mã QR chuyển khoản / không gửi email.
+ */
+export const SHOP = {
+    name: 'Cosmetics Store',
+
+    // Tài khoản nhận chuyển khoản (mã QR tạo bằng dịch vụ VietQR: https://vietqr.io)
+    bank: {
+        bankId: '',        // Mã ngân hàng VietQR, VD: 'MB', 'VCB', 'TCB', 'ACB', 'VPB', 'BIDV', 'ICB' (VietinBank)
+        accountNo: '',     // Số tài khoản, VD: '0123456789'
+        accountName: '',   // Tên chủ tài khoản, VIẾT HOA KHÔNG DẤU, VD: 'LE DANG HUY'
+    },
+
+    // Gửi email xác nhận đơn hàng qua EmailJS (https://www.emailjs.com) - xem hướng dẫn trong README.md
+    emailjs: {
+        serviceId: '',     // VD: 'service_xxxxxxx' (kết nối Gmail của cửa hàng)
+        templateId: '',    // VD: 'template_xxxxxxx'
+        publicKey: '',     // Account > General > Public Key
+    },
+};
+
+export const isBankConfigured = () => Boolean(SHOP.bank.bankId && SHOP.bank.accountNo && SHOP.bank.accountName);
+export const isEmailConfigured = () => Boolean(SHOP.emailjs.serviceId && SHOP.emailjs.templateId && SHOP.emailjs.publicKey);

@@ -16,8 +16,15 @@
 - Danh sách sản phẩm với tìm kiếm và lọc theo danh mục
 - Trang chi tiết sản phẩm với thông tin đầy đủ
 - Giỏ hàng với localStorage
-- Form đặt hàng
+- Form đặt hàng: thanh toán khi nhận hàng (COD) hoặc chuyển khoản ngân hàng (mã VietQR)
+- Gửi email xác nhận đơn hàng về Gmail của khách (EmailJS)
 - Hệ thống đánh giá sản phẩm
+
+## Nguồn dữ liệu
+30 sản phẩm trong `src/db.json` lấy từ trang sản phẩm của [Pharmacity](https://www.pharmacity.vn) (tên, thương hiệu,
+giá bán, mô tả, ảnh), mỗi sản phẩm có trường `sourceUrl` trỏ về trang gốc. Ảnh được cắt nền và căn về khung 800×800.
+Giá lấy tại thời điểm thu thập (11/2026), có thể thay đổi. Hình ảnh thuộc bản quyền thương hiệu/nhà bán lẻ,
+chỉ dùng cho mục đích học tập. Tồn kho, lượt bán và đánh giá là dữ liệu của cửa hàng demo (ban đầu chưa có đánh giá/lượt bán).
 
 ## Công nghệ sử dụng
 - **Frontend:** HTML5, CSS3, JavaScript ES6+
@@ -58,6 +65,38 @@ json-server src/db.json --port 3000
 ```
 
 2. Mở file `src/index.html` bằng Live Server hoặc trình duyệt
+
+### Cấu hình thanh toán chuyển khoản
+Mở `src/js/config.js`, điền tài khoản nhận tiền:
+```js
+bank: { bankId: 'MB', accountNo: '0123456789', accountName: 'NGUYEN VAN A' },
+```
+`bankId` là mã ngân hàng theo VietQR (MB, VCB, TCB, ACB, BIDV, ICB...). Khi để trống, lựa chọn
+"Chuyển khoản ngân hàng" bị khóa. Sau khi đặt hàng, trang xác nhận hiện mã VietQR đã điền sẵn số tiền
+và nội dung `CS<mã đơn>`. Cửa hàng tự đối soát tiền về rồi cập nhật trạng thái đơn trong `db.json`.
+
+### Cấu hình gửi email xác nhận về Gmail (EmailJS)
+1. Tạo tài khoản miễn phí tại https://www.emailjs.com
+2. **Email Services → Add New Service → Gmail**, đăng nhập Gmail của cửa hàng → lấy `Service ID`
+3. **Email Templates → Create New Template**:
+   - *To Email*: `{{to_email}}`
+   - *Subject*: `Xác nhận đơn hàng #{{order_id}} - {{shop_name}}`
+   - *Content*:
+     ```
+     Chào {{to_name}},
+     Cảm ơn bạn đã đặt hàng tại {{shop_name}} lúc {{order_date}}.
+     Mã đơn: {{order_id}}
+     {{{order_items}}}
+     Tổng cộng: {{order_total}}
+     Thanh toán: {{payment_method}}
+     {{payment_instructions}}
+     Giao tới: {{shipping_address}} - SĐT {{phone}}
+     ```
+   → lưu và lấy `Template ID`
+4. **Account → General** → lấy `Public Key`
+5. Điền 3 giá trị vào `emailjs` trong `src/js/config.js`
+
+Khi để trống, đơn hàng vẫn tạo bình thường nhưng không gửi email.
 
 ## Kế hoạch thực hiện
 
