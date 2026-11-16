@@ -5,6 +5,7 @@
 import * as api from './api.js';
 import * as cart from './cart.js';
 import * as ui from './components.js';
+import { SHOP, isBankConfigured, isEmailConfigured } from './config.js';
 
 const app = document.getElementById('app');
 const PRODUCTS_PER_PAGE = 8;     // 2 hàng x 4 cột
@@ -35,6 +36,38 @@ function toast(message, type = 'success') {
     setTimeout(() => el.remove(), 3200);
 }
 
+/**
+ * Thông báo kiểm tra form bằng tiếng Việt (thay cho "Please fill out this field." của trình duyệt)
+ */
+function validationMessage(el) {
+    const v = el.validity;
+    if (v.valueMissing) {
+        if (el.type === 'radio') return 'Vui lòng chọn một trong các lựa chọn này.';
+        return el.tagName === 'SELECT' ? 'Vui lòng chọn một mục trong danh sách.' : 'Vui lòng điền vào trường này.';
+    }
+    if (v.typeMismatch && el.type === 'email') return 'Vui lòng nhập địa chỉ email hợp lệ (VD: ten@gmail.com).';
+    if (v.typeMismatch) return 'Giá trị chưa đúng định dạng.';
+    if (v.patternMismatch) return el.dataset.patternMessage || 'Giá trị chưa đúng định dạng yêu cầu.';
+    if (v.tooLong) return `Vui lòng nhập tối đa ${el.maxLength} ký tự.`;
+    if (v.tooShort) return `Vui lòng nhập ít nhất ${el.minLength} ký tự.`;
+    if (v.rangeUnderflow) return `Giá trị phải lớn hơn hoặc bằng ${el.min}.`;
+    if (v.rangeOverflow) return `Giá trị phải nhỏ hơn hoặc bằng ${el.max}.`;
+    if (v.badInput) return 'Vui lòng nhập một số hợp lệ.';
+    if (v.stepMismatch) return 'Giá trị không hợp lệ.';
+    return '';
+}
+
+// Sự kiện invalid không nổi bọt → bắt ở pha capture cho mọi form
+document.addEventListener('invalid', (e) => {
+    const el = e.target;
+    el.setCustomValidity('');
+    el.setCustomValidity(validationMessage(el));
+}, true);
+
+['input', 'change'].forEach(type => document.addEventListener(type, (e) => {
+    if (e.target.setCustomValidity) e.target.setCustomValidity('');
+}, true));
+
 function setTitle(title) {
     document.title = title ? `${title} | Cosmetics Store` : 'Cosmetics Store – Mỹ phẩm chính hãng';
 }
@@ -47,7 +80,7 @@ function updateCartIcon() {
 
 /**
  * Tải sản phẩm + đánh giá, gắn điểm đánh giá trung bình và nhãn "Nổi bật".
- * Điểm nổi bật = 50% lượt bán (quy về thang 5) + 50% đánh giá trung bình (mặc định 3 nếu chưa có).
+ * Điểm = 50% lượt bán (quy về thang 5) + 50% đánh giá trung bình (mặc định 3 nếu chưa có); dùng để xếp hạng.
  */
 async function loadCatalog() {
     const [products, reviews] = await Promise.all([api.getAllProducts(), api.getAllReviews()]);
@@ -58,7 +91,8 @@ async function loadCatalog() {
         const reviewCount = productReviews.length;
         const avgRating = reviewCount ? productReviews.reduce((sum, r) => sum + r.rating, 0) / reviewCount : 0;
         const score = ((product.soldCount || 0) / maxSold) * 5 * 0.5 + (reviewCount ? avgRating : 3) * 0.5;
-        return { ...product, avgRating, reviewCount, score, isFeatured: score >= FEATURED_THRESHOLD };
+        // "Nổi bật" = cửa hàng tự chọn (featured) hoặc đủ điểm từ lượt bán + đánh giá
+        return { ...product, avgRating, reviewCount, score, isFeatured: Boolean(product.featured) || score >= FEATURED_THRESHOLD };
     });
 
     return { products: enriched, reviews };
@@ -102,7 +136,10 @@ function updateActiveNav(hash) {
         : (hash === '#/cart' || hash === '#/checkout') ? '#/cart'
         : hash === '#/' ? '#/' : null;
     document.querySelectorAll('.nav-links a').forEach(link => {
-        link.classList.toggle('active', link.getAttribute('href') === section);
+        const isActive = link.getAttribute('href') === section;
+        link.classList.toggle('active', isActive);
+        if (isActive) link.setAttribute('aria-current', 'page');
+        else link.removeAttribute('aria-current');
     });
 }
 
@@ -387,11 +424,13 @@ async function handleCheckoutSubmit(event) {
     const customerInfo = {
         name: form.name.value.trim(),
         phone: form.phone.value.trim(),
+        email: form.email.value.trim(),
         address: form.address.value.trim()
     };
+    const paymentMethod = form.payment.value === 'bank' && isBankConfigured() ? 'bank' : 'cod';
 
     // `required` vẫn cho qua chuỗi toàn khoảng trắng
-    if (!customerInfo.name || !customerInfo.phone || !customerInfo.address) {
+    if (!customerInfo.name || !customerInfo.phone || !customerInfo.email || !customerInfo.address) {
         toast('Vui lòng điền đầy đủ thông tin giao hàng!', 'error');
         return;
     }
@@ -426,6 +465,9 @@ async function handleCheckoutSubmit(event) {
             customerInfo,
             items: orderItems,
             totalAmount: orderItems.reduce((sum, item) => sum + item.price * item.quantity, 0),
+            paymentMethod,
+            paymentStatus: 'Chưa thanh toán',
+            status: paymentMethod === 'bank' ? 'Chờ chuyển khoản' : 'Chờ xác nhận',
             timestamp: new Date().toISOString()
         });
 
@@ -441,6 +483,19 @@ async function handleCheckoutSubmit(event) {
 
         cart.clearCart();
         updateCartIcon();
+
+        // Gửi email xác nhận; lỗi gửi email không làm hỏng đơn đã tạo
+        if (isEmailConfigured()) {
+            submitButton.textContent = 'Đang gửi email xác nhận...';
+            try {
+                await api.sendOrderEmail(orderEmailParams(order));
+                await api.updateOrder(order.id, { emailSent: true });
+            } catch (emailError) {
+                console.error('Không gửi được email xác nhận:', emailError);
+                toast('Đơn đã tạo nhưng chưa gửi được email xác nhận.', 'info');
+            }
+        }
+
         toast('Đặt hàng thành công!');
         window.location.hash = `#/order/${order.id}`;
     } catch (error) {
@@ -448,6 +503,30 @@ async function handleCheckoutSubmit(event) {
         toast('Đã có lỗi xảy ra khi đặt hàng. Vui lòng thử lại!', 'error');
         setBusy(false);
     }
+}
+
+/**
+ * Biến truyền vào template EmailJS (xem README.md để tạo template)
+ */
+function orderEmailParams(order) {
+    const { bankId, accountNo, accountName } = SHOP.bank;
+    const total = ui.formatPrice(order.totalAmount);
+    return {
+        to_email: order.customerInfo.email,
+        to_name: order.customerInfo.name,
+        shop_name: SHOP.name,
+        order_id: order.id,
+        order_date: new Date(order.timestamp).toLocaleString('vi-VN'),
+        // Dùng {{{order_items}}} trong template để giữ thẻ <br>
+        order_items: order.items.map(i => `- ${ui.escapeHtml(i.name)} x${i.quantity}: ${ui.formatPrice(i.price * i.quantity)}`).join('<br>'),
+        order_total: total,
+        phone: order.customerInfo.phone,
+        shipping_address: order.customerInfo.address,
+        payment_method: ui.PAYMENT_METHODS[order.paymentMethod],
+        payment_instructions: order.paymentMethod === 'bank'
+            ? `Vui lòng chuyển khoản ${total} tới ngân hàng ${bankId}, số tài khoản ${accountNo} (${accountName}), nội dung: ${ui.transferContent(order.id)}.`
+            : 'Bạn thanh toán bằng tiền mặt khi nhận hàng.',
+    };
 }
 
 async function orderView(id) {

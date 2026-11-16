@@ -3,6 +3,16 @@
  * Mỗi hàm trả về chuỗi HTML để chèn vào trang
  */
 
+import { SHOP, isBankConfigured } from './config.js';
+
+export const PAYMENT_METHODS = {
+    cod: 'Thanh toán khi nhận hàng (COD)',
+    bank: 'Chuyển khoản ngân hàng',
+};
+
+// Nội dung chuyển khoản để cửa hàng đối soát đơn
+export const transferContent = orderId => `CS${orderId}`;
+
 // Danh mục sản phẩm (id khớp với trường category trong db.json)
 export const CATEGORIES = [
     { id: 'serum', name: 'Serum', desc: 'Tinh chất dưỡng da',
@@ -180,7 +190,8 @@ export function ProductDetail(product, reviews) {
                     <h1 class="product-name">${product.name}</h1>
                     <div class="product-rating" id="rating-summary">${RatingSummary(product.avgRating || 0, product.reviewCount || 0)}</div>
                     <div class="product-price">${formatPrice(product.price)}</div>
-                    <p class="product-lead">${product.description_short || ''}</p>
+                    ${product.description_short && product.description_short !== product.description_long
+                        ? `<p class="product-lead">${product.description_short}</p>` : ''}
 
                     <div class="stock-info">
                         ${inStock
@@ -203,9 +214,12 @@ export function ProductDetail(product, reviews) {
 
                     <ul class="product-perks">
                         <li>Hàng chính hãng</li>
-                        <li>Thanh toán khi nhận hàng (COD)</li>
-                        <li>Giao hàng toàn quốc</li>
+                        <li>Thanh toán khi nhận hàng (COD) hoặc chuyển khoản ngân hàng</li>
+                        <li>Xác nhận đơn hàng qua email</li>
                     </ul>
+                    ${product.sourceUrl ? `
+                        <p class="product-source">Thông tin, hình ảnh và giá tham khảo từ
+                            <a href="${product.sourceUrl}" target="_blank" rel="noopener noreferrer">Pharmacity</a></p>` : ''}
                 </div>
             </div>
 
@@ -355,6 +369,7 @@ export function CartPage(cartItems, total, itemCount) {
  * Trang thanh toán
  */
 export function CheckoutPage(cartItems, totalAmount) {
+    const bankReady = isBankConfigured();
     return `
         <nav class="breadcrumb" aria-label="Breadcrumb">
             <a href="#/cart">Giỏ hàng</a><span>/</span><span aria-current="page">Thanh toán</span>
@@ -368,19 +383,38 @@ export function CheckoutPage(cartItems, totalAmount) {
                     <label for="customer-name">Họ và tên <span class="required">*</span></label>
                     <input type="text" id="customer-name" name="name" required maxlength="80" autocomplete="name" placeholder="Nhập họ và tên của bạn">
                 </div>
-                <div class="form-group">
-                    <label for="customer-phone">Số điện thoại <span class="required">*</span></label>
-                    <input type="tel" id="customer-phone" name="phone" required pattern="[0-9]{10,11}" autocomplete="tel" placeholder="VD: 0901234567">
-                    <small>Gồm 10–11 chữ số</small>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="customer-phone">Số điện thoại <span class="required">*</span></label>
+                        <input type="tel" id="customer-phone" name="phone" required pattern="0[0-9]{9,10}" autocomplete="tel" placeholder="VD: 0901234567"
+                               data-pattern-message="Số điện thoại phải bắt đầu bằng 0 và gồm 10–11 chữ số (VD: 0901234567).">
+                    </div>
+                    <div class="form-group">
+                        <label for="customer-email">Email nhận xác nhận <span class="required">*</span></label>
+                        <input type="email" id="customer-email" name="email" required maxlength="100" autocomplete="email" placeholder="ten@gmail.com">
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="customer-address">Địa chỉ giao hàng <span class="required">*</span></label>
                     <textarea id="customer-address" name="address" rows="3" required maxlength="300" autocomplete="street-address"
                               placeholder="Số nhà, đường, phường/xã, quận/huyện, tỉnh/thành phố"></textarea>
                 </div>
-                <div class="payment-note">
-                    <strong>Phương thức thanh toán:</strong> Thanh toán khi nhận hàng (COD)
-                </div>
+
+                <fieldset class="payment-methods">
+                    <legend>Phương thức thanh toán</legend>
+                    <label class="payment-option">
+                        <input type="radio" name="payment" value="cod" checked>
+                        <span class="payment-title">Thanh toán khi nhận hàng (COD)</span>
+                        <span class="payment-desc">Trả tiền mặt cho nhân viên giao hàng.</span>
+                    </label>
+                    <label class="payment-option${bankReady ? '' : ' is-disabled'}">
+                        <input type="radio" name="payment" value="bank" ${bankReady ? '' : 'disabled'}>
+                        <span class="payment-title">Chuyển khoản ngân hàng</span>
+                        <span class="payment-desc">${bankReady
+                            ? 'Quét mã VietQR bằng app ngân hàng sau khi đặt hàng. Đơn được xác nhận khi cửa hàng nhận được tiền.'
+                            : 'Cửa hàng chưa thiết lập tài khoản nhận tiền.'}</span>
+                    </label>
+                </fieldset>
                 <div class="form-actions">
                     <a href="#/cart" class="btn btn-secondary">Quay lại giỏ hàng</a>
                     <button type="submit" class="btn btn-submit-order">Xác nhận đặt hàng</button>
@@ -414,23 +448,59 @@ function OrderLine(item) {
 /**
  * Trang xác nhận đặt hàng thành công
  */
+/**
+ * Ô hướng dẫn chuyển khoản kèm mã VietQR (đã điền sẵn số tiền + nội dung)
+ */
+export function BankTransferBox(order) {
+    if (!isBankConfigured()) {
+        return '<div class="bank-box"><p>Cửa hàng chưa thiết lập tài khoản nhận tiền. Vui lòng liên hệ hotline để được hướng dẫn thanh toán.</p></div>';
+    }
+    const { bankId, accountNo, accountName } = SHOP.bank;
+    const content = transferContent(order.id);
+    const qr = `https://img.vietqr.io/image/${encodeURIComponent(bankId)}-${encodeURIComponent(accountNo)}-compact2.png`
+        + `?amount=${order.totalAmount}&addInfo=${encodeURIComponent(content)}&accountName=${encodeURIComponent(accountName)}`;
+
+    return `
+        <div class="bank-box">
+            <img class="bank-qr" src="${qr}" alt="Mã VietQR chuyển khoản ${formatPrice(order.totalAmount)}" width="220" height="220">
+            <div class="bank-info">
+                <h3>Quét mã để chuyển khoản</h3>
+                <dl>
+                    <dt>Ngân hàng</dt><dd>${escapeHtml(bankId)}</dd>
+                    <dt>Số tài khoản</dt><dd><strong>${escapeHtml(accountNo)}</strong></dd>
+                    <dt>Chủ tài khoản</dt><dd>${escapeHtml(accountName)}</dd>
+                    <dt>Số tiền</dt><dd><strong>${formatPrice(order.totalAmount)}</strong></dd>
+                    <dt>Nội dung</dt><dd><strong id="transfer-content">${escapeHtml(content)}</strong></dd>
+                </dl>
+                <p class="bank-note">Vui lòng ghi đúng nội dung chuyển khoản. Đơn hàng được xác nhận khi cửa hàng nhận được tiền.</p>
+            </div>
+        </div>
+    `;
+}
+
 export function OrderSuccess(order) {
     const date = new Date(order.timestamp).toLocaleString('vi-VN');
     const info = order.customerInfo || {};
+    const isBank = order.paymentMethod === 'bank';
     return `
         <div class="order-success">
             <div class="success-icon" aria-hidden="true">✓</div>
             <h1 class="page-title">Đặt hàng thành công!</h1>
-            <p class="success-lead">Cảm ơn bạn đã mua sắm tại Cosmetics Store. Chúng tôi sẽ liên hệ để xác nhận đơn hàng trong thời gian sớm nhất.</p>
+            <p class="success-lead">Cảm ơn bạn đã mua sắm tại ${SHOP.name}.
+                ${isBank ? 'Vui lòng hoàn tất chuyển khoản bên dưới để cửa hàng xác nhận đơn.' : 'Chúng tôi sẽ liên hệ để xác nhận đơn hàng trong thời gian sớm nhất.'}</p>
+            ${order.emailSent ? `<p class="email-status" id="email-status">Email xác nhận đã được gửi tới <strong>${escapeHtml(info.email)}</strong>.</p>` : ''}
+
+            ${isBank ? BankTransferBox(order) : ''}
 
             <div class="order-detail-card">
                 <div class="order-meta">
                     <div><span>Mã đơn hàng</span><strong id="order-code">#${escapeHtml(order.id)}</strong></div>
                     <div><span>Thời gian</span><strong>${date}</strong></div>
-                    <div><span>Thanh toán</span><strong>COD</strong></div>
+                    <div><span>Thanh toán</span><strong id="order-payment">${PAYMENT_METHODS[order.paymentMethod] || PAYMENT_METHODS.cod}</strong></div>
+                    <div><span>Trạng thái</span><strong>${escapeHtml(order.status || 'Chờ xác nhận')}</strong></div>
                 </div>
                 <div class="order-customer">
-                    <p><strong>${escapeHtml(info.name)}</strong> · ${escapeHtml(info.phone)}</p>
+                    <p><strong>${escapeHtml(info.name)}</strong> · ${escapeHtml(info.phone)}${info.email ? ` · ${escapeHtml(info.email)}` : ''}</p>
                     <p>${escapeHtml(info.address)}</p>
                 </div>
                 <div class="order-items">${(order.items || []).map(OrderLine).join('')}</div>
@@ -446,6 +516,73 @@ export function OrderSuccess(order) {
 }
 
 /**
+ * Hình minh hoạ banner: hoa, lá, bong bóng và lấp lánh (SVG tự vẽ, không dùng ảnh sản phẩm)
+ */
+function HeroArt() {
+    const petals = (n, href, offset = 0) =>
+        Array.from({ length: n }, (_, i) => `<use href="${href}" transform="rotate(${offset + (360 / n) * i})"/>`).join('');
+    // Lớp ngoài giữ vị trí (transform attribute), lớp trong mang animation CSS
+    const sparkle = (x, y, s, cls = '') =>
+        `<g transform="translate(${x} ${y}) scale(${s})"><path class="sparkle ${cls}" d="M0-20C2-6 6-2 20 0 6 2 2 6 0 20-2 6-6 2-20 0-6-2-2-6 0-20z"/></g>`;
+    const flower = (x, y, s, cls) => `
+        <g transform="translate(${x} ${y}) scale(${s})">
+            <g class="flower ${cls}">
+                <g fill="url(#petalOuter)">${petals(6, '#petal')}</g>
+                <g fill="url(#petalInner)" transform="scale(0.62)">${petals(6, '#petal', 30)}</g>
+                <circle r="30" fill="url(#pollen)"/>
+                <g fill="#E89B3C" opacity="0.7"><circle cx="-9" cy="-6" r="3"/><circle cx="8" cy="-9" r="3"/><circle cx="10" cy="8" r="3"/><circle cx="-6" cy="10" r="3"/><circle cx="0" cy="0" r="3"/></g>
+            </g>
+        </g>`;
+
+    return `
+        <svg viewBox="0 0 520 480" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <path id="petal" d="M0 0C46-34 52-104 0-150-52-104-46-34 0 0z"/>
+                <path id="leaf" d="M0 0C30-20 70-20 100 0 70 20 30 20 0 0z"/>
+                <linearGradient id="petalOuter" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stop-color="#FFB8D0"/><stop offset="1" stop-color="#EC5F95"/>
+                </linearGradient>
+                <linearGradient id="petalInner" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stop-color="#FFF0F5"/><stop offset="1" stop-color="#FF9CC0"/>
+                </linearGradient>
+                <radialGradient id="pollen"><stop offset="0" stop-color="#FFF4C7"/><stop offset="1" stop-color="#FFC979"/></radialGradient>
+                <radialGradient id="glow"><stop offset="0" stop-color="#fff" stop-opacity="0.9"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+                <linearGradient id="leafFill" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0" stop-color="#9FCBB0"/><stop offset="1" stop-color="#D5EBDD"/>
+                </linearGradient>
+            </defs>
+
+            <circle cx="270" cy="245" r="215" fill="url(#glow)"/>
+            <circle cx="270" cy="245" r="182" fill="none" stroke="#fff" stroke-width="2" stroke-dasharray="4 10" opacity="0.8"/>
+
+            <g fill="url(#leafFill)">
+                <use href="#leaf" transform="translate(270 250) rotate(-35) scale(1.5)"/>
+                <use href="#leaf" transform="translate(270 250) rotate(200) scale(1.3)"/>
+                <use href="#leaf" transform="translate(270 250) rotate(140) scale(1.1)"/>
+            </g>
+
+            ${flower(270, 245, 1, 'flower-main')}
+            ${flower(440, 105, 0.42, 'flower-small')}
+            ${flower(92, 385, 0.36, 'flower-small flower-delay')}
+
+            <g fill="none" stroke="#fff" stroke-width="2.5" opacity="0.85">
+                <circle class="bubble" cx="90" cy="120" r="18"/>
+                <circle class="bubble bubble-delay" cx="455" cy="330" r="26"/>
+                <circle class="bubble" cx="400" cy="430" r="11"/>
+                <circle class="bubble bubble-delay" cx="140" cy="60" r="8"/>
+            </g>
+
+            <g fill="#fff">
+                ${sparkle(140, 210, 1.1)}
+                ${sparkle(410, 215, 0.8, 'sparkle-delay')}
+                ${sparkle(330, 60, 0.6)}
+                ${sparkle(210, 440, 0.7, 'sparkle-delay')}
+            </g>
+        </svg>
+    `;
+}
+
+/**
  * Trang chủ
  */
 export function HomePage() {
@@ -453,26 +590,24 @@ export function HomePage() {
         <section class="hero-section">
             <div class="container hero-container">
                 <div class="hero-content">
-                    <span class="hero-eyebrow">Mỹ phẩm chính hãng</span>
-                    <h1 class="hero-title">Chăm sóc làn da<br><em>theo cách của bạn</em></h1>
-                    <p class="hero-subtitle">Tuyển chọn serum, kem dưỡng, chống nắng và làm sạch từ các thương hiệu được tin dùng: La Roche-Posay, CeraVe, Cetaphil, Innisfree, Laneige...</p>
+                    <span class="hero-eyebrow">Beauty · Skincare · Chính hãng</span>
+                    <h1 class="hero-title">Rạng rỡ mỗi ngày<br><em>cùng làn da khỏe</em></h1>
+                    <p class="hero-subtitle">Serum, kem dưỡng, chống nắng, tẩy trang từ CeraVe, La Roche-Posay, Bioderma, Anessa, Cetaphil... Giá niêm yết rõ ràng, thanh toán khi nhận hàng hoặc chuyển khoản.</p>
                     <div class="hero-actions">
                         <a href="#/products" class="btn btn-lg hero-cta">Mua sắm ngay</a>
-                        <a href="#/products?category=chong-nang" class="btn btn-lg btn-outline">Kem chống nắng</a>
+                        <a href="#/products?category=chong-nang" class="btn btn-lg btn-light">Kem chống nắng</a>
                     </div>
                     <ul class="hero-features">
                         <li>Hàng chính hãng</li>
-                        <li>Thanh toán khi nhận hàng</li>
-                        <li>Giao hàng toàn quốc</li>
+                        <li>COD hoặc chuyển khoản</li>
+                        <li>Xác nhận đơn qua email</li>
                     </ul>
                 </div>
-                <div class="hero-visual" aria-hidden="true">
-                    <div class="hero-arch"></div>
-                    <img class="hero-product hero-product-main" src="assets/images/product-1.jpg" alt="">
-                    <img class="hero-product hero-product-left" src="assets/images/product-4.jpg" alt="">
-                    <img class="hero-product hero-product-right" src="assets/images/product-6.jpg" alt="">
-                </div>
+                <div class="hero-art" aria-hidden="true">${HeroArt()}</div>
             </div>
+            <svg class="hero-wave" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true">
+                <path d="M0 40c240 40 480 40 720 10s480-50 720-10v40H0z" fill="currentColor"/>
+            </svg>
         </section>
 
         <section class="category-section">

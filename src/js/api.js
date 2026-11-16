@@ -2,6 +2,8 @@
  * API Module - Giao tiếp với json-server
  */
 
+import { SHOP } from './config.js';
+
 // Đổi cổng ở đây nếu chạy json-server ở cổng khác
 const BASE_URL = 'http://localhost:3000';
 
@@ -67,3 +69,23 @@ export const createOrder = (orderData) =>
 
 export const getOrderById = (id) =>
     request(`/orders/${id}`, 'Không tìm thấy đơn hàng.');
+
+export const updateOrder = (id, data) =>
+    request(`/orders/${id}`, 'Không thể cập nhật đơn hàng.', sendJson('PATCH', data));
+
+// ===== Email xác nhận (EmailJS REST API) =====
+/**
+ * Gửi email xác nhận đơn hàng tới email khách
+ * @param {Object} templateParams - Biến dùng trong template EmailJS (to_email, order_id...)
+ */
+export async function sendOrderEmail(templateParams) {
+    const { serviceId, templateId, publicKey } = SHOP.emailjs;
+    const response = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ service_id: serviceId, template_id: templateId, user_id: publicKey, template_params: templateParams })
+    });
+    if (!response.ok) {
+        throw new Error(`EmailJS lỗi ${response.status}: ${await response.text()}`);
+    }
+}
