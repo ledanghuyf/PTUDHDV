@@ -2,7 +2,9 @@
   "enabledPlugins": {
     "ponytail@ponytail": true,
     "agent-skills@addy-agent-skills": true,
-    "graphify@pleaseai": true
+    "graphify@pleaseai": true,
+    "web-design@pleaseai": true,
+    "chrome-devtools-mcp@pleaseai": true
   },
   "extraKnownMarketplaces": {
     "ponytail": {
