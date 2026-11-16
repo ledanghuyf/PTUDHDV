@@ -1,0 +1,91 @@
+========================================
+  HƯỚNG DẪN CHẠY ỨNG DỤNG
+========================================
+
+BƯỚC 1: CÀI ĐẶT JSON-SERVER
+----------------------------
+Mở Command Prompt (CMD) hoặc PowerShell và chạy:
+
+    npm install -g json-server
+
+Hoặc đơn giản hơn, chạy file: START_SERVER.bat
+
+
+BƯỚC 2: KHỞI ĐỘNG SERVER
+-------------------------
+Chạy file: START_SERVER.bat
+
+Hoặc mở CMD/PowerShell tại thư mục dự án và chạy:
+
+    json-server --watch src/db.json --port 3000
+
+Server sẽ chạy tại: http://localhost:3000
+
+
+BƯỚC 3: MỞ ỨNG DỤNG
+--------------------
+Có 2 cách:
+
+CÁCH 1: Chạy file OPEN_APP.bat
+
+CÁCH 2: Sử dụng Live Server (VS Code)
+   - Cài extension "Live Server" trong VS Code
+   - Click chuột phải vào file index.html
+   - Chọn "Open with Live Server"
+
+CÁCH 3: Sử dụng Python
+   - Mở CMD/PowerShell tại thư mục dự án
+   - Chạy: python -m http.server 8000
+   - Truy cập: http://localhost:8000
+
+
+KIỂM TRA API
+------------
+Sau khi chạy json-server, bạn có thể kiểm tra API:
+
+- Tất cả sản phẩm: http://localhost:3000/products
+- Sản phẩm theo ID: http://localhost:3000/products/1
+- Đánh giá: http://localhost:3000/reviews
+
+
+CẤU TRÚC DỰ ÁN
+---------------
+/project-root
+├── index.html          # File HTML chính
+├── db.json            # Dữ liệu cho json-server
+├── START_SERVER.bat   # Script khởi động server
+├── OPEN_APP.bat       # Script mở ứng dụng
+├── /css
+│   └── style.css      # CSS styling
+├── /js
+│   ├── main.js        # JavaScript chính
+│   ├── api.js         # API calls
+│   ├── components.js  # UI components
+│   └── cart.js        # Giỏ hàng logic
+└── /assets
+    └── /images        # Hình ảnh sản phẩm
+
+
+TÍNH NĂNG
+---------
+✓ Trang chủ với sản phẩm nổi bật
+✓ Danh sách sản phẩm với bộ lọc
+✓ Chi tiết sản phẩm và đánh giá
+✓ Giỏ hàng với localStorage
+✓ Thêm/xóa/cập nhật giỏ hàng
+✓ Viết đánh giá sản phẩm
+✓ Responsive design
+
+
+HỖ TRỢ
+------
+Nếu gặp vấn đề, kiểm tra:
+1. Node.js đã được cài đặt chưa? (node --version)
+2. json-server đã chạy chưa?
+3. Port 3000 có bị chiếm không?
+4. Console trong trình duyệt có lỗi gì không? (F12)
+
+
+========================================
+Chúc bạn sử dụng vui vẻ! 🎉
+========================================

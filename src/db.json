@@ -1,0 +1,351 @@
+{
+  "products": [
+    {
+      "id": "1",
+      "name": "Serum Chống Lão Hóa Vitamin C",
+      "brand": "La Roche-Posay",
+      "price": 750000,
+      "image": "assets/images/product-1.jpg",
+      "description_short": "Serum Vitamin C tinh khiết làm sáng da và chống lão hóa",
+      "description_long": "Serum chống lão hóa với công thức Vitamin C tinh khiết 10% giúp làm sáng da, mờ thâm nám và tăng cường collagen tự nhiên. Kết hợp với Vitamin E và Ferulic Acid để tăng cường hiệu quả chống oxy hóa. Phù hợp cho mọi loại da, đặc biệt da xỉn màu, có dấu hiệu lão hóa.",
+      "category": "serum",
+      "stock": 50,
+      "soldCount": 420
+    },
+    {
+      "id": "2",
+      "name": "Kem Dưỡng Ẩm Hyaluronic Acid",
+      "brand": "CeraVe",
+      "price": 550000,
+      "image": "assets/images/product-2.jpg",
+      "description_short": "Kem dưỡng ẩm chuyên sâu với Hyaluronic Acid",
+      "description_long": "Kem dưỡng ẩm chuyên sâu với Hyaluronic Acid và 3 Ceramides thiết yếu giúp cấp ẩm tức thì, làm căng mịn da và giảm nếp nhăn. Công nghệ MVE giải phóng dưỡng chất liên tục suốt 24 giờ. Kết cấu nhẹ, thấm nhanh, không gây bít tắc lỗ chân lông.",
+      "category": "kem-duong",
+      "stock": 35,
+      "soldCount": 380
+    },
+    {
+      "id": "3",
+      "name": "Sữa Rửa Mặt Tạo Bọt Trà Xanh",
+      "brand": "Innisfree",
+      "price": 320000,
+      "image": "assets/images/product-3.jpg",
+      "description_short": "Sữa rửa mặt tạo bọt nhẹ nhàng với chiết xuất trà xanh",
+      "description_long": "Sữa rửa mặt tạo bọt mịn màng từ đảo Jeju, làm sạch sâu mà không làm khô da. Chứa chiết xuất trà xanh hữu cơ giúp kháng khuẩn, làm dịu da và kiểm soát dầu nhờn. pH cân bằng, phù hợp cho da nhạy cảm và da mụn.",
+      "category": "sua-rua-mat",
+      "stock": 60,
+      "soldCount": 156
+    },
+    {
+      "id": "4",
+      "name": "Mặt Nạ Ngủ Dưỡng Ẩm Water Bank",
+      "brand": "Laneige",
+      "price": 480000,
+      "image": "assets/images/product-4.jpg",
+      "description_short": "Mặt nạ ngủ dưỡng ẩm cao cấp công nghệ Water Lock",
+      "description_long": "Mặt nạ ngủ dưỡng ẩm cao cấp với công nghệ Hydro Ionized Mineral Water giúp khóa ẩm suốt đêm. Kết cấu gel mát lạnh, thẩm thấu nhanh, da sáng mịn rạng rỡ vào buổi sáng. Chứa chiết xuất hoa anh đào và hương thơm thư giãn.",
+      "category": "mat-na",
+      "stock": 40,
+      "soldCount": 290
+    },
+    {
+      "id": "5",
+      "name": "Tinh Chất Phục Hồi Da Advanced Night Repair",
+      "brand": "Estée Lauder",
+      "price": 2890000,
+      "image": "assets/images/product-5.jpg",
+      "description_short": "Tinh chất phục hồi da cao cấp trong khi ngủ",
+      "description_long": "Tinh chất phục hồi da huyền thoại với công nghệ ChronoluxCB™ giúp tái tạo da, cải thiện kết cấu da và làm mờ vết thâm. Kết hợp Hyaluronic Acid và Tripeptide-32 để tăng cường sản sinh collagen. Giảm 75% dấu hiệu lão hóa chỉ sau 4 tuần.",
+      "category": "serum",
+      "stock": 25,
+      "soldCount": 67
+    },
+    {
+      "id": "6",
+      "name": "Kem Chống Nắng Anessa Perfect UV",
+      "brand": "Anessa",
+      "price": 620000,
+      "image": "assets/images/product-6.jpg",
+      "description_short": "Kem chống nắng SPF 50+ PA++++ chống nước tuyệt đối",
+      "description_long": "Kem chống nắng phổ rộng SPF 50+ PA++++ với công nghệ Aqua Booster - càng gặp nước càng bền màng chống nắng. Bảo vệ da khỏi tia UV, ánh sáng xanh và ô nhiễm. Không gây nhờn rít, không trôi khi đổ mồ hôi, phù hợp cho da dầu và hoạt động ngoài trời.",
+      "category": "chong-nang",
+      "stock": 70,
+      "soldCount": 485
+    },
+    {
+      "id": "7",
+      "name": "Toner Cân Bằng Da AHA/BHA",
+      "brand": "Some By Mi",
+      "price": 380000,
+      "image": "assets/images/product-7.jpg",
+      "description_short": "Toner cân bằng da với AHA, BHA, PHA",
+      "description_long": "Toner cân bằng độ pH với 30 ngày kỳ tích cho da mụn. Chứa AHA, BHA, PHA giúp làm sạch sâu lỗ chân lông, tẩy tế bào chết nhẹ nhàng. Chiết xuất trà xanh và rau má làm dịu da, giảm viêm. Chuẩn bị da cho các bước dưỡng tiếp theo.",
+      "category": "toner",
+      "stock": 45,
+      "soldCount": 134
+    },
+    {
+      "id": "8",
+      "name": "Serum Trị Mụn Salicylic Acid 2%",
+      "brand": "The Ordinary",
+      "price": 280000,
+      "image": "assets/images/product-8.jpg",
+      "description_short": "Serum trị mụn chuyên sâu với Salicylic Acid 2%",
+      "description_long": "Serum trị mụn chuyên sâu với Salicylic Acid 2% giúp làm sạch lỗ chân lông từ sâu bên trong, giảm mụn đầu đen, mụn đầu trắng và ngăn ngừa mụn tái phát. Công thức không chứa dầu, phù hợp cho da dầu và da mụn. Sử dụng tối đa 2 lần/tuần.",
+      "category": "serum",
+      "stock": 30,
+      "soldCount": 198
+    },
+    {
+      "id": "9",
+      "name": "Kem Dưỡng Mắt Caffeine Solution",
+      "brand": "The Ordinary",
+      "price": 220000,
+      "image": "assets/images/product-9.jpg",
+      "description_short": "Kem dưỡng mắt giảm quầng thâm và bọng mắt",
+      "description_long": "Kem dưỡng mắt với Caffeine 5% và EGCG giúp giảm quầng thâm, bọng mắt và nếp nhăn vùng mắt. Kết cấu nhẹ, thấm nhanh, không gây kích ứng. Phù hợp cho mọi loại da, đặc biệt da mỏng vùng mắt. Sử dụng sáng và tối để đạt hiệu quả tốt nhất.",
+      "category": "kem-duong",
+      "stock": 55,
+      "soldCount": 89
+    },
+    {
+      "id": "10",
+      "name": "Nước Tẩy Trang Micellar Water",
+      "brand": "Bioderma",
+      "price": 450000,
+      "image": "assets/images/product-10.jpg",
+      "description_short": "Nước tẩy trang công nghệ Micellar cho da nhạy cảm",
+      "description_long": "Nước tẩy trang công nghệ Micellar Water giúp làm sạch sâu, tẩy trang và loại bỏ bụi bẩn chỉ trong một bước. Không cần rửa lại với nước, không gây khô da. Công thức dịu nhẹ, không chứa cồn, phù hợp cho da nhạy cảm và da dễ kích ứng.",
+      "category": "tay-trang",
+      "stock": 80,
+      "soldCount": 356
+    },
+    {
+      "id": "11",
+      "name": "Mặt Nạ Giấy Collagen Dưỡng Ẩm",
+      "brand": "Innisfree",
+      "price": 35000,
+      "image": "assets/images/product-11.jpg",
+      "description_short": "Mặt nạ giấy collagen cấp ẩm tức thì",
+      "description_long": "Mặt nạ giấy với tinh chất collagen và Hyaluronic Acid giúp cấp ẩm tức thì, làm căng mịn da. Chất liệu vải mềm mại, ôm sát khuôn mặt. Sử dụng 2-3 lần/tuần để duy trì làn da ẩm mượt, tươi sáng. Phù hợp cho mọi loại da.",
+      "category": "mat-na",
+      "stock": 120,
+      "soldCount": 520
+    },
+    {
+      "id": "12",
+      "name": "Kem Chống Nắng Dạng Gel Aqua Rich",
+      "brand": "Bioré",
+      "price": 280000,
+      "image": "assets/images/product-12.jpg",
+      "description_short": "Kem chống nắng dạng gel siêu nhẹ SPF 50+",
+      "description_long": "Kem chống nắng dạng gel siêu nhẹ SPF 50+ PA++++ với công nghệ Aqua Rich Watery Essence. Kết cấu nước, thấm nhanh như nước, không để lại vệt trắng. Chống nước, mồ hôi, phù hợp cho da dầu. Có thể dùng làm base makeup.",
+      "category": "chong-nang",
+      "stock": 65,
+      "soldCount": 223
+    },
+    {
+      "id": "13",
+      "name": "Serum Niacinamide 10% + Zinc 1%",
+      "brand": "The Ordinary",
+      "price": 180000,
+      "image": "assets/images/product-13.jpg",
+      "description_short": "Serum se khít lỗ chân lông và kiểm soát dầu",
+      "description_long": "Serum với Niacinamide 10% và Zinc 1% giúp se khít lỗ chân lông, kiểm soát dầu nhờn, làm mờ vết thâm và cải thiện kết cấu da. Phù hợp cho da dầu, da mụn và da có lỗ chân lông to. Sử dụng sáng và tối sau bước toner.",
+      "category": "serum",
+      "stock": 40,
+      "soldCount": 445
+    },
+    {
+      "id": "14",
+      "name": "Kem Dưỡng Phục Hồi Da Cicaplast Baume B5",
+      "brand": "La Roche-Posay",
+      "price": 380000,
+      "image": "assets/images/product-14.jpg",
+      "description_short": "Kem dưỡng phục hồi da tổn thương và kích ứng",
+      "description_long": "Kem dưỡng đa năng với Panthenol 5% và Madecassoside giúp phục hồi da tổn thương, kích ứng, da sau laser hoặc peel. Kết cấu dày, tạo màng bảo vệ da. Không chứa paraben, không mùi. Phù hợp cho cả trẻ em và người lớn.",
+      "category": "kem-duong",
+      "stock": 48,
+      "soldCount": 145
+    },
+    {
+      "id": "15",
+      "name": "Sữa Rửa Mặt Làm Sạch Sâu Senka",
+      "brand": "Senka",
+      "price": 120000,
+      "image": "assets/images/product-15.jpg",
+      "description_short": "Sữa rửa mặt tạo bọt siêu mịn công nghệ Nhật",
+      "description_long": "Sữa rửa mặt tạo bọt siêu mịn với công nghệ tơ tằm trắng từ Nhật Bản. Làm sạch sâu bụi bẩn, dầu thừa và tế bào chết. Chứa Hyaluronic Acid và Collagen giúp duy trì độ ẩm. Bọt mịn, mềm mại, không làm khô da.",
+      "category": "sua-rua-mat",
+      "stock": 90,
+      "soldCount": 534
+    },
+    {
+      "id": "16",
+      "name": "Tinh Chất Dưỡng Trắng Melano CC",
+      "brand": "Rohto",
+      "price": 420000,
+      "image": "assets/images/product-16.jpg",
+      "description_short": "Tinh chất Vitamin C dưỡng trắng và mờ thâm",
+      "description_long": "Tinh chất dưỡng trắng với Vitamin C nguyên chất và Vitamin E giúp làm mờ vết thâm, tàn nhang và đốm nâu. Kết cấu dạng gel, thấm nhanh, không gây nhờn. Sử dụng điểm trị hoặc toàn mặt. Hiệu quả rõ rệt sau 4 tuần sử dụng.",
+      "category": "serum",
+      "stock": 35,
+      "soldCount": 167
+    },
+    {
+      "id": "17",
+      "name": "Kem Chống Nắng Vật Lý Skin1004",
+      "brand": "Skin1004",
+      "price": 350000,
+      "image": "assets/images/product-17.jpg",
+      "description_short": "Kem chống nắng vật lý dịu nhẹ cho da nhạy cảm",
+      "description_long": "Kem chống nắng vật lý SPF 50+ PA++++ với chiết xuất rau má Madagascar. Công thức không chứa hóa chất, phù hợp cho da nhạy cảm, da dễ kích ứng. Không để lại vệt trắng, không gây bít tắc lỗ chân lông. Có thể dùng cho cả trẻ em.",
+      "category": "chong-nang",
+      "stock": 52,
+      "soldCount": 98
+    },
+    {
+      "id": "18",
+      "name": "Toner Dưỡng Ẩm Klairs Supple Preparation",
+      "brand": "Klairs",
+      "price": 480000,
+      "image": "assets/images/product-18.jpg",
+      "description_short": "Toner dưỡng ẩm không mùi cho da nhạy cảm",
+      "description_long": "Toner dưỡng ẩm với Hyaluronic Acid, Beta-Glucan và chiết xuất thực vật giúp cấp ẩm sâu, làm dịu da và cân bằng độ pH. Không chứa mùi hương, cồn và paraben. Phù hợp cho da nhạy cảm, da khô. Có thể dùng phương pháp 7 skin.",
+      "category": "toner",
+      "stock": 38,
+      "soldCount": 112
+    }
+  ],
+  "reviews": [
+    {
+      "id": "1",
+      "productId": 1,
+      "author": "Nguyễn Thị Lan Anh",
+      "rating": 5,
+      "comment": "Serum Vitamin C này thật sự tuyệt vời! Da mình sáng lên rõ rệt sau 2 tuần sử dụng.",
+      "timestamp": "2025-01-15T10:00:00Z"
+    },
+    {
+      "id": "2",
+      "productId": 1,
+      "author": "Trần Văn Nam",
+      "rating": 5,
+      "comment": "Chất lượng tốt, da mình ít bị xỉn màu hơn. Rất đáng mua!",
+      "timestamp": "2025-01-20T14:30:00Z"
+    },
+    {
+      "id": "3",
+      "productId": 2,
+      "author": "Lê Thị Hoa",
+      "rating": 5,
+      "comment": "Kem dưỡng ẩm tốt nhất mình từng dùng. Thấm nhanh, không nhờn.",
+      "timestamp": "2025-01-18T09:15:00Z"
+    },
+    {
+      "id": "4",
+      "productId": 2,
+      "author": "Nguyễn Minh Anh",
+      "rating": 5,
+      "comment": "Da ẩm mượt cả ngày, phù hợp cho da hỗn hợp thiên dầu.",
+      "timestamp": "2025-01-25T11:00:00Z"
+    },
+    {
+      "id": "5",
+      "productId": 4,
+      "author": "Đỗ Thu Hương",
+      "rating": 5,
+      "comment": "Mặt nạ ngủ này là must-have! Sáng dậy da căng mịn, mềm mượt.",
+      "timestamp": "2025-01-25T08:20:00Z"
+    },
+    {
+      "id": "6",
+      "productId": 4,
+      "author": "Phạm Thị Lan",
+      "rating": 5,
+      "comment": "Mùi hương thư giãn, da sáng hơn sau 1 tuần sử dụng.",
+      "timestamp": "2025-02-01T09:00:00Z"
+    },
+    {
+      "id": "7",
+      "productId": 6,
+      "author": "Vũ Minh Châu",
+      "rating": 5,
+      "comment": "Kem chống nắng Anessa xứng danh là số 1! Đi biển cả ngày không cháy nắng.",
+      "timestamp": "2025-01-28T11:30:00Z"
+    },
+    {
+      "id": "8",
+      "productId": 6,
+      "author": "Trần Thị Mai",
+      "rating": 5,
+      "comment": "Không nhờn rít, bảo vệ da tuyệt vời. Sẽ mua lại!",
+      "timestamp": "2025-02-05T10:00:00Z"
+    },
+    {
+      "id": "9",
+      "productId": 10,
+      "author": "Bùi Văn Đức",
+      "rating": 5,
+      "comment": "Nước tẩy trang Bioderma là huyền thoại! Tẩy sạch makeup chỉ với 1 miếng bông.",
+      "timestamp": "2025-02-03T09:00:00Z"
+    },
+    {
+      "id": "10",
+      "productId": 10,
+      "author": "Lê Thị Hằng",
+      "rating": 5,
+      "comment": "Da không bị khô hay kích ứng. Rất phù hợp cho da nhạy cảm.",
+      "timestamp": "2025-02-10T14:00:00Z"
+    },
+    {
+      "id": "11",
+      "productId": 11,
+      "author": "Trần Thị Hằng",
+      "rating": 5,
+      "comment": "Mặt nạ giấy giá rẻ mà chất lượng tốt. Da ẩm mượt ngay sau khi đắp.",
+      "timestamp": "2025-02-10T08:30:00Z"
+    },
+    {
+      "id": "12",
+      "productId": 11,
+      "author": "Nguyễn Văn Tùng",
+      "rating": 5,
+      "comment": "Giá sinh viên mà hiệu quả cao. Sẽ mua thêm nhiều loại khác.",
+      "timestamp": "2025-02-15T16:00:00Z"
+    },
+    {
+      "id": "13",
+      "productId": 13,
+      "author": "Ngô Thị Linh",
+      "rating": 5,
+      "comment": "Serum Niacinamide giá rẻ mà chất lượng tốt. Lỗ chân lông nhỏ lại!",
+      "timestamp": "2025-02-05T14:20:00Z"
+    },
+    {
+      "id": "14",
+      "productId": 13,
+      "author": "Hoàng Minh Tuấn",
+      "rating": 5,
+      "comment": "Da ít nhờn hơn hẳn sau 2 tuần. Sẽ repurchase!",
+      "timestamp": "2025-02-12T11:00:00Z"
+    },
+    {
+      "id": "15",
+      "productId": 15,
+      "author": "Phan Văn Hùng",
+      "rating": 5,
+      "comment": "Sữa rửa mặt Senka tạo bọt rất mịn, rửa sạch mà không khô da.",
+      "timestamp": "2025-02-07T10:15:00Z"
+    },
+    {
+      "id": "16",
+      "productId": 15,
+      "author": "Lê Thị Nga",
+      "rating": 5,
+      "comment": "Giá cả phải chăng, phù hợp với sinh viên. Bọt mịn, mềm mại.",
+      "timestamp": "2025-02-14T09:30:00Z"
+    }
+  ],
+  "orders": []
+}

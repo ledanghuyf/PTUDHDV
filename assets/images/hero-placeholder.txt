@@ -1,0 +1,11 @@
+Để có Hero Banner đẹp nhất, hãy thêm một hình ảnh chất lượng cao vào:
+assets/images/hero-image.jpg
+
+Gợi ý hình ảnh:
+- Người mẫu với làn da đẹp tự nhiên
+- Sản phẩm mỹ phẩm được bày trí đẹp mắt
+- Hình ảnh thiên nhiên (hoa, lá, nước...)
+- Kích thước khuyến nghị: 1200x800px hoặc lớn hơn
+- Format: JPG hoặc PNG
+
+Nếu chưa có hình, component sẽ tự động ẩn hình và chỉ hiển t
