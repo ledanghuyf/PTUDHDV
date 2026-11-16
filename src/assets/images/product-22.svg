@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="600" height="600">
+  <rect width="600" height="600" fill="#FFFFFF"/>
+  <ellipse cx="300" cy="555" rx="170" ry="16" fill="#000" opacity=".07"/>
+  <g transform="translate(300 290) scale(1.15) translate(-300 -290)">
+  <path d="M210 70 h180 l-12 400 a20 20 0 0 1 -20 18 h-116 a20 20 0 0 1 -20 -18z" fill="#FFFFFF" stroke="#D9DDE3" stroke-width="3"/>
+      <rect x="205" y="58" width="190" height="18" rx="4" fill="#E6E8EC"/><rect x="232" y="486" width="136" height="60" rx="14" fill="#F28C28"/>
+  <rect x="222" y="210" width="156" height="170" rx="10" fill="#FFFFFF" opacity=".92"/>
+  <rect x="222" y="366" width="156" height="14" fill="#F28C28"/>
+  <g font-family="Helvetica, Arial, sans-serif" text-anchor="middle" fill="#1D3E66">
+    <text x="300" y="250" font-size="16" font-weight="700">LA ROCHE-POSAY</text>
+    <text x="300" y="290" font-size="22" font-weight="700" letter-spacing="1">ANTHELIOS</text>
+    <text x="300" y="320" font-size="17" letter-spacing="1">UVMUNE 400</text>
+  </g>
+  </g>
+</svg>

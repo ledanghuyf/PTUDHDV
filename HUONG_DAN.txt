@@ -17,7 +17,7 @@ Chạy file: START_SERVER.bat
 
 Hoặc mở CMD/PowerShell tại thư mục dự án và chạy:
 
-    json-server --watch src/db.json --port 3000
+    json-server src/db.json --port 3000
 
 Server sẽ chạy tại: http://localhost:3000
 
