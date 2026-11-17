@@ -158,54 +158,91 @@ export function ProductCard(product) {
 }
 
 /**
- * Thanh lọc + lưới sản phẩm + nút xem thêm (dùng chung cho trang chủ và trang sản phẩm)
- * @param {string} prefix - Tiền tố id để 2 trang không trùng id ('' hoặc 'home-')
- * @param {{category?:string, brand?:string, query?:string}} selected - Bộ lọc chọn sẵn
- * @param {string[]} brands - Danh sách thương hiệu
+ * Thanh danh mục dưới header (giống các web mỹ phẩm: Khuyến mãi + từng danh mục)
  */
-export function ProductListing(prefix, selected = {}, brands = []) {
+export function CategoryBar() {
+    return [
+        '<a href="#/">Trang chủ</a>',
+        '<a href="#/products?sort=discount" class="hot">🔥 Khuyến mãi</a>',
+        '<a href="#/products">Tất cả sản phẩm</a>',
+        ...CATEGORIES.map(c => `<a href="#/products?category=${c.id}">${c.name}</a>`),
+    ].join('');
+}
+
+// Mốc giá nhanh ở bộ lọc: [giá trị, nhãn]
+export const PRICE_RANGES = [
+    ['', 'Tất cả'],
+    ['0-200000', 'Dưới 200K'],
+    ['200000-500000', '200K – 500K'],
+    ['500000-', 'Trên 500K'],
+];
+
+/**
+ * Bố cục trang sản phẩm: cột bộ lọc bên trái + thanh sắp xếp và lưới sản phẩm bên phải
+ * @param {{category?:string, brand?:string, query?:string, sort?:string}} selected - Bộ lọc chọn sẵn
+ * @param {string[]} brands - Danh sách thương hiệu
+ * @param {Object<string, number>} counts - Số sản phẩm theo danh mục (khóa '' = tất cả)
+ */
+export function ProductListing(selected = {}, brands = [], counts = {}) {
+    const radio = (name, value, label, checked, count) => `
+        <label class="filter-option">
+            <input type="radio" name="${name}" value="${escapeHtml(value)}" ${checked ? 'checked' : ''}>
+            <span>${label}</span>${count !== undefined ? `<span class="filter-count">${count}</span>` : ''}
+        </label>`;
     return `
-        <div class="filter-bar">
-            <div class="filter-item filter-search">
-                <label for="${prefix}search-input">Tìm kiếm</label>
-                <input type="search" id="${prefix}search-input" placeholder="Tên sản phẩm hoặc thương hiệu..." value="${escapeHtml(selected.query || '')}">
-            </div>
-            <div class="filter-item">
-                <label for="${prefix}category-filter">Danh mục</label>
-                <select id="${prefix}category-filter">
-                    <option value="">Tất cả danh mục</option>
-                    ${CATEGORIES.map(c => `<option value="${c.id}" ${c.id === selected.category ? 'selected' : ''}>${c.name}</option>`).join('')}
-                </select>
-            </div>
-            <div class="filter-item">
-                <label for="${prefix}brand-filter">Thương hiệu</label>
-                <select id="${prefix}brand-filter">
-                    <option value="">Tất cả thương hiệu</option>
-                    ${brands.map(b => `<option value="${escapeHtml(b)}" ${b === selected.brand ? 'selected' : ''}>${escapeHtml(b)}</option>`).join('')}
-                </select>
-            </div>
-            <div class="filter-item">
-                <label for="${prefix}min-price">Khoảng giá (₫)</label>
-                <div class="price-inputs-inline">
-                    <input type="number" id="${prefix}min-price" placeholder="Từ" min="0" step="10000" aria-label="Giá từ">
-                    <span>–</span>
-                    <input type="number" id="${prefix}max-price" placeholder="Đến" min="0" step="10000" aria-label="Giá đến">
+        <div class="shop-layout">
+            <aside class="filter-panel" aria-label="Bộ lọc sản phẩm">
+                <details id="filter-details" ${window.innerWidth > 860 ? 'open' : ''}>
+                    <summary>Bộ lọc</summary>
+                    <div class="filter-group">
+                        <label class="filter-title" for="search-input">Tìm trong danh sách</label>
+                        <input type="search" id="search-input" placeholder="Tên hoặc thương hiệu..." value="${escapeHtml(selected.query || '')}">
+                    </div>
+                    <fieldset class="filter-group">
+                        <legend class="filter-title">Danh mục</legend>
+                        ${radio('f-category', '', 'Tất cả', !selected.category, counts[''])}
+                        ${CATEGORIES.map(c => radio('f-category', c.id, c.name, c.id === selected.category, counts[c.id] || 0)).join('')}
+                    </fieldset>
+                    <div class="filter-group">
+                        <label class="filter-title" for="brand-filter">Thương hiệu</label>
+                        <select id="brand-filter">
+                            <option value="">Tất cả thương hiệu</option>
+                            ${brands.map(b => `<option value="${escapeHtml(b)}" ${b === selected.brand ? 'selected' : ''}>${escapeHtml(b)}</option>`).join('')}
+                        </select>
+                    </div>
+                    <fieldset class="filter-group">
+                        <legend class="filter-title">Khoảng giá</legend>
+                        <div class="price-chips">
+                            ${PRICE_RANGES.map(([v, l]) => `<label class="chip"><input type="radio" name="f-price" value="${v}" ${v === '' ? 'checked' : ''}><span>${l}</span></label>`).join('')}
+                        </div>
+                        <div class="price-inputs-inline">
+                            <input type="number" id="min-price" placeholder="Từ ₫" min="0" step="10000" aria-label="Giá từ">
+                            <span>–</span>
+                            <input type="number" id="max-price" placeholder="Đến ₫" min="0" step="10000" aria-label="Giá đến">
+                        </div>
+                    </fieldset>
+                    <div class="filter-group">
+                        <label class="filter-option"><input type="checkbox" id="sale-only"><span>Đang giảm giá</span></label>
+                        <label class="filter-option"><input type="checkbox" id="instock-only"><span>Còn hàng</span></label>
+                    </div>
+                    <button type="button" class="btn btn-secondary btn-block" id="clear-filters">Xóa bộ lọc</button>
+                </details>
+            </aside>
+
+            <div class="shop-main">
+                <div class="shop-toolbar">
+                    <p class="result-count" id="result-count" aria-live="polite"></p>
+                    <label class="sort-label">Sắp xếp
+                        <select id="sort">
+                            ${SORT_OPTIONS.map(([value, label]) => `<option value="${value}" ${value === selected.sort ? 'selected' : ''}>${label}</option>`).join('')}
+                        </select>
+                    </label>
+                </div>
+                <div class="products-grid" id="products-grid"></div>
+                <div class="load-more-wrapper" id="load-more-wrapper">
+                    <button class="btn btn-outline load-more-btn" id="load-more-btn">Xem thêm sản phẩm</button>
                 </div>
             </div>
-            <div class="filter-item">
-                <label for="${prefix}sort">Sắp xếp</label>
-                <select id="${prefix}sort">
-                    ${SORT_OPTIONS.map(([value, label]) => `<option value="${value}" ${value === selected.sort ? 'selected' : ''}>${label}</option>`).join('')}
-                </select>
-            </div>
-        </div>
-        <div class="result-bar">
-            <p class="result-count" id="${prefix}result-count" aria-live="polite"></p>
-            <button type="button" class="link-btn hidden" id="${prefix}clear-filters">Xóa bộ lọc</button>
-        </div>
-        <div class="products-grid" id="${prefix}products-grid"></div>
-        <div class="load-more-wrapper" id="${prefix}load-more-wrapper">
-            <button class="btn btn-outline load-more-btn" id="${prefix}load-more-btn">Xem thêm sản phẩm</button>
         </div>
     `;
 }
@@ -220,15 +257,17 @@ export function EmptyResult() {
 /**
  * Trang danh sách sản phẩm
  */
-export function ProductsPage(selected, brands) {
-    const title = selected.query ? `Kết quả cho "${escapeHtml(selected.query)}"` : (CATEGORY_NAMES[selected.category] || 'Tất Cả Sản Phẩm');
+export function ProductsPage(selected, brands, counts) {
+    const title = selected.query ? `Kết quả cho "${escapeHtml(selected.query)}"`
+        : selected.sort === 'discount' && !selected.category ? 'Khuyến mãi hot'
+        : (CATEGORY_NAMES[selected.category] || (selected.brand ? escapeHtml(selected.brand) : 'Tất Cả Sản Phẩm'));
     return `
         <div class="container">
             <nav class="breadcrumb" aria-label="Breadcrumb">
                 <a href="#/">Trang chủ</a><span>/</span><span aria-current="page">Sản phẩm</span>
             </nav>
             <h1 class="page-title">${title}</h1>
-            ${ProductListing('', selected, brands)}
+            ${ProductListing(selected, brands, counts)}
         </div>
     `;
 }
@@ -881,11 +920,64 @@ function HeroArt() {
 }
 
 /**
+ * Dải cam kết dịch vụ ngay dưới banner
+ */
+function ServiceStrip(settings) {
+    const icon = d => `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true">${d}</svg>`;
+    const items = [
+        [icon('<path d="M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6l7-3z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M8.5 12l2.5 2.5 4.5-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>'),
+            'Chính hãng 100%', 'Nguồn hàng rõ ràng, ghi rõ nơi tham khảo'],
+        [icon('<path d="M3 7h11v9H3zM14 10h4l3 3v3h-7z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><circle cx="7" cy="17.5" r="1.8" stroke="currentColor" stroke-width="1.6"/><circle cx="17.5" cy="17.5" r="1.8" stroke="currentColor" stroke-width="1.6"/>'),
+            settings.freeShipThreshold ? `Freeship đơn từ ${formatPrice(settings.freeShipThreshold)}` : 'Giao hàng toàn quốc',
+            settings.shippingFee ? `Phí ship ${formatPrice(settings.shippingFee)} cho đơn nhỏ hơn` : 'Miễn phí vận chuyển'],
+        [icon('<rect x="4" y="4" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.7"/><rect x="14" y="4" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.7"/><rect x="4" y="14" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.7"/><path d="M14 14h2v2h-2zM18 18h2v2h-2zM14 18h2M18 14h2" stroke="currentColor" stroke-width="1.7"/>'),
+            'COD hoặc quét VietQR', 'Thanh toán khi nhận hoặc chuyển khoản nhanh'],
+        [icon('<circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.7"/><path d="M16 16l4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>'),
+            'Tra cứu đơn dễ dàng', 'Chỉ cần mã đơn + số điện thoại'],
+    ];
+    return `
+        <section class="service-strip">
+            <div class="container service-grid">
+                ${items.map(([svg, title, sub]) => `<div class="service-item"><span class="service-icon">${svg}</span><div><strong>${escapeHtml(title)}</strong><span>${escapeHtml(sub)}</span></div></div>`).join('')}
+            </div>
+        </section>
+    `;
+}
+
+/**
+ * 3 ô khuyến mãi theo nhóm, dùng ảnh sản phẩm giảm nhiều nhất của nhóm
+ */
+function PromoTiles(products) {
+    const groups = [
+        { title: 'Son & Trang điểm', sub: 'Son kem, tint, cushion, mascara', cats: ['son-moi', 'trang-diem'], href: '#/products?category=son-moi', tone: 'tile-rose' },
+        { title: 'Dưỡng da chuyên sâu', sub: 'Serum · Kem dưỡng · Toner · Mặt nạ', cats: ['serum', 'kem-duong', 'toner', 'mat-na'], href: '#/products?category=serum', tone: 'tile-peach' },
+        { title: 'Chống nắng & Làm sạch', sub: 'Kem chống nắng, sữa rửa mặt, tẩy trang', cats: ['chong-nang', 'sua-rua-mat', 'tay-trang'], href: '#/products?category=chong-nang', tone: 'tile-mint' },
+    ];
+    const tiles = groups.map(g => {
+        const list = products.filter(p => g.cats.includes(p.category) && p.stock > 0);
+        const best = [...list].sort((a, b) => discountPercent(b) - discountPercent(a))[0];
+        const off = best ? discountPercent(best) : 0;
+        return `
+            <a class="promo-tile ${g.tone}" href="${g.href}">
+                <div class="promo-text">
+                    <span class="promo-kicker">${off ? `Giảm đến ${off}%` : `${list.length} sản phẩm`}</span>
+                    <h3>${g.title}</h3>
+                    <p>${g.sub}</p>
+                    <span class="promo-cta">Mua ngay →</span>
+                </div>
+                ${best ? `<img src="${escapeHtml(best.image)}" alt="" loading="lazy">` : ''}
+            </a>`;
+    });
+    return `<section class="container promo-tiles">${tiles.join('')}</section>`;
+}
+
+/**
  * Trang chủ
  * @param {Object} settings - Nội dung banner do Quản lý chỉnh (db.json → settings)
  * @param {string[]} brands - Thương hiệu cho dải chạy ngang
+ * @param {Array} products - Sản phẩm (để dựng ô khuyến mãi)
  */
-export function HomePage(settings, brands = []) {
+export function HomePage(settings, brands = [], products = []) {
     const words = (settings.heroRotating || []).filter(Boolean);
     const freeShip = settings.freeShipThreshold ? `Freeship từ ${Math.round(settings.freeShipThreshold / 1000)}K` : 'Giao hàng toàn quốc';
     // Dải thương hiệu nhân đôi để chạy vòng liền mạch
@@ -904,13 +996,8 @@ export function HomePage(settings, brands = []) {
                     <p class="hero-subtitle">${escapeHtml(settings.heroSubtitle)}</p>
                     <div class="hero-actions">
                         <a href="#/products" class="btn btn-lg hero-cta">Mua sắm ngay</a>
-                        <a href="#/products?category=son-moi" class="btn btn-lg btn-light">Son &amp; trang điểm</a>
+                        <a href="#/products?sort=discount" class="btn btn-lg btn-light">Xem khuyến mãi</a>
                     </div>
-                    <ul class="hero-features">
-                        <li>Hàng chính hãng</li>
-                        <li>${escapeHtml(freeShip)}</li>
-                        <li>COD hoặc quét VietQR</li>
-                    </ul>
                 </div>
                 <div class="hero-visual" aria-hidden="true">
                     <div class="hero-art">${HeroArt()}</div>
@@ -924,14 +1011,15 @@ export function HomePage(settings, brands = []) {
             </svg>
         </section>
 
-        ${brands.length ? `
-        <section class="brand-strip" aria-label="Thương hiệu đang bán">
-            <div class="brand-track"><div class="brand-row">${marquee}</div><div class="brand-row" aria-hidden="true">${marquee}</div></div>
-        </section>` : ''}
+        ${ServiceStrip(settings)}
+        ${PromoTiles(products)}
 
-        <section class="category-section">
+        <section class="band category-section">
             <div class="container">
-                <h2 class="section-title">Danh mục sản phẩm</h2>
+                <div class="section-head">
+                    <h2 class="section-title">Danh mục nổi bật</h2>
+                    <a href="#/products" class="see-all">Tất cả sản phẩm →</a>
+                </div>
                 <div class="category-grid" id="category-grid">
                     ${CATEGORIES.map(c => `
                         <a class="category-card" data-category="${c.id}" href="#/products?category=${c.id}">
@@ -944,28 +1032,43 @@ export function HomePage(settings, brands = []) {
             </div>
         </section>
 
-        <section class="sale-section container">
-            <div class="section-head">
-                <h2 class="section-title">Đang giảm giá</h2>
-                <a href="#/products?sort=discount" class="see-all">Xem tất cả ưu đãi →</a>
-            </div>
-            <div class="products-grid" id="sale-product-list"></div>
-        </section>
-
-        <section class="featured-products container">
-            <div class="section-head">
-                <h2 class="section-title">Sản phẩm nổi bật</h2>
-                <div class="carousel-controls">
-                    <button class="carousel-nav prev" id="carousel-prev" aria-label="Xem sản phẩm trước">‹</button>
-                    <button class="carousel-nav next" id="carousel-next" aria-label="Xem sản phẩm tiếp theo">›</button>
+        <section class="band band-deal sale-section">
+            <div class="container">
+                <div class="section-head">
+                    <h2 class="section-title">Deal hot hôm nay 🔥</h2>
+                    <a href="#/products?sort=discount" class="see-all">Xem tất cả ưu đãi →</a>
                 </div>
+                <div class="products-grid" id="sale-product-list"></div>
             </div>
-            <div class="featured-products-container" id="featured-product-list"></div>
         </section>
 
-        <section class="all-products-section container">
-            <h2 class="section-title">Tất cả sản phẩm</h2>
-            ${ProductListing('home-', {}, brands)}
+        ${brands.length ? `
+        <section class="brand-strip" aria-label="Thương hiệu đang bán">
+            <div class="brand-track"><div class="brand-row">${marquee}</div><div class="brand-row" aria-hidden="true">${marquee}</div></div>
+        </section>` : ''}
+
+        <section class="band featured-products">
+            <div class="container">
+                <div class="section-head">
+                    <h2 class="section-title">Sản phẩm nổi bật</h2>
+                    <div class="carousel-controls">
+                        <button class="carousel-nav prev" id="carousel-prev" aria-label="Xem sản phẩm trước">‹</button>
+                        <button class="carousel-nav next" id="carousel-next" aria-label="Xem sản phẩm tiếp theo">›</button>
+                    </div>
+                </div>
+                <div class="featured-products-container" id="featured-product-list"></div>
+            </div>
+        </section>
+
+        <section class="band recommend-section">
+            <div class="container">
+                <div class="section-head">
+                    <h2 class="section-title">Gợi ý cho bạn</h2>
+                    <a href="#/products" class="see-all">Xem tất cả →</a>
+                </div>
+                <div class="products-grid" id="recommend-list"></div>
+                <div class="load-more-wrapper"><a href="#/products" class="btn btn-outline">Xem tất cả 100+ sản phẩm</a></div>
+            </div>
         </section>
     `;
 }
