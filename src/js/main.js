@@ -108,6 +108,7 @@ const routes = [
     [/^#\/cart$/, cartView],
     [/^#\/checkout$/, checkoutView],
     [/^#\/order\/([^/?]+)$/, orderView],
+    [/^#\/admin$/, adminView],
 ];
 
 let renderId = 0;
@@ -115,6 +116,7 @@ let renderId = 0;
 async function router() {
     const hash = window.location.hash || '#/';
     const currentRender = ++renderId;
+    clearInterval(adminPollTimer); // rời trang quản trị thì dừng tự cập nhật
 
     window.scrollTo(0, 0);
     updateActiveNav(hash);
@@ -399,6 +401,11 @@ function attachCartListeners() {
 
 // ===================== Thanh toán =====================
 
+// Mã đơn tạo sẵn khi mở trang thanh toán để mã VietQR có đúng nội dung chuyển khoản trước khi đặt
+// Bỏ 0/O, 1/I/L để khách không gõ nhầm khi tự nhập nội dung chuyển khoản
+const ORDER_CODE_CHARS = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+const newOrderCode = () => Array.from(crypto.getRandomValues(new Uint8Array(8)), b => ORDER_CODE_CHARS[b % ORDER_CODE_CHARS.length]).join('');
+
 async function checkoutView() {
     const cartItems = cart.getCart();
 
@@ -408,30 +415,141 @@ async function checkoutView() {
         return null;
     }
 
+    // Cập nhật giá/tồn kho mới nhất vào giỏ để số tiền trên mã QR khớp với đơn sẽ tạo
+    const latest = await Promise.all(cartItems.map(item => api.getProductById(item.id)));
+    cart.saveCart(cartItems.map((item, i) => ({ ...item, price: latest[i].price, stock: latest[i].stock })));
+    const orderCode = newOrderCode();
+
     return () => {
         setTitle('Thanh toán');
-        app.innerHTML = `<div class="container">${ui.CheckoutPage(cartItems, cart.getCartTotal())}</div>`;
-        document.getElementById('checkout-form').addEventListener('submit', handleCheckoutSubmit);
+        const total = cart.getCartTotal();
+        app.innerHTML = `<div class="container">${ui.CheckoutPage(cart.getCart(), total, orderCode)}</div>`;
+
+        const form = document.getElementById('checkout-form');
+        const submitButton = form.querySelector('.btn-submit-order');
+        const address = initAddressPicker(form);
+
+        // Chỉ cho bấm "Xác nhận đặt hàng" khi mọi trường (kể cả địa chỉ) hợp lệ
+        const refreshSubmit = () => {
+            const ready = form.checkValidity() && address.isValid();
+            submitButton.disabled = !ready;
+            document.getElementById('submit-hint').classList.toggle('hidden', ready);
+        };
+        address.onChange = refreshSubmit;
+        form.addEventListener('input', refreshSubmit);
+        form.addEventListener('change', refreshSubmit);
+
+        // Chọn chuyển khoản → hiện mã VietQR (đúng số tiền + nội dung CS<mã đơn>)
+        const qrPanel = document.getElementById('bank-qr-panel');
+        form.addEventListener('change', (e) => {
+            if (e.target.name === 'payment' && qrPanel) qrPanel.hidden = e.target.value !== 'bank';
+        });
+
+        form.addEventListener('submit', (e) => handleCheckoutSubmit(e, { orderCode, shownTotal: total, address }));
     };
 }
 
-async function handleCheckoutSubmit(event) {
+/**
+ * Chọn Tỉnh/Thành phố → Phường/Xã từ API hành chính (dữ liệu sau sáp nhập 01/07/2025)
+ * @returns {{ isValid: () => boolean, value: () => object|null, onChange: Function }}
+ */
+function initAddressPicker(form) {
+    const provinceSelect = form.querySelector('#addr-province');
+    const wardSelect = form.querySelector('#addr-ward');
+    const errorBox = form.querySelector('#address-error');
+    let provinces = [];
+    let wards = [];
+    const picker = { onChange: () => {} };
+
+    const fill = (select, list, placeholder) => {
+        select.innerHTML = `<option value="">${placeholder}</option>`
+            + list.map(x => `<option value="${x.code}">${ui.escapeHtml(x.name)}</option>`).join('');
+    };
+    const showError = show => errorBox.classList.toggle('hidden', !show);
+
+    async function loadProvinces() {
+        showError(false);
+        provinceSelect.disabled = true;
+        try {
+            provinces = await api.getProvinces();
+            fill(provinceSelect, provinces, 'Chọn Tỉnh/Thành phố');
+            provinceSelect.disabled = false;
+        } catch (error) {
+            console.error(error);
+            fill(provinceSelect, [], 'Không tải được');
+            showError(true);
+        }
+        picker.onChange();
+    }
+
+    let wardRequest = 0;
+    async function loadWards() {
+        const code = provinceSelect.value;
+        const current = ++wardRequest;
+        wards = [];
+        wardSelect.disabled = true;
+        fill(wardSelect, [], code ? 'Đang tải...' : 'Chọn Tỉnh/Thành phố trước');
+        picker.onChange();
+        if (!code) return;
+        try {
+            const list = await api.getWards(code);
+            if (current !== wardRequest) return; // người dùng đã đổi sang tỉnh khác
+            wards = list;
+            fill(wardSelect, wards, 'Chọn Phường/Xã');
+            wardSelect.disabled = false;
+            showError(false);
+        } catch (error) {
+            console.error(error);
+            fill(wardSelect, [], 'Không tải được');
+            showError(true);
+        }
+        picker.onChange();
+    }
+
+    provinceSelect.addEventListener('change', loadWards);
+    form.querySelector('#address-retry').addEventListener('click', () => (provinces.length ? loadWards() : loadProvinces()));
+
+    const houseRe = new RegExp(`^${ui.HOUSE_NUMBER_PATTERN}$`, 'u');
+    const streetRe = new RegExp(`^${ui.STREET_PATTERN}$`, 'u');
+    picker.value = () => {
+        const province = provinces.find(p => String(p.code) === provinceSelect.value);
+        const ward = wards.find(w => String(w.code) === wardSelect.value);
+        const houseNumber = form.houseNumber.value.trim().replace(/\s+/g, ' ');
+        const street = form.street.value.trim().replace(/\s+/g, ' ');
+        if (!province || !ward || !houseRe.test(houseNumber) || !streetRe.test(street)) return null;
+        return {
+            houseNumber, street,
+            wardCode: ward.code, wardName: ward.name,
+            provinceCode: province.code, provinceName: province.name,
+        };
+    };
+    picker.isValid = () => picker.value() !== null;
+
+    loadProvinces();
+    return picker;
+}
+
+async function handleCheckoutSubmit(event, { orderCode, shownTotal, address }) {
     event.preventDefault();
 
     const form = event.target;
     const submitButton = form.querySelector('.btn-submit-order');
+    const addressDetail = address.value();
 
     const customerInfo = {
         name: form.name.value.trim(),
         phone: form.phone.value.trim(),
         email: form.email.value.trim(),
-        address: form.address.value.trim()
+        address: addressDetail
+            ? `${addressDetail.houseNumber} ${addressDetail.street}, ${addressDetail.wardName}, ${addressDetail.provinceName}`
+            : '',
+        addressDetail,
     };
     const paymentMethod = form.payment.value === 'bank' && isBankConfigured() ? 'bank' : 'cod';
 
     // `required` vẫn cho qua chuỗi toàn khoảng trắng
-    if (!customerInfo.name || !customerInfo.phone || !customerInfo.email || !customerInfo.address) {
-        toast('Vui lòng điền đầy đủ thông tin giao hàng!', 'error');
+    if (!customerInfo.name || !customerInfo.phone || !customerInfo.email || !addressDetail) {
+        toast('Vui lòng điền đầy đủ thông tin và địa chỉ giao hàng hợp lệ!', 'error');
         return;
     }
 
@@ -444,7 +562,7 @@ async function handleCheckoutSubmit(event) {
     const items = cart.getCart();
 
     try {
-        // Lấy tồn kho mới nhất từ server (giỏ trong localStorage có thể đã cũ)
+        // Kiểm tra tồn kho mới nhất (chưa trừ kho: chỉ trừ khi Admin duyệt đơn)
         const latestProducts = await Promise.all(items.map(item => api.getProductById(item.id)));
         const shortIndex = items.findIndex((item, i) => latestProducts[i].stock < item.quantity);
         if (shortIndex !== -1) {
@@ -460,31 +578,31 @@ async function handleCheckoutSubmit(event) {
             price: latestProducts[i].price,
             quantity: item.quantity
         }));
+        const totalAmount = orderItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+        // Giá vừa đổi → số tiền trên mã QR đang hiện không còn đúng: tải lại trang thanh toán
+        if (totalAmount !== shownTotal) {
+            toast('Giá sản phẩm vừa thay đổi, vui lòng kiểm tra lại tổng tiền trước khi đặt.', 'info');
+            router();
+            return;
+        }
 
         const order = await api.createOrder({
+            code: orderCode,
             customerInfo,
             items: orderItems,
-            totalAmount: orderItems.reduce((sum, item) => sum + item.price * item.quantity, 0),
+            totalAmount,
             paymentMethod,
             paymentStatus: 'Chưa thanh toán',
-            status: paymentMethod === 'bank' ? 'Chờ chuyển khoản' : 'Chờ xác nhận',
+            status: ui.ORDER_STATUS.PENDING,
+            stockApplied: false, // Admin duyệt mới trừ kho
             timestamp: new Date().toISOString()
         });
-
-        // Trừ tồn kho, cộng lượt bán; lỗi ở bước này không báo "đặt hàng lỗi" để khách không đặt trùng đơn
-        try {
-            await Promise.all(items.map((item, i) => api.updateProduct(item.id, {
-                stock: latestProducts[i].stock - item.quantity,
-                soldCount: (latestProducts[i].soldCount || 0) + item.quantity
-            })));
-        } catch (stockError) {
-            console.error('Đơn đã tạo nhưng không cập nhật được tồn kho:', stockError);
-        }
 
         cart.clearCart();
         updateCartIcon();
 
-        // Gửi email xác nhận; lỗi gửi email không làm hỏng đơn đã tạo
+        // Email xác nhận cho khách + bản sao báo đơn mới cho Admin; lỗi gửi email không làm hỏng đơn đã tạo
         if (isEmailConfigured()) {
             submitButton.textContent = 'Đang gửi email xác nhận...';
             try {
@@ -496,7 +614,7 @@ async function handleCheckoutSubmit(event) {
             }
         }
 
-        toast('Đặt hàng thành công!');
+        toast('Đặt hàng thành công! Đơn đang chờ cửa hàng duyệt.');
         window.location.hash = `#/order/${order.id}`;
     } catch (error) {
         console.error('Lỗi không thể gửi đơn hàng:', error);
@@ -511,19 +629,21 @@ async function handleCheckoutSubmit(event) {
 function orderEmailParams(order) {
     const { bankId, bankName, accountNo, accountName } = SHOP.bank;
     const total = ui.formatPrice(order.totalAmount);
+    const code = ui.orderCodeOf(order);
     return {
         to_email: order.customerInfo.email,
         to_name: order.customerInfo.name,
         shop_name: SHOP.name,
-        order_id: order.id,
+        order_id: code,
         order_date: new Date(order.timestamp).toLocaleString('vi-VN'),
+        order_status: order.status,
         items: order.items.map(i => ({ name: i.name, quantity: i.quantity, total: ui.formatPrice(i.price * i.quantity) })),
         order_total: total,
         phone: order.customerInfo.phone,
         shipping_address: order.customerInfo.address,
         payment_method: ui.PAYMENT_METHODS[order.paymentMethod],
         payment_instructions: order.paymentMethod === 'bank'
-            ? `Vui lòng chuyển khoản ${total} tới ngân hàng ${bankName || bankId}, số tài khoản ${accountNo} (${accountName}), nội dung: ${ui.transferContent(order.id)}.`
+            ? `Vui lòng chuyển khoản ${total} tới ngân hàng ${bankName || bankId}, số tài khoản ${accountNo} (${accountName}), nội dung: ${ui.transferContent(code)}.`
             : 'Bạn thanh toán bằng tiền mặt khi nhận hàng.',
     };
 }
@@ -535,6 +655,153 @@ async function orderView(id) {
         app.innerHTML = `<div class="container">${ui.OrderSuccess(order)}</div>`;
     };
 }
+
+// ===================== Quản trị: duyệt đơn =====================
+
+const ADMIN_SESSION_KEY = 'admin_session';
+const ADMIN_POLL_MS = 10000;
+let adminPollTimer = null;
+let adminTab = 'pending';
+let adminOrders = [];
+
+const isAdminLoggedIn = () => {
+    try { return sessionStorage.getItem(ADMIN_SESSION_KEY) === SHOP.adminPasswordHash; } catch { return false; }
+};
+
+async function sha256Hex(text) {
+    const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+    return [...new Uint8Array(digest)].map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+const sortNewestOrders = orders => [...orders].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+const canAskNotify = () => 'Notification' in window && Notification.permission === 'default';
+
+async function adminView() {
+    if (!isAdminLoggedIn()) {
+        return () => {
+            setTitle('Quản trị');
+            app.innerHTML = `<div class="container">${ui.AdminLogin()}</div>`;
+            document.getElementById('admin-login-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const hash = await sha256Hex(document.getElementById('admin-password').value);
+                if (hash !== SHOP.adminPasswordHash) {
+                    toast('Sai mật khẩu quản trị.', 'error');
+                    return;
+                }
+                try { sessionStorage.setItem(ADMIN_SESSION_KEY, hash); } catch { /* chế độ ẩn danh: đăng nhập lại mỗi lần */ }
+                router();
+            });
+        };
+    }
+
+    adminOrders = sortNewestOrders(await api.getOrders());
+    return () => {
+        renderAdmin();
+        // Tự cập nhật: phát hiện đơn mới "Chờ duyệt" → thông báo ngay cho Admin
+        let knownPending = new Set(adminOrders.filter(ui.isPendingOrder).map(o => o.id));
+        adminPollTimer = setInterval(async () => {
+            try {
+                adminOrders = sortNewestOrders(await api.getOrders());
+            } catch (error) {
+                console.error('Không tải được đơn hàng:', error);
+                return;
+            }
+            const pending = adminOrders.filter(ui.isPendingOrder);
+            const fresh = pending.filter(o => !knownPending.has(o.id));
+            knownPending = new Set(pending.map(o => o.id));
+            if (fresh.length) notifyNewOrders(fresh);
+            renderAdmin();
+        }, ADMIN_POLL_MS);
+    };
+}
+
+function renderAdmin() {
+    const pendingCount = adminOrders.filter(ui.isPendingOrder).length;
+    document.title = `${pendingCount ? `(${pendingCount}) ` : ''}Quản trị đơn hàng | Cosmetics Store`;
+    app.innerHTML = `<div class="container">${ui.AdminDashboard(adminOrders, adminTab, canAskNotify())}</div>`;
+}
+
+function notifyNewOrders(orders) {
+    const message = orders.length === 1
+        ? `Đơn mới #${ui.orderCodeOf(orders[0])} - ${ui.formatPrice(orders[0].totalAmount)}`
+        : `Có ${orders.length} đơn hàng mới chờ duyệt`;
+    toast(message, 'info');
+    if ('Notification' in window && Notification.permission === 'granted') {
+        new Notification('Cosmetics Store - Đơn chờ duyệt', { body: message });
+    }
+}
+
+/**
+ * Cộng/trừ tồn kho theo đơn (sign = -1 trừ kho khi duyệt, +1 hoàn kho khi hủy đơn cũ đã trừ)
+ */
+async function applyStock(order, sign) {
+    const latest = await Promise.all(order.items.map(i => api.getProductById(i.id)));
+    if (sign < 0) {
+        const k = order.items.findIndex((item, idx) => latest[idx].stock < item.quantity);
+        if (k !== -1) throw new Error(`"${order.items[k].name}" chỉ còn ${latest[k].stock} trong kho, không đủ để duyệt đơn.`);
+    }
+    await Promise.all(order.items.map((item, idx) => api.updateProduct(item.id, {
+        stock: latest[idx].stock + sign * item.quantity,
+        soldCount: Math.max(0, (latest[idx].soldCount || 0) - sign * item.quantity),
+    })));
+}
+
+const ADMIN_ACTIONS = {
+    async approve(order) {
+        // Đơn theo quy trình mới (stockApplied === false) mới trừ kho; đơn cũ đã trừ lúc đặt
+        if (order.stockApplied === false) await applyStock(order, -1);
+        await api.updateOrder(order.id, {
+            status: ui.ORDER_STATUS.SHIPPING,
+            stockApplied: true,
+            approvedAt: new Date().toISOString(),
+            // Chuyển khoản: Admin đã đối soát tiền trước khi duyệt
+            ...(order.paymentMethod === 'bank' ? { paymentStatus: 'Đã thanh toán' } : {}),
+        });
+        return `Đã duyệt đơn #${ui.orderCodeOf(order)}, chuyển sang giao hàng.`;
+    },
+    async cancel(order) {
+        if (!confirm(`Từ chối và hủy đơn #${ui.orderCodeOf(order)}?`)) return null;
+        if (order.stockApplied !== false) await applyStock(order, +1); // hoàn kho cho đơn cũ đã trừ lúc đặt
+        await api.updateOrder(order.id, { status: ui.ORDER_STATUS.CANCELLED, stockApplied: false, cancelledAt: new Date().toISOString() });
+        return `Đã hủy đơn #${ui.orderCodeOf(order)}.`;
+    },
+    async deliver(order) {
+        await api.updateOrder(order.id, { status: ui.ORDER_STATUS.DONE, paymentStatus: 'Đã thanh toán', deliveredAt: new Date().toISOString() });
+        return `Đơn #${ui.orderCodeOf(order)} đã giao thành công.`;
+    },
+};
+
+app.addEventListener('click', async (e) => {
+    if (!window.location.hash.startsWith('#/admin')) return;
+    const target = e.target.closest('button');
+    if (!target) return;
+
+    if (target.dataset.tab) {
+        adminTab = target.dataset.tab;
+        renderAdmin();
+    } else if (target.id === 'admin-logout-btn') {
+        try { sessionStorage.removeItem(ADMIN_SESSION_KEY); } catch { /* bỏ qua */ }
+        router();
+    } else if (target.id === 'admin-notify-btn') {
+        await Notification.requestPermission();
+        renderAdmin();
+    } else if (target.dataset.action) {
+        app.querySelectorAll('.admin-action').forEach(b => { b.disabled = true; });
+        try {
+            // Lấy bản mới nhất của đơn để không duyệt/hủy trùng khi 2 tab cùng thao tác
+            const order = await api.getOrderById(target.dataset.id);
+            const allowed = target.dataset.action === 'deliver' ? order.status === ui.ORDER_STATUS.SHIPPING : ui.isPendingOrder(order);
+            if (!allowed) throw new Error('Đơn đã được xử lý ở nơi khác, danh sách sẽ được tải lại.');
+            const message = await ADMIN_ACTIONS[target.dataset.action](order);
+            if (message) toast(message);
+        } catch (error) {
+            console.error(error);
+            toast(error.message, 'error');
+        }
+        adminOrders = sortNewestOrders(await api.getOrders().catch(() => adminOrders));
+        renderAdmin();
+    }
+});
 
 // ===================== Nút "Thêm vào giỏ" trên thẻ sản phẩm =====================
 
