@@ -18,7 +18,7 @@
 <body>
     <div class="announcement-bar" id="announcement-bar" hidden></div>
     <header>
-        <nav class="navbar" aria-label="Điều hướng chính">
+        <div class="header-main">
             <div class="container">
                 <a href="#/" class="logo" aria-label="Cosmetics Store - Trang chủ">
                     <svg class="logo-mark" viewBox="0 0 48 48" aria-hidden="true">
@@ -34,41 +34,38 @@
 
                 <form class="header-search" id="header-search" role="search">
                     <label for="header-search-input" class="visually-hidden">Tìm sản phẩm</label>
-                    <input type="search" id="header-search-input" name="q" placeholder="Tìm son, serum..." autocomplete="off">
+                    <input type="search" id="header-search-input" name="q" placeholder="Tìm son, serum, kem chống nắng, thương hiệu..." autocomplete="off">
                     <button type="submit" aria-label="Tìm kiếm">
                         <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.8"/><path d="M16 16l4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
                     </button>
                 </form>
 
-                <ul class="nav-links">
-                    <li class="nav-text"><a href="#/">Trang chủ</a></li>
-                    <li class="nav-text"><a href="#/products">Sản phẩm</a></li>
-                    <li class="nav-text"><a href="#/tra-cuu">Tra cứu đơn</a></li>
-                    <li>
-                        <a href="#/wishlist" class="cart-link wish-link" aria-label="Sản phẩm yêu thích">
-                            <span class="cart-icon">
-                                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 20s-7-4.4-8.7-8.7C2.2 8.4 4.1 5 7.4 5c1.9 0 3.4 1 4.6 2.6C13.2 6 14.7 5 16.6 5c3.3 0 5.2 3.4 4.1 6.3C19 15.6 12 20 12 20z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
-                            </span>
-                            <span class="cart-count is-empty" id="wishCount">0</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#/cart" class="cart-link" aria-label="Giỏ hàng">
-                            <span class="cart-icon">
-                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                    <path d="M6 7h12l-1 12.2a1 1 0 0 1-1 .8H8a1 1 0 0 1-1-.8L6 7z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
-                                    <path d="M9 7V6a3 3 0 0 1 6 0v1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-                                </svg>
-                            </span>
-                            <span class="cart-count is-empty" id="cartCount">0</span>
-                        </a>
-                    </li>
-                </ul>
+                <nav class="header-actions" aria-label="Đơn hàng, yêu thích và giỏ hàng">
+                    <a href="#/tra-cuu" class="header-action">
+                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><circle cx="7" cy="17.5" r="1.8" stroke="currentColor" stroke-width="1.6"/><circle cx="17.5" cy="17.5" r="1.8" stroke="currentColor" stroke-width="1.6"/></svg>
+                        <span>Tra cứu<br>đơn hàng</span>
+                    </a>
+                    <a href="#/wishlist" class="cart-link wish-link" aria-label="Sản phẩm yêu thích">
+                        <span class="cart-icon">
+                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 20s-7-4.4-8.7-8.7C2.2 8.4 4.1 5 7.4 5c1.9 0 3.4 1 4.6 2.6C13.2 6 14.7 5 16.6 5c3.3 0 5.2 3.4 4.1 6.3C19 15.6 12 20 12 20z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                        </span>
+                        <span class="cart-count is-empty" id="wishCount">0</span>
+                    </a>
+                    <a href="#/cart" class="cart-link" aria-label="Giỏ hàng">
+                        <span class="cart-icon">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                <path d="M6 7h12l-1 12.2a1 1 0 0 1-1 .8H8a1 1 0 0 1-1-.8L6 7z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+                                <path d="M9 7V6a3 3 0 0 1 6 0v1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                            </svg>
+                        </span>
+                        <span class="cart-count is-empty" id="cartCount">0</span>
+                    </a>
+                </nav>
             </div>
-        </nav>
-        <!-- Điều hướng dạng chữ cho màn hình nhỏ -->
-        <nav class="mobile-nav" aria-label="Điều hướng nhanh">
-            <a href="#/">Trang chủ</a><a href="#/products">Sản phẩm</a><a href="#/tra-cuu">Tra cứu đơn</a><a href="#/wishlist">Yêu thích</a>
+        </div>
+        <!-- Thanh danh mục (điền từ CATEGORIES trong components.js) -->
+        <nav class="category-bar" aria-label="Danh mục sản phẩm">
+            <div class="container category-bar-inner" id="category-bar"></div>
         </nav>
     </header>
 
