@@ -5,9 +5,11 @@
 export const SHOP = {
     name: 'Cosmetics Store',
 
-    // Tài khoản nhận chuyển khoản (mã QR tạo bằng dịch vụ VietQR: https://vietqr.io)
+    // Tài khoản nhận chuyển khoản. Mã QR tạo bằng Quick Link của VietQR.io (https://vietqr.io):
+    // miễn phí, không cần đăng ký/API key; khách quét bằng app ngân hàng nào cũng được (chuẩn NAPAS 247).
     bank: {
         bankId: '',        // Mã ngân hàng VietQR, VD: 'MB', 'VCB', 'TCB', 'ACB', 'VPB', 'BIDV', 'ICB' (VietinBank)
+        bankName: '',      // Tên hiển thị, VD: 'MB Bank (Quân Đội)'; để trống thì hiện bankId
         accountNo: '',     // Số tài khoản, VD: '0123456789'
         accountName: '',   // Tên chủ tài khoản, VIẾT HOA KHÔNG DẤU, VD: 'LE DANG HUY'
     },

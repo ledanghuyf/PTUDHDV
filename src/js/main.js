@@ -509,7 +509,7 @@ async function handleCheckoutSubmit(event) {
  * Biến truyền vào template EmailJS (xem README.md để tạo template)
  */
 function orderEmailParams(order) {
-    const { bankId, accountNo, accountName } = SHOP.bank;
+    const { bankId, bankName, accountNo, accountName } = SHOP.bank;
     const total = ui.formatPrice(order.totalAmount);
     return {
         to_email: order.customerInfo.email,
@@ -524,7 +524,7 @@ function orderEmailParams(order) {
         shipping_address: order.customerInfo.address,
         payment_method: ui.PAYMENT_METHODS[order.paymentMethod],
         payment_instructions: order.paymentMethod === 'bank'
-            ? `Vui lòng chuyển khoản ${total} tới ngân hàng ${bankId}, số tài khoản ${accountNo} (${accountName}), nội dung: ${ui.transferContent(order.id)}.`
+            ? `Vui lòng chuyển khoản ${total} tới ngân hàng ${bankName || bankId}, số tài khoản ${accountNo} (${accountName}), nội dung: ${ui.transferContent(order.id)}.`
             : 'Bạn thanh toán bằng tiền mặt khi nhận hàng.',
     };
 }
@@ -538,6 +538,18 @@ async function orderView(id) {
 }
 
 // ===================== Nút "Thêm vào giỏ" trên thẻ sản phẩm =====================
+
+// Nút "Sao chép" số tài khoản / số tiền / nội dung chuyển khoản
+app.addEventListener('click', async (e) => {
+    const button = e.target.closest('.copy-btn');
+    if (!button) return;
+    try {
+        await navigator.clipboard.writeText(button.dataset.copy);
+        toast('Đã sao chép');
+    } catch {
+        toast('Trình duyệt không cho phép sao chép, vui lòng chép thủ công.', 'error');
+    }
+});
 
 app.addEventListener('click', async (e) => {
     const button = e.target.closest('.add-to-cart-btn');

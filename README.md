@@ -21,8 +21,14 @@
 - Hệ thống đánh giá sản phẩm
 
 ## Nguồn dữ liệu
-30 sản phẩm trong `src/db.json` lấy từ trang sản phẩm của [Pharmacity](https://www.pharmacity.vn) (tên, thương hiệu,
-giá bán, mô tả, ảnh), mỗi sản phẩm có trường `sourceUrl` trỏ về trang gốc. Ảnh được cắt nền và căn về khung 800×800.
+100 sản phẩm thuộc 9 danh mục (serum, kem dưỡng, sữa rửa mặt, chống nắng, mặt nạ, toner, tẩy trang, son môi, trang điểm)
+trong `src/db.json`:
+- Sản phẩm 1–30: từ [Pharmacity](https://www.pharmacity.vn).
+- Sản phẩm 31–100: từ [Thế Giới Skinfood](https://thegioiskinfood.com) (tên, thương hiệu, giá, mô tả chi tiết gồm
+  thành phần, công dụng, cách dùng, bảo quản; ảnh). Với son môi, tên và giá ứng với đúng màu trên ảnh.
+
+Mỗi sản phẩm có `sourceUrl` (trang gốc) và `sourceName` (tên nhà bán), trang chi tiết hiện link tham khảo. Ảnh chọn loại
+nền đồng màu (không chữ quảng cáo), căn về khung 800×800. Mô tả đã bỏ phần quảng cáo của nhà bán.
 Giá lấy tại thời điểm thu thập (11/2026), có thể thay đổi. Hình ảnh thuộc bản quyền thương hiệu/nhà bán lẻ,
 chỉ dùng cho mục đích học tập. Tồn kho, lượt bán và đánh giá là dữ liệu của cửa hàng demo (ban đầu chưa có đánh giá/lượt bán).
 
@@ -66,14 +72,21 @@ json-server src/db.json --port 3000
 
 2. Mở file `src/index.html` bằng Live Server hoặc trình duyệt
 
-### Cấu hình thanh toán chuyển khoản
+### Cấu hình thanh toán chuyển khoản (miễn phí)
+Dùng **VietQR Quick Link** (`img.vietqr.io`): ảnh QR chuẩn NAPAS 247 tạo trực tiếp từ URL, **không cần đăng ký,
+không cần API key, không mất phí**. Khách quét bằng app của bất kỳ ngân hàng nào; nhận tiền vào tài khoản cá nhân
+không mất phí, và hầu hết ngân hàng (MB, Vietcombank, Techcombank, ACB, VPBank, TPBank...) miễn phí chuyển khoản qua app.
+Không dùng cổng thanh toán (VNPay, MoMo...) hay dịch vụ tự xác nhận (SePay, Casso...) vì các dịch vụ này cần đăng ký
+doanh nghiệp/thu phí hoặc cần server backend HTTPS nhận webhook.
+
 Mở `src/js/config.js`, điền tài khoản nhận tiền:
 ```js
-bank: { bankId: 'MB', accountNo: '0123456789', accountName: 'NGUYEN VAN A' },
+bank: { bankId: 'MB', bankName: 'MB Bank (Quân Đội)', accountNo: '0123456789', accountName: 'NGUYEN VAN A' },
 ```
 `bankId` là mã ngân hàng theo VietQR (MB, VCB, TCB, ACB, BIDV, ICB...). Khi để trống, lựa chọn
 "Chuyển khoản ngân hàng" bị khóa. Sau khi đặt hàng, trang xác nhận hiện mã VietQR đã điền sẵn số tiền
-và nội dung `CS<mã đơn>`. Cửa hàng tự đối soát tiền về rồi cập nhật trạng thái đơn trong `db.json`.
+và nội dung `CS<mã đơn>` (có nút sao chép số tài khoản, số tiền, nội dung). Cửa hàng tự đối soát tiền về
+rồi cập nhật trạng thái đơn trong `db.json`.
 
 ### Cấu hình gửi email xác nhận về Gmail (EmailJS)
 1. Tạo tài khoản miễn phí tại https://www.emailjs.com
