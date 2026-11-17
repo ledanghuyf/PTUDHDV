@@ -17,7 +17,7 @@
 - Trang chi tiết sản phẩm với thông tin đầy đủ
 - Giỏ hàng với localStorage
 - Form đặt hàng: thanh toán khi nhận hàng (COD) hoặc chuyển khoản ngân hàng (mã VietQR)
-- Gửi email xác nhận đơn hàng về Gmail của khách (EmailJS)
+- Gửi email xác nhận đơn hàng về Gmail của khách, kèm bản sao báo đơn mới cho cửa hàng (Google Apps Script)
 - Hệ thống đánh giá sản phẩm
 
 ## Nguồn dữ liệu
@@ -88,26 +88,12 @@ bank: { bankId: 'MB', bankName: 'MB Bank (Quân Đội)', accountNo: '0123456789
 và nội dung `CS<mã đơn>` (có nút sao chép số tài khoản, số tiền, nội dung). Cửa hàng tự đối soát tiền về
 rồi cập nhật trạng thái đơn trong `db.json`.
 
-### Cấu hình gửi email xác nhận về Gmail (EmailJS)
-1. Tạo tài khoản miễn phí tại https://www.emailjs.com
-2. **Email Services → Add New Service → Gmail**, đăng nhập Gmail của cửa hàng → lấy `Service ID`
-3. **Email Templates → Create New Template**:
-   - *To Email*: `{{to_email}}`
-   - *Subject*: `Xác nhận đơn hàng #{{order_id}} - {{shop_name}}`
-   - *Content*:
-     ```
-     Chào {{to_name}},
-     Cảm ơn bạn đã đặt hàng tại {{shop_name}} lúc {{order_date}}.
-     Mã đơn: {{order_id}}
-     {{{order_items}}}
-     Tổng cộng: {{order_total}}
-     Thanh toán: {{payment_method}}
-     {{payment_instructions}}
-     Giao tới: {{shipping_address}} - SĐT {{phone}}
-     ```
-   → lưu và lấy `Template ID`
-4. **Account → General** → lấy `Public Key`
-5. Điền 3 giá trị vào `emailjs` trong `src/js/config.js`
+### Cấu hình gửi email xác nhận về Gmail (Google Apps Script – miễn phí)
+Email gửi bằng chính Gmail của cửa hàng qua Google Apps Script: miễn phí, không qua dịch vụ trung gian,
+khách nhận email xác nhận và cửa hàng nhận bản sao báo đơn mới (giới hạn 100 người nhận/ngày với Gmail thường).
+
+Hướng dẫn triển khai từng bước: [setup/email-script/README.md](setup/email-script/README.md).
+Lấy được URL Web app thì điền vào `emailScriptUrl` trong `src/js/config.js`.
 
 Khi để trống, đơn hàng vẫn tạo bình thường nhưng không gửi email.
 
