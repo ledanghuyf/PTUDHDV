@@ -70,6 +70,25 @@ export const createOrder = (orderData) =>
 export const getOrderById = (id) =>
     request(`/orders/${id}`, 'Không tìm thấy đơn hàng.');
 
+export const getOrders = () =>
+    request('/orders', 'Không thể tải danh sách đơn hàng.');
+
+// ===== Đơn vị hành chính Việt Nam (sau sáp nhập 01/07/2025: Tỉnh/Thành phố → Phường/Xã) =====
+// API miễn phí, cho phép gọi từ trình duyệt: https://provinces.open-api.vn
+const ADDRESS_API = 'https://provinces.open-api.vn/api/v2';
+
+async function getAddressData(path) {
+    const response = await fetch(`${ADDRESS_API}${path}`);
+    if (!response.ok) throw new Error('Không tải được danh sách địa chỉ. Vui lòng thử lại.');
+    return response.json();
+}
+
+/** @returns {Promise<Array<{code:number, name:string}>>} 34 tỉnh/thành phố */
+export const getProvinces = () => getAddressData('/p/');
+
+/** @returns {Promise<Array<{code:number, name:string}>>} Phường/xã thuộc tỉnh */
+export const getWards = async (provinceCode) => (await getAddressData(`/p/${provinceCode}?depth=2`)).wards;
+
 export const updateOrder = (id, data) =>
     request(`/orders/${id}`, 'Không thể cập nhật đơn hàng.', sendJson('PATCH', data));
 

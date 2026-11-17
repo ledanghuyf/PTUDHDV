@@ -17,6 +17,11 @@ export const SHOP = {
     // URL Web app Google Apps Script gửi email xác nhận đơn bằng Gmail của cửa hàng (miễn phí)
     // Cách lấy URL: xem setup/email-script/README.md. VD: 'https://script.google.com/macros/s/AKfy.../exec'
     emailScriptUrl: '',
+
+    // Mật khẩu trang Quản trị (#/admin), lưu dạng SHA-256. Mặc định: admin123 — NÊN ĐỔI.
+    // Tạo mã mới: node -e "console.log(require('crypto').createHash('sha256').update('MAT_KHAU_MOI').digest('hex'))"
+    // shortcut: chỉ chặn ở giao diện, json-server vẫn mở; muốn bảo mật thật cần backend có đăng nhập.
+    adminPasswordHash: '',
 };
 
 export const isBankConfigured = () => Boolean(SHOP.bank.bankId && SHOP.bank.accountNo && SHOP.bank.accountName);

@@ -1003,6 +1003,54 @@ header {
 .form-actions { display: flex; gap: 12px; margin-top: 24px; }
 .btn-submit-order { flex: 1; padding: 14px; }
 
+/* Địa chỉ giao hàng theo đơn vị hành chính */
+.address-fields { border: none; margin: 4px 0 12px; }
+.address-fields legend { font-weight: 600; font-size: 0.95rem; margin-bottom: 10px; }
+.address-fields select:disabled { background: var(--blush); color: var(--muted); cursor: wait; }
+.address-note { font-size: 0.8rem; margin-top: -6px; }
+.address-error { margin-top: 8px; font-size: 0.85rem; color: var(--error); }
+.link-btn { border: none; background: none; color: var(--rose); font-weight: 600; text-decoration: underline; cursor: pointer; }
+
+#bank-qr-panel { margin-top: 16px; }
+#bank-qr-panel .bank-box { grid-template-columns: 180px 1fr; gap: 18px; margin-bottom: 0; padding: 18px; }
+#bank-qr-panel .bank-qr { width: 180px; height: 180px; }
+
+.submit-hint { margin-top: 10px; font-size: 0.84rem; text-align: right; }
+.approval-note { margin-top: 14px; padding: 10px 14px; border-radius: 12px; background: var(--blush); font-size: 0.84rem; }
+
+/* ===== Trang quản trị ===== */
+.admin-login { max-width: 420px; margin: 0 auto; }
+.admin-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; }
+.admin-head .page-title { margin-bottom: 0; }
+.admin-head-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.admin-live { margin: 6px 0 18px; font-size: 0.84rem; }
+
+.admin-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+.admin-tab {
+    padding: 8px 16px;
+    border: 1.5px solid var(--line);
+    border-radius: 999px;
+    background: var(--white);
+    font-weight: 500;
+    cursor: pointer;
+}
+.admin-tab.active { border-color: var(--rose); background: var(--rose); color: var(--white); }
+.admin-count { margin-left: 4px; padding: 0 7px; border-radius: 999px; background: var(--rose-soft); color: var(--rose); font-size: 0.78rem; font-weight: 700; }
+.admin-count.has-pending { background: var(--error); color: var(--white); }
+
+.admin-orders { display: grid; gap: 16px; }
+.admin-order { padding: 20px 22px; background: var(--white); border: 1px solid var(--line); border-radius: var(--radius-lg); }
+.admin-order.is-pending { border: 2px solid var(--pink); }
+.admin-order p { margin-bottom: 6px; color: var(--ink); font-size: 0.92rem; }
+.admin-order-head { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 10px; }
+.admin-order-head time { margin-left: auto; color: var(--muted); font-size: 0.85rem; }
+.status-badge { padding: 2px 10px; border-radius: 999px; background: var(--rose-soft); color: var(--rose-dark); font-size: 0.8rem; font-weight: 600; }
+.admin-items { margin: 10px 0; padding: 10px 0; border-top: 1px dashed var(--line); border-bottom: 1px dashed var(--line); font-size: 0.9rem; }
+.admin-items li { display: flex; justify-content: space-between; gap: 12px; padding: 3px 0; }
+.admin-warn { padding: 8px 12px; border-radius: 10px; background: #FFF6E5; font-size: 0.86rem; }
+.admin-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+.admin-actions:empty { display: none; }
+
 .order-item {
     display: flex;
     justify-content: space-between;
@@ -1234,7 +1282,7 @@ footer a:hover { color: var(--white); }
     .nav-links { gap: 4px; font-size: 0.88rem; }
     .nav-links > li > a:not(.cart-link) { padding: 8px 14px; }
     .form-row { grid-template-columns: 1fr; gap: 0; }
-    .bank-box { grid-template-columns: 1fr; justify-items: center; }
+    .bank-box, #bank-qr-panel .bank-box { grid-template-columns: 1fr; justify-items: center; }
     .hero-actions .btn { flex: 1; padding: 13px 16px; }
     .filter-bar { grid-template-columns: 1fr; padding: 14px; gap: 12px; }
     .purchase-row { flex-direction: column; }

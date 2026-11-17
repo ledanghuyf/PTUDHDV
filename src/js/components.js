@@ -10,8 +10,19 @@ export const PAYMENT_METHODS = {
     bank: 'Chuyển khoản ngân hàng',
 };
 
-// Nội dung chuyển khoản để cửa hàng đối soát đơn
-export const transferContent = orderId => `CS${orderId}`;
+// Nội dung chuyển khoản để cửa hàng đối soát đơn (đơn mới dùng mã đơn `code`, đơn cũ dùng id)
+export const transferContent = orderCode => `CS${orderCode}`;
+export const orderCodeOf = order => order.code || order.id;
+
+// Quy trình duyệt đơn: Chờ duyệt → (Admin duyệt, trừ kho) Đang giao hàng → Đã giao; hoặc Đã hủy
+export const ORDER_STATUS = { PENDING: 'Chờ duyệt', SHIPPING: 'Đang giao hàng', DONE: 'Đã giao', CANCELLED: 'Đã hủy' };
+// Đơn tạo trước khi có quy trình duyệt: đã trừ kho lúc đặt
+const LEGACY_PENDING = ['Chờ xác nhận', 'Chờ chuyển khoản'];
+export const isPendingOrder = order => order.status === ORDER_STATUS.PENDING || LEGACY_PENDING.includes(order.status);
+
+// Số nhà phải có chữ số; tên đường phải có chữ cái. Dùng chung cho thuộc tính pattern (cờ v) và kiểm tra JS (cờ u)
+export const HOUSE_NUMBER_PATTERN = String.raw`(?=.*\d)[\p{L}\d\s\/.,\-]{1,30}`;
+export const STREET_PATTERN = String.raw`(?=.*\p{L})[\p{L}\d\s\/.,'\-]{2,80}`;
 
 // Danh mục sản phẩm (id khớp với trường category trong db.json)
 export const CATEGORIES = [
@@ -377,7 +388,7 @@ export function CartPage(cartItems, total, itemCount) {
 /**
  * Trang thanh toán
  */
-export function CheckoutPage(cartItems, totalAmount) {
+export function CheckoutPage(cartItems, totalAmount, orderCode) {
     const bankReady = isBankConfigured();
     return `
         <nav class="breadcrumb" aria-label="Breadcrumb">
@@ -403,11 +414,41 @@ export function CheckoutPage(cartItems, totalAmount) {
                         <input type="email" id="customer-email" name="email" required maxlength="100" autocomplete="email" placeholder="ten@gmail.com">
                     </div>
                 </div>
-                <div class="form-group">
-                    <label for="customer-address">Địa chỉ giao hàng <span class="required">*</span></label>
-                    <textarea id="customer-address" name="address" rows="3" required maxlength="300" autocomplete="street-address"
-                              placeholder="Số nhà, đường, phường/xã, quận/huyện, tỉnh/thành phố"></textarea>
-                </div>
+                <fieldset class="address-fields">
+                    <legend>Địa chỉ giao hàng <span class="required">*</span></legend>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="addr-province">Tỉnh/Thành phố <span class="required">*</span></label>
+                            <select id="addr-province" name="province" required disabled>
+                                <option value="">Đang tải...</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="addr-ward">Phường/Xã <span class="required">*</span></label>
+                            <select id="addr-ward" name="ward" required disabled>
+                                <option value="">Chọn Tỉnh/Thành phố trước</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="addr-house">Số nhà <span class="required">*</span></label>
+                            <input type="text" id="addr-house" name="houseNumber" required maxlength="30" autocomplete="address-line1"
+                                   pattern="${HOUSE_NUMBER_PATTERN}" placeholder="VD: 12A, 45/7"
+                                   data-pattern-message="Số nhà phải có chữ số, chỉ gồm chữ, số và các ký tự / . , - (VD: 12A, 45/7).">
+                        </div>
+                        <div class="form-group">
+                            <label for="addr-street">Tên đường <span class="required">*</span></label>
+                            <input type="text" id="addr-street" name="street" required maxlength="80" autocomplete="address-line2"
+                                   pattern="${STREET_PATTERN}" placeholder="VD: Nguyễn Huệ"
+                                   data-pattern-message="Tên đường cần ít nhất 2 ký tự và có chữ cái (VD: Nguyễn Huệ, Đường số 7).">
+                        </div>
+                    </div>
+                    <p class="address-note">Theo đơn vị hành chính mới (từ 01/07/2025): 34 tỉnh/thành, không còn cấp quận/huyện.</p>
+                    <p class="address-error hidden" id="address-error" role="alert">
+                        Không tải được danh sách địa chỉ. <button type="button" class="link-btn" id="address-retry">Thử lại</button>
+                    </p>
+                </fieldset>
 
                 <fieldset class="payment-methods">
                     <legend>Phương thức thanh toán</legend>
@@ -420,14 +461,17 @@ export function CheckoutPage(cartItems, totalAmount) {
                         <input type="radio" name="payment" value="bank" ${bankReady ? '' : 'disabled'}>
                         <span class="payment-title">Chuyển khoản ngân hàng</span>
                         <span class="payment-desc">${bankReady
-                            ? 'Quét mã VietQR bằng app ngân hàng sau khi đặt hàng. Đơn được xác nhận khi cửa hàng nhận được tiền.'
+                            ? 'Hiện ngay mã VietQR với đúng số tiền và nội dung đơn để quét bằng app ngân hàng.'
                             : 'Cửa hàng chưa thiết lập tài khoản nhận tiền.'}</span>
                     </label>
                 </fieldset>
+                ${bankReady ? `<div id="bank-qr-panel" hidden>${BankTransferBox({ code: orderCode, totalAmount })}</div>` : ''}
                 <div class="form-actions">
                     <a href="#/cart" class="btn btn-secondary">Quay lại giỏ hàng</a>
-                    <button type="submit" class="btn btn-submit-order">Xác nhận đặt hàng</button>
+                    <button type="submit" class="btn btn-submit-order" disabled>Xác nhận đặt hàng</button>
                 </div>
+                <p class="submit-hint" id="submit-hint">Điền đầy đủ thông tin và địa chỉ giao hàng để đặt hàng.</p>
+                <p class="approval-note">Đơn hàng sẽ ở trạng thái <strong>Chờ duyệt</strong>; cửa hàng kiểm tra và duyệt xong mới đóng gói, giao hàng.</p>
             </form>
 
             <aside class="order-summary">
@@ -465,7 +509,7 @@ export function BankTransferBox(order) {
         return '<div class="bank-box"><p>Cửa hàng chưa thiết lập tài khoản nhận tiền. Vui lòng liên hệ hotline để được hướng dẫn thanh toán.</p></div>';
     }
     const { bankId, bankName, accountNo, accountName } = SHOP.bank;
-    const content = transferContent(order.id);
+    const content = transferContent(orderCodeOf(order));
     // Quick Link của VietQR.io: ảnh QR chuẩn NAPAS 247, miễn phí, không cần API key
     const qr = `https://img.vietqr.io/image/${encodeURIComponent(bankId)}-${encodeURIComponent(accountNo)}-compact2.png`
         + `?amount=${order.totalAmount}&addInfo=${encodeURIComponent(content)}&accountName=${encodeURIComponent(accountName)}`;
@@ -494,22 +538,24 @@ export function OrderSuccess(order) {
     const date = new Date(order.timestamp).toLocaleString('vi-VN');
     const info = order.customerInfo || {};
     const isBank = order.paymentMethod === 'bank';
+    const unpaidBank = isBank && order.paymentStatus !== 'Đã thanh toán' && order.status !== ORDER_STATUS.CANCELLED;
     return `
         <div class="order-success">
             <div class="success-icon" aria-hidden="true">✓</div>
             <h1 class="page-title">Đặt hàng thành công!</h1>
             <p class="success-lead">Cảm ơn bạn đã mua sắm tại ${SHOP.name}.
-                ${isBank ? 'Vui lòng hoàn tất chuyển khoản bên dưới để cửa hàng xác nhận đơn.' : 'Chúng tôi sẽ liên hệ để xác nhận đơn hàng trong thời gian sớm nhất.'}</p>
+                ${isPendingOrder(order) ? 'Đơn hàng đang <strong>chờ cửa hàng duyệt</strong>, duyệt xong sẽ được đóng gói và giao ngay.' : ''}
+                ${unpaidBank ? 'Vui lòng quét mã bên dưới để chuyển khoản (nếu chưa chuyển).' : ''}</p>
             ${order.emailSent ? `<p class="email-status" id="email-status">Email xác nhận đã được gửi tới <strong>${escapeHtml(info.email)}</strong>.</p>` : ''}
 
-            ${isBank ? BankTransferBox(order) : ''}
+            ${unpaidBank ? BankTransferBox(order) : ''}
 
             <div class="order-detail-card">
                 <div class="order-meta">
-                    <div><span>Mã đơn hàng</span><strong id="order-code">#${escapeHtml(order.id)}</strong></div>
+                    <div><span>Mã đơn hàng</span><strong id="order-code">#${escapeHtml(orderCodeOf(order))}</strong></div>
                     <div><span>Thời gian</span><strong>${date}</strong></div>
                     <div><span>Thanh toán</span><strong id="order-payment">${PAYMENT_METHODS[order.paymentMethod] || PAYMENT_METHODS.cod}</strong></div>
-                    <div><span>Trạng thái</span><strong>${escapeHtml(order.status || 'Chờ xác nhận')}</strong></div>
+                    <div><span>Trạng thái</span><strong>${escapeHtml(order.status || ORDER_STATUS.PENDING)}</strong></div>
                 </div>
                 <div class="order-customer">
                     <p><strong>${escapeHtml(info.name)}</strong> · ${escapeHtml(info.phone)}${info.email ? ` · ${escapeHtml(info.email)}` : ''}</p>
@@ -695,5 +741,91 @@ export function HomePage() {
             <h2 class="section-title">Tất cả sản phẩm</h2>
             ${ProductListing('home-')}
         </section>
+    `;
+}
+
+// ===================== Trang quản trị đơn hàng =====================
+
+export function AdminLogin() {
+    return `
+        <div class="admin-login">
+            <h1 class="page-title">Quản trị</h1>
+            <form id="admin-login-form" class="checkout-form">
+                <div class="form-group">
+                    <label for="admin-password">Mật khẩu quản trị</label>
+                    <input type="password" id="admin-password" required autocomplete="current-password">
+                </div>
+                <button type="submit" class="btn">Đăng nhập</button>
+            </form>
+        </div>
+    `;
+}
+
+// Tab lọc đơn: [khóa, nhãn, điều kiện]
+export const ADMIN_TABS = [
+    ['pending', 'Chờ duyệt', isPendingOrder],
+    ['shipping', 'Đang giao', o => o.status === ORDER_STATUS.SHIPPING],
+    ['done', 'Đã giao', o => o.status === ORDER_STATUS.DONE],
+    ['cancelled', 'Đã hủy', o => o.status === ORDER_STATUS.CANCELLED],
+    ['all', 'Tất cả', () => true],
+];
+
+/**
+ * @param {Array} orders - Đơn hàng mới nhất trước
+ * @param {string} tab - Khóa trong ADMIN_TABS
+ * @param {boolean} canNotify - Trình duyệt hỗ trợ và chưa hỏi quyền thông báo
+ */
+export function AdminDashboard(orders, tab, canNotify) {
+    const [, , filter] = ADMIN_TABS.find(([key]) => key === tab) || ADMIN_TABS[0];
+    const shown = orders.filter(filter);
+    return `
+        <div class="admin-head">
+            <h1 class="page-title">Quản trị đơn hàng</h1>
+            <div class="admin-head-actions">
+                ${canNotify ? '<button type="button" class="btn btn-secondary" id="admin-notify-btn">Bật thông báo trình duyệt</button>' : ''}
+                <button type="button" class="btn btn-secondary" id="admin-logout-btn">Đăng xuất</button>
+            </div>
+        </div>
+        <p class="admin-live" aria-live="polite">Tự cập nhật mỗi 10 giây · đơn mới sẽ hiện thông báo.</p>
+        <div class="admin-tabs" role="tablist">
+            ${ADMIN_TABS.map(([key, label, f]) => {
+                const count = orders.filter(f).length;
+                return `<button type="button" role="tab" class="admin-tab${key === tab ? ' active' : ''}" data-tab="${key}" aria-selected="${key === tab}">
+                    ${label} <span class="admin-count${key === 'pending' && count ? ' has-pending' : ''}">${count}</span></button>`;
+            }).join('')}
+        </div>
+        <div class="admin-orders">
+            ${shown.length ? shown.map(AdminOrderCard).join('') : '<p class="empty-result">Không có đơn hàng nào.</p>'}
+        </div>
+    `;
+}
+
+function AdminOrderCard(order) {
+    const info = order.customerInfo || {};
+    const isBank = order.paymentMethod === 'bank';
+    const pending = isPendingOrder(order);
+    const action = (name, label, cls = '') => `<button type="button" class="btn ${cls} admin-action" data-action="${name}" data-id="${escapeHtml(order.id)}">${label}</button>`;
+
+    return `
+        <article class="admin-order${pending ? ' is-pending' : ''}">
+            <header class="admin-order-head">
+                <strong>#${escapeHtml(orderCodeOf(order))}</strong>
+                <span class="status-badge">${escapeHtml(order.status || ORDER_STATUS.PENDING)}</span>
+                <time>${new Date(order.timestamp).toLocaleString('vi-VN')}</time>
+            </header>
+            <p><strong>${escapeHtml(info.name)}</strong> · ${escapeHtml(info.phone)} · ${escapeHtml(info.email)}</p>
+            <p>${escapeHtml(info.address)}</p>
+            <ul class="admin-items">
+                ${(order.items || []).map(i => `<li>${escapeHtml(i.name)} × ${i.quantity}<span>${formatPrice(i.price * i.quantity)}</span></li>`).join('')}
+            </ul>
+            <p class="admin-total">Tổng: <strong>${formatPrice(order.totalAmount)}</strong> ·
+                ${PAYMENT_METHODS[order.paymentMethod] || PAYMENT_METHODS.cod} · ${escapeHtml(order.paymentStatus || 'Chưa thanh toán')}</p>
+            ${pending && isBank ? `<p class="admin-warn">Kiểm tra tài khoản đã nhận <strong>${formatPrice(order.totalAmount)}</strong>
+                với nội dung <strong>${escapeHtml(transferContent(orderCodeOf(order)))}</strong> trước khi duyệt.</p>` : ''}
+            <div class="admin-actions">
+                ${pending ? action('approve', 'Duyệt đơn & trừ kho') + action('cancel', 'Từ chối', 'btn-secondary') : ''}
+                ${order.status === ORDER_STATUS.SHIPPING ? action('deliver', 'Đã giao hàng') : ''}
+            </div>
+        </article>
     `;
 }

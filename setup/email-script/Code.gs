@@ -63,6 +63,8 @@ function buildHtml(d) {
         <h2 style="color:#c92f6f;margin-bottom:4px">${esc(d.shop_name)}</h2>
         <p>Chào <strong>${esc(d.to_name)}</strong>,</p>
         <p>Cảm ơn bạn đã đặt hàng lúc ${esc(d.order_date)}. Mã đơn của bạn: <strong>#${esc(d.order_id)}</strong></p>
+        ${d.order_status ? `<p style="padding:8px 12px;background:#fff0f6;border-radius:8px">Trạng thái: <strong>${esc(d.order_status)}</strong> —
+            cửa hàng sẽ kiểm tra và duyệt đơn, duyệt xong sẽ đóng gói và giao hàng ngay.</p>` : ''}
         <table style="width:100%;border-collapse:collapse;font-size:14px">${rows}
             <tr><td style="padding:10px 0"><strong>Tổng cộng</strong></td>
                 <td style="padding:10px 0;text-align:right;color:#c92f6f"><strong>${esc(d.order_total)}</strong></td></tr>

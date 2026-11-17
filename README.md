@@ -16,9 +16,32 @@
 - Danh sách sản phẩm với tìm kiếm và lọc theo danh mục
 - Trang chi tiết sản phẩm với thông tin đầy đủ
 - Giỏ hàng với localStorage
-- Form đặt hàng: thanh toán khi nhận hàng (COD) hoặc chuyển khoản ngân hàng (mã VietQR)
-- Gửi email xác nhận đơn hàng về Gmail của khách, kèm bản sao báo đơn mới cho cửa hàng (Google Apps Script)
+- Form đặt hàng: địa chỉ chọn theo đơn vị hành chính mới (Tỉnh/Thành phố → Phường/Xã, sau sáp nhập 01/07/2025)
+  + Số nhà, Tên đường; chỉ bấm được "Xác nhận đặt hàng" khi mọi trường hợp lệ
+- Thanh toán khi nhận hàng (COD) hoặc chuyển khoản: chọn chuyển khoản là hiện ngay mã VietQR đúng số tiền
+  và nội dung `CS<mã đơn>`
+- Quy trình duyệt đơn: đơn mới ở trạng thái **Chờ duyệt** (chưa trừ kho) → Admin duyệt ở trang `#/admin`
+  (trừ kho chính thức) → **Đang giao hàng** → **Đã giao**; hoặc **Đã hủy**
+- Thông báo đơn mới cho Admin: trang quản trị tự cập nhật mỗi 10 giây (thông báo + số đơn chờ trên tab trình duyệt)
+  và email bản sao gửi về Gmail cửa hàng
+- Gửi email xác nhận đơn hàng về Gmail của khách (Google Apps Script)
 - Hệ thống đánh giá sản phẩm
+
+## Quy trình đặt hàng & duyệt đơn
+
+| Bước | Ai | Trạng thái | Kho |
+|------|----|-----------|-----|
+| Khách đặt hàng (từ giỏ hàng) | Khách | Chờ duyệt | Chỉ kiểm tra còn đủ hàng, **chưa trừ** |
+| Duyệt đơn (chuyển khoản: đối soát tiền về trước) | Admin | Đang giao hàng | **Trừ kho**, cộng lượt bán |
+| Giao xong | Admin | Đã giao (đã thanh toán) | — |
+| Từ chối đơn đang chờ | Admin | Đã hủy | Không đổi (đơn cũ đã trừ lúc đặt thì hoàn kho) |
+
+Trang quản trị: footer → **Quản trị đơn hàng** (`#/admin`). Mật khẩu mặc định `admin123`, đổi bằng
+`adminPasswordHash` trong `src/js/config.js` (hướng dẫn tạo mã ngay trong file). Đây là chặn ở giao diện;
+json-server không có đăng nhập nên API vẫn mở — đủ cho đồ án, không dùng cho cửa hàng thật.
+
+Địa chỉ lấy từ API miễn phí [provinces.open-api.vn](https://provinces.open-api.vn) (v2: 34 tỉnh/thành, phường/xã
+sau sáp nhập). Đơn lưu cả chuỗi địa chỉ (`customerInfo.address`) và mã tỉnh/phường (`customerInfo.addressDetail`).
 
 ## Nguồn dữ liệu
 100 sản phẩm thuộc 9 danh mục (serum, kem dưỡng, sữa rửa mặt, chống nắng, mặt nạ, toner, tẩy trang, son môi, trang điểm)
