@@ -7,6 +7,7 @@ import * as api from './api.js';
 import * as cart from './cart.js';
 import * as ui from './components.js';
 import * as wishlist from './wishlist.js';
+import * as auth from './auth.js';
 import { calcTotals, couponError } from './pricing.js';
 import { createAdmin } from './admin.js';
 import { SHOP, DEFAULT_SETTINGS, isBankConfigured, isEmailConfigured } from './config.js';
@@ -163,11 +164,11 @@ const hashParams = () => new URLSearchParams(window.location.hash.split('?')[1] 
 // ===================== Router =====================
 
 const admin = createAdmin({
-    app, toast, setTitle,
-    router: () => router(),
+    app, toast,
     getSettings,
     applySettings,
     notifyCustomer: order => sendOrderEmail(order),
+    logout: () => logout(),
 });
 
 // Mỗi trang: tải dữ liệu rồi trả về hàm mount() để vẽ giao diện
@@ -180,6 +181,9 @@ const routes = [
     [/^#\/order\/([^/?]+)$/, orderView],
     [/^#\/tra-cuu(\?.*)?$/, lookupView],
     [/^#\/wishlist$/, wishlistView],
+    [/^#\/dang-nhap(\?.*)?$/, () => authView('login')],
+    [/^#\/dang-ky(\?.*)?$/, () => authView('register')],
+    [/^#\/tai-khoan$/, accountView],
     [/^#\/admin(?:\/(\w+))?$/, sub => admin.view(sub)],
 ];
 
@@ -246,13 +250,12 @@ async function homeView() {
         fill('sale-product-list', onSale);
         document.querySelector('.sale-section').hidden = onSale.length === 0;
 
-        fill('featured-product-list', products.filter(p => p.isFeatured).sort((a, b) => b.score - a.score));
-        initCarousel();
         startHeroRotator();
 
-        // Gợi ý: sản phẩm điểm cao, ưu tiên còn hàng, không lặp lại Deal hot
+        // Gợi ý: sản phẩm Quản lý gắn "Nổi bật" lên trước, rồi theo điểm; còn hàng, không lặp lại Deal hot
         const saleIds = new Set(onSale.map(p => p.id));
-        fill('recommend-list', products.filter(p => p.stock > 0 && !saleIds.has(p.id)).sort((a, b) => b.score - a.score).slice(0, 12));
+        fill('recommend-list', products.filter(p => p.stock > 0 && !saleIds.has(p.id))
+            .sort((a, b) => Number(Boolean(b.featured)) - Number(Boolean(a.featured)) || b.score - a.score).slice(0, 12));
     };
 }
 
@@ -272,25 +275,6 @@ function startHeroRotator() {
             el.classList.remove('is-out');
         }, 350);
     }, 2800);
-}
-
-/**
- * Carousel sản phẩm nổi bật: cuộn ngang bằng scroll-snap, nút trước/sau cuộn 1 khung
- */
-function initCarousel() {
-    const track = document.getElementById('featured-product-list');
-    const prevBtn = document.getElementById('carousel-prev');
-    const nextBtn = document.getElementById('carousel-next');
-
-    const update = () => {
-        prevBtn.disabled = track.scrollLeft <= 2;
-        nextBtn.disabled = track.scrollLeft + track.clientWidth >= track.scrollWidth - 2;
-    };
-
-    prevBtn.addEventListener('click', () => track.scrollBy({ left: -track.clientWidth, behavior: 'smooth' }));
-    nextBtn.addEventListener('click', () => track.scrollBy({ left: track.clientWidth, behavior: 'smooth' }));
-    track.addEventListener('scroll', update, { passive: true });
-    update();
 }
 
 // ===================== Danh sách sản phẩm =====================
@@ -585,7 +569,9 @@ function showUndo(message, onUndo) {
 
 // Bỏ 0/O, 1/I/L để khách không gõ nhầm khi tự nhập nội dung chuyển khoản
 const ORDER_CODE_CHARS = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
-const newOrderCode = () => Array.from(crypto.getRandomValues(new Uint8Array(8)), b => ORDER_CODE_CHARS[b % ORDER_CODE_CHARS.length]).join('');
+// Ký tự đầu luôn là chữ: json-server đổi "?code=12345678" thành số, mã toàn chữ số sẽ không tra cứu được
+const newOrderCode = () => Array.from(crypto.getRandomValues(new Uint8Array(8)),
+    (b, i) => ORDER_CODE_CHARS[b % (i === 0 ? 23 : ORDER_CODE_CHARS.length)]).join('');
 
 const FIELD_LABELS = {
     name: 'Họ và tên', phone: 'Số điện thoại', email: 'Email', province: 'Tỉnh/Thành phố',
@@ -618,6 +604,17 @@ async function checkoutView() {
         const submitButton = form.querySelector('.btn-submit-order');
         const hint = document.getElementById('submit-hint');
         const address = initAddressPicker(form);
+
+        // Đã đăng nhập → tự điền thông tin; chưa → mời đăng nhập để lần sau đặt nhanh hơn
+        const user = auth.currentUser();
+        if (user) {
+            if (user.name) form.name.value = user.name;
+            if (user.phone) form.phone.value = user.phone;
+            if (user.email) form.email.value = user.email;
+        } else {
+            form.insertAdjacentHTML('afterbegin',
+                '<p class="login-nudge">Đã có tài khoản? <a href="#/dang-nhap?next=checkout">Đăng nhập</a> để tự điền thông tin và theo dõi đơn dễ hơn.</p>');
+        }
 
         // Chỉ cho bấm "Xác nhận đặt hàng" khi mọi trường hợp lệ; nêu rõ còn thiếu gì
         const refreshSubmit = () => {
@@ -842,6 +839,7 @@ async function handleCheckoutSubmit(event, state, address) {
             paymentStatus: 'Chưa thanh toán',
             status: ui.ORDER_STATUS.PENDING,
             stockApplied: false, // Quản lý duyệt mới trừ kho
+            userId: auth.currentUser()?.id || null, // đơn của thành viên hiện ở trang Tài khoản
             timestamp: new Date().toISOString()
         });
 
@@ -962,7 +960,160 @@ function renderWishlist(products) {
     app.innerHTML = ui.WishlistPage(products.filter(p => ids.includes(String(p.id))));
 }
 
+// ===================== Đăng nhập / Đăng ký / Tài khoản =====================
+
+// Trang được phép quay lại sau khi đăng nhập (?next=...), tránh chuyển hướng tới địa chỉ lạ
+const NEXT_PAGES = { admin: '#/admin', checkout: '#/checkout', account: '#/tai-khoan' };
+
+/** Nút tài khoản trên header: "Đăng nhập / Đăng ký" hoặc "Xin chào, <tên>" */
+function updateAccountLink() {
+    const user = auth.currentUser();
+    const link = document.getElementById('account-link');
+    const label = document.getElementById('account-label');
+    if (user) {
+        const firstName = String(user.name || '').trim().split(/\s+/).pop();
+        link.href = '#/tai-khoan';
+        link.setAttribute('aria-label', `Tài khoản của ${user.name}`);
+        label.innerHTML = `Xin chào<br>${ui.escapeHtml(firstName)}`;
+    } else {
+        link.href = '#/dang-nhap';
+        link.setAttribute('aria-label', 'Đăng nhập hoặc đăng ký');
+        label.innerHTML = 'Đăng nhập<br>Đăng ký';
+    }
+}
+
+function afterLogin(user) {
+    auth.setSession(user);
+    updateAccountLink();
+    const next = NEXT_PAGES[hashParams().get('next')];
+    window.location.hash = next && (next !== '#/admin' || auth.isManager()) ? next
+        : auth.isManager() ? '#/admin' : '#/tai-khoan';
+}
+
+async function authView(mode) {
+    if (auth.currentUser()) {
+        window.location.hash = '#/tai-khoan';
+        return null;
+    }
+    return () => {
+        setTitle(mode === 'login' ? 'Đăng nhập' : 'Đăng ký');
+        app.innerHTML = `<div class="container">${ui.AuthPage(mode)}</div>`;
+        // Giữ ?next=... khi chuyển giữa 2 tab
+        const next = hashParams().get('next');
+        if (next) app.querySelectorAll('.auth-tabs a, .auth-switch a').forEach(a => { a.href += `?next=${encodeURIComponent(next)}`; });
+        if (mode === 'login') bindLoginForm();
+        else bindRegisterForm();
+    };
+}
+
+function bindLoginForm() {
+    const form = document.getElementById('login-form');
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = form.querySelector('button[type="submit"]');
+        btn.disabled = true;
+        try {
+            const user = await api.findUser(form.identifier.value);
+            if (!(await auth.verifyPassword(form.password.value, user))) {
+                toast('Sai tài khoản hoặc mật khẩu.', 'error');
+                form.password.value = '';
+                return;
+            }
+            toast(`Xin chào ${user.name}! 💕`);
+            afterLogin(user);
+        } catch (error) {
+            toast(error.message, 'error');
+        } finally {
+            btn.disabled = false;
+        }
+    });
+}
+
+function bindRegisterForm() {
+    const form = document.getElementById('register-form');
+    form.addEventListener('focusout', (e) => { if (e.target.matches('input')) showFieldError(e.target); });
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const data = {
+            name: form.name.value.trim(),
+            email: form.email.value.trim().toLowerCase(),
+            phone: form.phone.value.trim(),
+        };
+        const password = form.password.value;
+        const error = !data.name ? 'Vui lòng nhập họ và tên.'
+            : auth.passwordError(password)
+            || (password !== form.confirm.value ? 'Mật khẩu nhập lại chưa khớp.' : '');
+        if (error) return toast(error, 'error');
+
+        const btn = form.querySelector('button[type="submit"]');
+        btn.disabled = true;
+        try {
+            if (await api.findUser(data.email)) return toast('Email này đã được đăng ký. Bạn đăng nhập nhé!', 'error');
+            if (await api.findUser(data.phone)) return toast('Số điện thoại này đã được đăng ký.', 'error');
+            const salt = auth.randomSalt();
+            const user = await api.createUser({
+                ...data,
+                role: auth.ROLES.CUSTOMER, // đăng ký chỉ tạo khách hàng; quyền quản lý do Quản lý cấp
+                salt,
+                passwordHash: await auth.hashPassword(password, salt),
+                createdAt: new Date().toISOString(),
+            });
+            toast('Tạo tài khoản thành công! 🎉');
+            afterLogin(user);
+        } catch (error) {
+            toast(error.message, 'error');
+        } finally {
+            btn.disabled = false;
+        }
+    });
+}
+
+async function accountView() {
+    const session = auth.currentUser();
+    if (!session) {
+        window.location.hash = '#/dang-nhap?next=account';
+        return null;
+    }
+    // Lấy bản mới nhất (Quản lý có thể vừa đổi quyền)
+    const [user, orders] = await Promise.all([
+        api.findUser(session.email || session.username || session.phone).catch(() => null),
+        api.getOrdersByUser(session.id),
+    ]);
+    if (!user) {
+        auth.clearSession();
+        updateAccountLink();
+        window.location.hash = '#/dang-nhap';
+        return null;
+    }
+    auth.setSession(user);
+    return () => {
+        setTitle('Tài khoản');
+        app.innerHTML = `<div class="container">${ui.AccountPage(user, sortNewestOrders(orders), auth.isManager())}</div>`;
+        document.getElementById('logout-btn').addEventListener('click', logout);
+    };
+}
+
+const sortNewestOrders = orders => [...orders].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+function logout() {
+    auth.clearSession();
+    updateAccountLink();
+    toast('Đã đăng xuất. Hẹn gặp lại bạn! 👋', 'info');
+    window.location.hash = '#/';
+}
+
 // ===================== Sự kiện chung trên các trang =====================
+
+// Nút "Hiện/Ẩn" mật khẩu
+app.addEventListener('click', (e) => {
+    const btn = e.target.closest('.toggle-password');
+    if (!btn) return;
+    const input = btn.previousElementSibling;
+    const show = input.type === 'password';
+    input.type = show ? 'text' : 'password';
+    btn.textContent = show ? 'Ẩn' : 'Hiện';
+    btn.setAttribute('aria-label', show ? 'Ẩn mật khẩu' : 'Hiện mật khẩu');
+});
 
 // Nút "Sao chép" số tài khoản / số tiền / nội dung chuyển khoản
 app.addEventListener('click', async (e) => {
@@ -1075,6 +1226,7 @@ async function init() {
     if (window.innerWidth < 768) document.getElementById('header-search-input').placeholder = 'Tìm kiếm...';
     updateCartIcon();
     wishlist.updateWishCount();
+    updateAccountLink();
     // Nội dung do Quản lý chỉnh; lỗi tải thì dùng mặc định để trang vẫn chạy
     applySettings(await api.getSettings().catch(() => ({})));
     router();

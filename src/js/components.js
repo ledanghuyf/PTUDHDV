@@ -28,24 +28,15 @@ export const STREET_PATTERN = String.raw`(?=.*\p{L})[\p{L}\d\s\/.,'\-]{2,80}`;
 
 // Danh mục sản phẩm (id khớp với trường category trong db.json)
 export const CATEGORIES = [
-    { id: 'serum', name: 'Serum', desc: 'Tinh chất dưỡng da',
-      icon: '<path d="M32 8L28 20H36L32 8Z" fill="currentColor" opacity="0.3"/><rect x="24" y="20" width="16" height="4" rx="1" fill="currentColor"/><path d="M26 24H38V52C38 54.2 36.2 56 34 56H30C27.8 56 26 54.2 26 52V24Z" fill="currentColor" opacity="0.7"/><circle cx="32" cy="40" r="6" fill="currentColor" opacity="0.4"/>' },
-    { id: 'kem-duong', name: 'Kem Dưỡng', desc: 'Dưỡng ẩm chuyên sâu',
-      icon: '<ellipse cx="32" cy="44" rx="18" ry="12" fill="currentColor" opacity="0.7"/><ellipse cx="32" cy="36" rx="18" ry="8" fill="currentColor"/><path d="M20 36V44M44 36V44" stroke="currentColor" stroke-width="2" opacity="0.5"/>' },
-    { id: 'sua-rua-mat', name: 'Sữa Rửa Mặt', desc: 'Làm sạch dịu nhẹ',
-      icon: '<path d="M24 16H40L42 20H22L24 16Z" fill="currentColor"/><rect x="22" y="20" width="20" height="36" rx="4" fill="currentColor" opacity="0.7"/><circle cx="32" cy="38" r="8" fill="currentColor" opacity="0.4"/><path d="M28 28H36" stroke="white" stroke-width="2" stroke-linecap="round"/>' },
-    { id: 'chong-nang', name: 'Chống Nắng', desc: 'Bảo vệ da',
-      icon: '<circle cx="32" cy="24" r="12" fill="currentColor" opacity="0.4"/><path d="M32 8V12M32 36V40M44 24H48M16 24H20M41 15L44 12M20 36L23 33M44 36L41 33M20 12L23 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><rect x="24" y="42" width="16" height="14" rx="3" fill="currentColor" opacity="0.7"/><rect x="28" y="38" width="8" height="6" fill="currentColor"/>' },
-    { id: 'mat-na', name: 'Mặt Nạ', desc: 'Chăm sóc đặc biệt',
-      icon: '<ellipse cx="32" cy="36" rx="20" ry="16" fill="currentColor" opacity="0.7"/><ellipse cx="24" cy="32" rx="4" ry="3" fill="white" opacity="0.6"/><ellipse cx="40" cy="32" rx="4" ry="3" fill="white" opacity="0.6"/><path d="M28 42C28 42 30 44 32 44C34 44 36 42 36 42" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.6"/><path d="M16 28C16 28 20 20 32 20C44 20 48 28 48 28" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>' },
-    { id: 'toner', name: 'Toner', desc: 'Cân bằng da',
-      icon: '<rect x="22" y="12" width="20" height="8" rx="2" fill="currentColor"/><path d="M24 20H40V52C40 54.2 38.2 56 36 56H28C25.8 56 24 54.2 24 52V20Z" fill="currentColor" opacity="0.7"/><path d="M28 32L36 32M28 40L36 40" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.5"/><circle cx="32" cy="48" r="3" fill="white" opacity="0.4"/>' },
-    { id: 'tay-trang', name: 'Tẩy Trang', desc: 'Làm sạch lớp trang điểm',
-      icon: '<rect x="12" y="20" width="16" height="6" rx="2" fill="currentColor"/><path d="M14 26H26V52C26 54.2 24.2 56 22 56H18C15.8 56 14 54.2 14 52V26Z" fill="currentColor" opacity="0.7"/><circle cx="44" cy="42" r="12" fill="currentColor" opacity="0.4"/><circle cx="44" cy="42" r="6" stroke="white" stroke-width="2" opacity="0.6"/>' },
-    { id: 'son-moi', name: 'Son Môi', desc: 'Son thỏi, son kem, tint',
-      icon: '<path d="M26 30V16L38 10V30Z" fill="currentColor" opacity="0.8"/><rect x="24" y="30" width="16" height="8" rx="1" fill="currentColor" opacity="0.4"/><rect x="21" y="38" width="22" height="18" rx="3" fill="currentColor"/>' },
-    { id: 'trang-diem', name: 'Trang Điểm', desc: 'Cushion, kem nền, mascara',
-      icon: '<circle cx="28" cy="38" r="16" fill="currentColor" opacity="0.7"/><circle cx="28" cy="38" r="10" fill="currentColor" opacity="0.35"/><rect x="44" y="12" width="6" height="30" rx="3" fill="currentColor" transform="rotate(20 47 27)"/><rect x="46" y="40" width="8" height="14" rx="2" fill="currentColor" opacity="0.6" transform="rotate(20 50 47)"/>' },
+    { id: 'serum', name: 'Serum' },
+    { id: 'kem-duong', name: 'Kem Dưỡng' },
+    { id: 'sua-rua-mat', name: 'Sữa Rửa Mặt' },
+    { id: 'chong-nang', name: 'Chống Nắng' },
+    { id: 'mat-na', name: 'Mặt Nạ' },
+    { id: 'toner', name: 'Toner' },
+    { id: 'tay-trang', name: 'Tẩy Trang' },
+    { id: 'son-moi', name: 'Son Môi' },
+    { id: 'trang-diem', name: 'Trang Điểm' },
 ];
 
 export const CATEGORY_NAMES = Object.fromEntries(CATEGORIES.map(c => [c.id, c.name]));
@@ -1014,24 +1005,6 @@ export function HomePage(settings, brands = [], products = []) {
         ${ServiceStrip(settings)}
         ${PromoTiles(products)}
 
-        <section class="band category-section">
-            <div class="container">
-                <div class="section-head">
-                    <h2 class="section-title">Danh mục nổi bật</h2>
-                    <a href="#/products" class="see-all">Tất cả sản phẩm →</a>
-                </div>
-                <div class="category-grid" id="category-grid">
-                    ${CATEGORIES.map(c => `
-                        <a class="category-card" data-category="${c.id}" href="#/products?category=${c.id}">
-                            <span class="category-icon"><svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">${c.icon}</svg></span>
-                            <h3 class="category-name">${c.name}</h3>
-                            <p class="category-count">${c.desc}</p>
-                        </a>
-                    `).join('')}
-                </div>
-            </div>
-        </section>
-
         <section class="band band-deal sale-section">
             <div class="container">
                 <div class="section-head">
@@ -1047,19 +1020,6 @@ export function HomePage(settings, brands = [], products = []) {
             <div class="brand-track"><div class="brand-row">${marquee}</div><div class="brand-row" aria-hidden="true">${marquee}</div></div>
         </section>` : ''}
 
-        <section class="band featured-products">
-            <div class="container">
-                <div class="section-head">
-                    <h2 class="section-title">Sản phẩm nổi bật</h2>
-                    <div class="carousel-controls">
-                        <button class="carousel-nav prev" id="carousel-prev" aria-label="Xem sản phẩm trước">‹</button>
-                        <button class="carousel-nav next" id="carousel-next" aria-label="Xem sản phẩm tiếp theo">›</button>
-                    </div>
-                </div>
-                <div class="featured-products-container" id="featured-product-list"></div>
-            </div>
-        </section>
-
         <section class="band recommend-section">
             <div class="container">
                 <div class="section-head">
@@ -1070,5 +1030,134 @@ export function HomePage(settings, brands = [], products = []) {
                 <div class="load-more-wrapper"><a href="#/products" class="btn btn-outline">Xem tất cả 100+ sản phẩm</a></div>
             </div>
         </section>
+    `;
+}
+
+// ===================== Đăng nhập / Đăng ký / Tài khoản =====================
+
+/**
+ * Trang đăng nhập + đăng ký (2 tab)
+ * @param {'login'|'register'} mode
+ */
+export function AuthPage(mode = 'login') {
+    const isLogin = mode === 'login';
+    return `
+        <div class="auth-page">
+            <div class="auth-card">
+                <div class="auth-tabs" role="tablist">
+                    <a href="#/dang-nhap" role="tab" class="${isLogin ? 'active' : ''}" aria-selected="${isLogin}">Đăng nhập</a>
+                    <a href="#/dang-ky" role="tab" class="${isLogin ? '' : 'active'}" aria-selected="${!isLogin}">Đăng ký</a>
+                </div>
+                ${isLogin ? `
+                <form id="login-form" class="auth-form">
+                    <h1 class="auth-title">Chào mừng trở lại 💕</h1>
+                    <p class="auth-lead">Đăng nhập để đặt hàng nhanh hơn và xem lại đơn đã mua. Quản lý cửa hàng cũng đăng nhập tại đây.</p>
+                    <div class="form-group">
+                        <label for="login-id">Email, số điện thoại hoặc tên tài khoản</label>
+                        <input type="text" id="login-id" name="identifier" required autocomplete="username" placeholder="VD: ten@gmail.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Mật khẩu</label>
+                        <div class="password-field">
+                            <input type="password" id="login-password" name="password" required autocomplete="current-password" placeholder="Nhập mật khẩu">
+                            <button type="button" class="toggle-password" aria-label="Hiện mật khẩu">Hiện</button>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-block">Đăng nhập</button>
+                    <p class="auth-switch">Chưa có tài khoản? <a href="#/dang-ky">Đăng ký ngay</a></p>
+                </form>` : `
+                <form id="register-form" class="auth-form">
+                    <h1 class="auth-title">Tạo tài khoản mới ✨</h1>
+                    <p class="auth-lead">Lưu thông tin giao hàng, xem lịch sử đơn và nhận ưu đãi dành cho thành viên.</p>
+                    <div class="form-group">
+                        <label for="reg-name">Họ và tên <span class="required">*</span></label>
+                        <input type="text" id="reg-name" name="name" required maxlength="80" autocomplete="name">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="reg-email">Email <span class="required">*</span></label>
+                            <input type="email" id="reg-email" name="email" required maxlength="100" autocomplete="email" placeholder="ten@gmail.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="reg-phone">Số điện thoại <span class="required">*</span></label>
+                            <input type="tel" id="reg-phone" name="phone" required pattern="0[0-9]{9,10}" inputmode="numeric" autocomplete="tel" placeholder="0901234567"
+                                   data-pattern-message="Số điện thoại phải bắt đầu bằng 0 và gồm 10–11 chữ số.">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="reg-password">Mật khẩu <span class="required">*</span></label>
+                            <div class="password-field">
+                                <input type="password" id="reg-password" name="password" required minlength="8" autocomplete="new-password" placeholder="Tối thiểu 8 ký tự">
+                                <button type="button" class="toggle-password" aria-label="Hiện mật khẩu">Hiện</button>
+                            </div>
+                            <small>Ít nhất 8 ký tự, có cả chữ và số.</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="reg-confirm">Nhập lại mật khẩu <span class="required">*</span></label>
+                            <input type="password" id="reg-confirm" name="confirm" required autocomplete="new-password" placeholder="Nhập lại mật khẩu">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-block">Đăng ký</button>
+                    <p class="auth-switch">Đã có tài khoản? <a href="#/dang-nhap">Đăng nhập</a></p>
+                </form>`}
+            </div>
+            <div class="auth-perks" aria-hidden="true">
+                <h2>Thành viên Cosmetics Store</h2>
+                <ul>
+                    <li>🛍️ Đặt hàng nhanh, tự điền thông tin giao hàng</li>
+                    <li>📦 Theo dõi mọi đơn hàng ở một nơi</li>
+                    <li>💗 Lưu sản phẩm yêu thích</li>
+                    <li>🎟️ Dùng mã giảm giá cho thành viên</li>
+                </ul>
+            </div>
+        </div>
+    `;
+}
+
+/**
+ * Trang tài khoản: thông tin cá nhân + lịch sử đơn hàng
+ */
+export function AccountPage(user, orders, isManagerUser) {
+    const badge = s => `<span class="status-badge">${escapeHtml(s || ORDER_STATUS.PENDING)}</span>`;
+    return `
+        <div class="account-page">
+            <aside class="account-card">
+                <div class="account-avatar" aria-hidden="true">${escapeHtml(String(user.name || '?').trim().split(/\s+/).pop().charAt(0).toUpperCase())}</div>
+                <h1 class="account-name">${escapeHtml(user.name)}</h1>
+                <p class="account-role">${isManagerUser ? 'Quản lý cửa hàng' : 'Thành viên'}</p>
+                <dl class="account-info">
+                    ${user.email ? `<dt>Email</dt><dd>${escapeHtml(user.email)}</dd>` : ''}
+                    ${user.phone ? `<dt>Điện thoại</dt><dd>${escapeHtml(user.phone)}</dd>` : ''}
+                    ${user.username ? `<dt>Tên tài khoản</dt><dd>${escapeHtml(user.username)}</dd>` : ''}
+                </dl>
+                ${isManagerUser ? '<a href="#/admin" class="btn btn-block">Vào trang quản lý</a>' : ''}
+                <button type="button" class="btn btn-secondary btn-block" id="logout-btn">Đăng xuất</button>
+            </aside>
+            <section class="account-orders">
+                <h2>Đơn hàng của tôi</h2>
+                ${orders.length ? `
+                <div class="table-wrap">
+                    <table class="admin-table">
+                        <thead><tr><th>Mã đơn</th><th>Ngày đặt</th><th>Sản phẩm</th><th>Tổng tiền</th><th>Trạng thái</th></tr></thead>
+                        <tbody>
+                            ${orders.map(o => `
+                                <tr>
+                                    <td><a class="order-link" href="#/order/${encodeURIComponent(o.id)}">#${escapeHtml(orderCodeOf(o))}</a></td>
+                                    <td>${new Date(o.timestamp).toLocaleDateString('vi-VN')}</td>
+                                    <td>${(o.items || []).reduce((n, i) => n + i.quantity, 0)} sản phẩm</td>
+                                    <td><strong>${formatPrice(o.totalAmount)}</strong></td>
+                                    <td>${badge(o.status)}</td>
+                                </tr>`).join('')}
+                        </tbody>
+                    </table>
+                </div>` : `
+                <div class="cart-empty">
+                    <h2>Bạn chưa có đơn hàng nào</h2>
+                    <p>Khám phá các sản phẩm đang giảm giá nhé 💄</p>
+                    <a href="#/products?sort=discount" class="btn">Xem khuyến mãi</a>
+                </div>`}
+            </section>
+        </div>
     `;
 }
