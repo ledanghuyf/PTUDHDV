@@ -29,6 +29,10 @@ export const CATEGORIES = [
       icon: '<rect x="22" y="12" width="20" height="8" rx="2" fill="currentColor"/><path d="M24 20H40V52C40 54.2 38.2 56 36 56H28C25.8 56 24 54.2 24 52V20Z" fill="currentColor" opacity="0.7"/><path d="M28 32L36 32M28 40L36 40" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.5"/><circle cx="32" cy="48" r="3" fill="white" opacity="0.4"/>' },
     { id: 'tay-trang', name: 'Tẩy Trang', desc: 'Làm sạch lớp trang điểm',
       icon: '<rect x="12" y="20" width="16" height="6" rx="2" fill="currentColor"/><path d="M14 26H26V52C26 54.2 24.2 56 22 56H18C15.8 56 14 54.2 14 52V26Z" fill="currentColor" opacity="0.7"/><circle cx="44" cy="42" r="12" fill="currentColor" opacity="0.4"/><circle cx="44" cy="42" r="6" stroke="white" stroke-width="2" opacity="0.6"/>' },
+    { id: 'son-moi', name: 'Son Môi', desc: 'Son thỏi, son kem, tint',
+      icon: '<path d="M26 30V16L38 10V30Z" fill="currentColor" opacity="0.8"/><rect x="24" y="30" width="16" height="8" rx="1" fill="currentColor" opacity="0.4"/><rect x="21" y="38" width="22" height="18" rx="3" fill="currentColor"/>' },
+    { id: 'trang-diem', name: 'Trang Điểm', desc: 'Cushion, kem nền, mascara',
+      icon: '<circle cx="28" cy="38" r="16" fill="currentColor" opacity="0.7"/><circle cx="28" cy="38" r="10" fill="currentColor" opacity="0.35"/><rect x="44" y="12" width="6" height="30" rx="3" fill="currentColor" transform="rotate(20 47 27)"/><rect x="46" y="40" width="8" height="14" rx="2" fill="currentColor" opacity="0.6" transform="rotate(20 50 47)"/>' },
 ];
 
 export const CATEGORY_NAMES = Object.fromEntries(CATEGORIES.map(c => [c.id, c.name]));
@@ -219,13 +223,13 @@ export function ProductDetail(product, reviews) {
                     </ul>
                     ${product.sourceUrl ? `
                         <p class="product-source">Thông tin, hình ảnh và giá tham khảo từ
-                            <a href="${product.sourceUrl}" target="_blank" rel="noopener noreferrer">Pharmacity</a></p>` : ''}
+                            <a href="${product.sourceUrl}" target="_blank" rel="noopener noreferrer">${product.sourceName || 'Pharmacity'}</a></p>` : ''}
                 </div>
             </div>
 
             <section class="product-description">
                 <h2>Mô tả sản phẩm</h2>
-                <p>${product.description_long || product.description_short || 'Không có mô tả'}</p>
+                ${DescriptionBody(product.description_long || product.description_short || 'Không có mô tả')}
             </section>
 
             <section class="reviews-section">
@@ -264,6 +268,11 @@ export function ProductDetail(product, reviews) {
 
         <section class="related-products" id="related-products"></section>
     `;
+}
+
+// Mô tả trong db.json là văn bản thường hoặc HTML đã làm sạch (h3, p, ul, li, strong) do cửa hàng soạn
+function DescriptionBody(text) {
+    return `<div class="description-body">${text.trim().startsWith('<') ? text : `<p>${text}</p>`}</div>`;
 }
 
 export function ReviewList(reviews) {
@@ -455,10 +464,12 @@ export function BankTransferBox(order) {
     if (!isBankConfigured()) {
         return '<div class="bank-box"><p>Cửa hàng chưa thiết lập tài khoản nhận tiền. Vui lòng liên hệ hotline để được hướng dẫn thanh toán.</p></div>';
     }
-    const { bankId, accountNo, accountName } = SHOP.bank;
+    const { bankId, bankName, accountNo, accountName } = SHOP.bank;
     const content = transferContent(order.id);
+    // Quick Link của VietQR.io: ảnh QR chuẩn NAPAS 247, miễn phí, không cần API key
     const qr = `https://img.vietqr.io/image/${encodeURIComponent(bankId)}-${encodeURIComponent(accountNo)}-compact2.png`
         + `?amount=${order.totalAmount}&addInfo=${encodeURIComponent(content)}&accountName=${encodeURIComponent(accountName)}`;
+    const copy = value => `<button type="button" class="copy-btn" data-copy="${escapeHtml(value)}">Sao chép</button>`;
 
     return `
         <div class="bank-box">
@@ -466,13 +477,14 @@ export function BankTransferBox(order) {
             <div class="bank-info">
                 <h3>Quét mã để chuyển khoản</h3>
                 <dl>
-                    <dt>Ngân hàng</dt><dd>${escapeHtml(bankId)}</dd>
-                    <dt>Số tài khoản</dt><dd><strong>${escapeHtml(accountNo)}</strong></dd>
+                    <dt>Ngân hàng</dt><dd>${escapeHtml(bankName || bankId)}</dd>
+                    <dt>Số tài khoản</dt><dd><strong>${escapeHtml(accountNo)}</strong> ${copy(accountNo)}</dd>
                     <dt>Chủ tài khoản</dt><dd>${escapeHtml(accountName)}</dd>
-                    <dt>Số tiền</dt><dd><strong>${formatPrice(order.totalAmount)}</strong></dd>
-                    <dt>Nội dung</dt><dd><strong id="transfer-content">${escapeHtml(content)}</strong></dd>
+                    <dt>Số tiền</dt><dd><strong>${formatPrice(order.totalAmount)}</strong> ${copy(order.totalAmount)}</dd>
+                    <dt>Nội dung</dt><dd><strong id="transfer-content">${escapeHtml(content)}</strong> ${copy(content)}</dd>
                 </dl>
-                <p class="bank-note">Vui lòng ghi đúng nội dung chuyển khoản. Đơn hàng được xác nhận khi cửa hàng nhận được tiền.</p>
+                <p class="bank-note">Mở app ngân hàng bất kỳ → Quét QR: số tiền và nội dung được điền sẵn. Chuyển khoản nhanh 24/7 qua NAPAS,
+                    hầu hết ngân hàng miễn phí khi chuyển qua app. Vui lòng giữ đúng nội dung để cửa hàng đối soát đơn.</p>
             </div>
         </div>
     `;
@@ -516,67 +528,110 @@ export function OrderSuccess(order) {
 }
 
 /**
- * Hình minh hoạ banner: hoa, lá, bong bóng và lấp lánh (SVG tự vẽ, không dùng ảnh sản phẩm)
+ * Hình minh hoạ banner: bộ mỹ phẩm (son, serum, chai dưỡng, hũ kem, tuýp) trên bục, kèm hoa lá lấp lánh.
+ * SVG tự vẽ để khách nhìn là biết cửa hàng bán mỹ phẩm.
  */
 function HeroArt() {
-    const petals = (n, href, offset = 0) =>
-        Array.from({ length: n }, (_, i) => `<use href="${href}" transform="rotate(${offset + (360 / n) * i})"/>`).join('');
+    const petals = n => Array.from({ length: n }, (_, i) => `<use href="#petal" transform="rotate(${(360 / n) * i})"/>`).join('');
     // Lớp ngoài giữ vị trí (transform attribute), lớp trong mang animation CSS
     const sparkle = (x, y, s, cls = '') =>
         `<g transform="translate(${x} ${y}) scale(${s})"><path class="sparkle ${cls}" d="M0-20C2-6 6-2 20 0 6 2 2 6 0 20-2 6-6 2-20 0-6-2-2-6 0-20z"/></g>`;
     const flower = (x, y, s, cls) => `
         <g transform="translate(${x} ${y}) scale(${s})">
-            <g class="flower ${cls}">
-                <g fill="url(#petalOuter)">${petals(6, '#petal')}</g>
-                <g fill="url(#petalInner)" transform="scale(0.62)">${petals(6, '#petal', 30)}</g>
-                <circle r="30" fill="url(#pollen)"/>
-                <g fill="#E89B3C" opacity="0.7"><circle cx="-9" cy="-6" r="3"/><circle cx="8" cy="-9" r="3"/><circle cx="10" cy="8" r="3"/><circle cx="-6" cy="10" r="3"/><circle cx="0" cy="0" r="3"/></g>
+            <g class="${cls}">
+                <g fill="url(#petalFill)">${petals(5)}</g>
+                <circle r="16" fill="#FFE7A8"/>
             </g>
         </g>`;
 
     return `
-        <svg viewBox="0 0 520 480" xmlns="http://www.w3.org/2000/svg">
+        <svg viewBox="0 0 560 430" xmlns="http://www.w3.org/2000/svg">
             <defs>
-                <path id="petal" d="M0 0C46-34 52-104 0-150-52-104-46-34 0 0z"/>
+                <path id="petal" d="M0 0C26-20 30-60 0-86-30-60-26-20 0 0z"/>
                 <path id="leaf" d="M0 0C30-20 70-20 100 0 70 20 30 20 0 0z"/>
-                <linearGradient id="petalOuter" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0" stop-color="#FFB8D0"/><stop offset="1" stop-color="#EC5F95"/>
-                </linearGradient>
-                <linearGradient id="petalInner" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0" stop-color="#FFF0F5"/><stop offset="1" stop-color="#FF9CC0"/>
-                </linearGradient>
-                <radialGradient id="pollen"><stop offset="0" stop-color="#FFF4C7"/><stop offset="1" stop-color="#FFC979"/></radialGradient>
-                <radialGradient id="glow"><stop offset="0" stop-color="#fff" stop-opacity="0.9"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
-                <linearGradient id="leafFill" x1="0" y1="0" x2="1" y2="0">
-                    <stop offset="0" stop-color="#9FCBB0"/><stop offset="1" stop-color="#D5EBDD"/>
-                </linearGradient>
+                <linearGradient id="petalFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFD3E2"/><stop offset="1" stop-color="#F06C9B"/></linearGradient>
+                <radialGradient id="glow"><stop offset="0" stop-color="#fff" stop-opacity="0.95"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+                <linearGradient id="leafFill" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#8FC3A3"/><stop offset="1" stop-color="#D5EBDD"/></linearGradient>
+                <linearGradient id="podium" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFD0E1"/><stop offset="0.5" stop-color="#FFF1F6"/><stop offset="1" stop-color="#F7B5CD"/></linearGradient>
+                <linearGradient id="roseGold" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#E9A57F"/><stop offset="0.45" stop-color="#FBD9C2"/><stop offset="1" stop-color="#D88C66"/></linearGradient>
+                <linearGradient id="silver" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#B9B4BC"/><stop offset="0.5" stop-color="#F4F2F5"/><stop offset="1" stop-color="#A9A3AD"/></linearGradient>
+                <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FBB9D1"/><stop offset="1" stop-color="#E0528A"/></linearGradient>
+                <linearGradient id="milk" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#FFD9E7"/></linearGradient>
+                <linearGradient id="bullet" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#F0578E"/><stop offset="1" stop-color="#A81E55"/></linearGradient>
             </defs>
 
-            <circle cx="270" cy="245" r="215" fill="url(#glow)"/>
-            <circle cx="270" cy="245" r="182" fill="none" stroke="#fff" stroke-width="2" stroke-dasharray="4 10" opacity="0.8"/>
+            <circle cx="290" cy="225" r="205" fill="url(#glow)"/>
+            <circle cx="290" cy="225" r="178" fill="none" stroke="#fff" stroke-width="2" stroke-dasharray="4 10" opacity="0.8"/>
 
+            <!-- Lá mọc sau bộ sản phẩm -->
             <g fill="url(#leafFill)">
-                <use href="#leaf" transform="translate(270 250) rotate(-35) scale(1.5)"/>
-                <use href="#leaf" transform="translate(270 250) rotate(200) scale(1.3)"/>
-                <use href="#leaf" transform="translate(270 250) rotate(140) scale(1.1)"/>
+                <use href="#leaf" transform="translate(300 330) rotate(-62) scale(1.75)"/>
+                <use href="#leaf" transform="translate(300 330) rotate(-118) scale(1.55)"/>
+                <use href="#leaf" transform="translate(300 330) rotate(-90) scale(1.25)"/>
             </g>
 
-            ${flower(270, 245, 1, 'flower-main')}
-            ${flower(440, 105, 0.42, 'flower-small')}
-            ${flower(92, 385, 0.36, 'flower-small flower-delay')}
+            <!-- Bục trưng bày -->
+            <ellipse cx="290" cy="388" rx="200" ry="26" fill="#F3A9C5"/>
+            <rect x="90" y="352" width="400" height="36" fill="url(#podium)"/>
+            <ellipse cx="290" cy="352" rx="200" ry="26" fill="#fff"/>
+
+            <g class="cosmetics">
+                <!-- Chai sữa dưỡng có vòi nhấn -->
+                <rect x="166" y="150" width="32" height="22" rx="4" fill="url(#roseGold)"/>
+                <rect x="178" y="124" width="8" height="28" fill="url(#roseGold)"/>
+                <rect x="160" y="108" width="44" height="18" rx="6" fill="url(#roseGold)"/>
+                <rect x="198" y="112" width="34" height="9" rx="3" fill="url(#roseGold)"/>
+                <rect x="148" y="170" width="68" height="182" rx="20" fill="url(#milk)" stroke="#F4C3D6" stroke-width="2"/>
+                <rect x="160" y="230" width="44" height="76" rx="6" fill="#fff" stroke="#F06C9B" stroke-width="1.5"/>
+                <text x="182" y="262" text-anchor="middle" font-family="Georgia, serif" font-size="11" font-weight="700" fill="#C92F6F">BODY</text>
+                <text x="182" y="278" text-anchor="middle" font-family="Georgia, serif" font-size="9" fill="#C92F6F">LOTION</text>
+
+                <!-- Lọ serum ống nhỏ giọt -->
+                <rect x="262" y="128" width="28" height="56" rx="14" fill="#FFF4F8" stroke="#EBB6CA" stroke-width="2"/>
+                <rect x="252" y="180" width="48" height="20" rx="5" fill="url(#silver)"/>
+                <rect x="258" y="198" width="36" height="14" fill="url(#silver)"/>
+                <rect x="234" y="210" width="84" height="142" rx="22" fill="url(#glass)" opacity="0.95"/>
+                <rect x="244" y="224" width="10" height="104" rx="5" fill="#fff" opacity="0.45"/>
+                <rect x="252" y="262" width="56" height="48" rx="6" fill="#fff" opacity="0.92"/>
+                <text x="280" y="285" text-anchor="middle" font-family="Georgia, serif" font-size="12" font-weight="700" fill="#C92F6F">SERUM</text>
+                <text x="280" y="300" text-anchor="middle" font-family="Georgia, serif" font-size="8" fill="#7D5F6D">Vitamin C</text>
+
+                <!-- Hũ kem -->
+                <rect x="338" y="300" width="122" height="52" rx="12" fill="url(#milk)" stroke="#F4C3D6" stroke-width="2"/>
+                <rect x="338" y="316" width="122" height="18" fill="#C92F6F" opacity="0.88"/>
+                <text x="399" y="329" text-anchor="middle" font-family="Georgia, serif" font-size="10" letter-spacing="3" fill="#fff">CREAM</text>
+                <rect x="332" y="274" width="134" height="30" rx="10" fill="url(#roseGold)"/>
+
+                <!-- Thỏi son -->
+                <path d="M108 284V246l26-16v54z" fill="url(#bullet)"/>
+                <rect x="104" y="280" width="34" height="22" rx="2" fill="#F2C29E"/>
+                <rect x="98" y="300" width="46" height="54" rx="5" fill="url(#roseGold)"/>
+                <rect x="98" y="312" width="46" height="4" fill="#fff" opacity="0.5"/>
+
+                <!-- Tuýp kem chống nắng nằm phía trước -->
+                <g transform="rotate(-6 420 372)">
+                    <path d="M352 360h124a12 12 0 0 1 0 24H352l-10-4v-16z" fill="#fff" stroke="#F4C3D6" stroke-width="2"/>
+                    <rect x="476" y="362" width="26" height="20" rx="4" fill="#F06C9B"/>
+                    <text x="410" y="376" text-anchor="middle" font-family="Georgia, serif" font-size="9" font-weight="700" fill="#C92F6F">SPF 50+</text>
+                </g>
+            </g>
+
+            ${flower(470, 110, 0.5, 'flower-small')}
+            ${flower(72, 190, 0.42, 'flower-small flower-delay')}
+            ${flower(520, 300, 0.32, 'flower-small')}
 
             <g fill="none" stroke="#fff" stroke-width="2.5" opacity="0.85">
-                <circle class="bubble" cx="90" cy="120" r="18"/>
-                <circle class="bubble bubble-delay" cx="455" cy="330" r="26"/>
-                <circle class="bubble" cx="400" cy="430" r="11"/>
-                <circle class="bubble bubble-delay" cx="140" cy="60" r="8"/>
+                <circle class="bubble" cx="110" cy="96" r="16"/>
+                <circle class="bubble bubble-delay" cx="400" cy="200" r="20"/>
+                <circle class="bubble" cx="60" cy="300" r="10"/>
+                <circle class="bubble bubble-delay" cx="360" cy="70" r="8"/>
             </g>
 
             <g fill="#fff">
-                ${sparkle(140, 210, 1.1)}
-                ${sparkle(410, 215, 0.8, 'sparkle-delay')}
-                ${sparkle(330, 60, 0.6)}
-                ${sparkle(210, 440, 0.7, 'sparkle-delay')}
+                ${sparkle(230, 90, 0.9)}
+                ${sparkle(440, 240, 0.7, 'sparkle-delay')}
+                ${sparkle(340, 130, 0.5)}
+                ${sparkle(60, 380, 0.6, 'sparkle-delay')}
             </g>
         </svg>
     `;
@@ -590,12 +645,12 @@ export function HomePage() {
         <section class="hero-section">
             <div class="container hero-container">
                 <div class="hero-content">
-                    <span class="hero-eyebrow">Beauty · Skincare · Chính hãng</span>
-                    <h1 class="hero-title">Rạng rỡ mỗi ngày<br><em>cùng làn da khỏe</em></h1>
-                    <p class="hero-subtitle">Serum, kem dưỡng, chống nắng, tẩy trang từ CeraVe, La Roche-Posay, Bioderma, Anessa, Cetaphil... Giá niêm yết rõ ràng, thanh toán khi nhận hàng hoặc chuyển khoản.</p>
+                    <span class="hero-eyebrow">Mỹ phẩm · Skincare · Makeup</span>
+                    <h1 class="hero-title">Mỹ phẩm chính hãng<br><em>cho làn da rạng rỡ</em></h1>
+                    <p class="hero-subtitle">Son môi, kem nền, serum, kem dưỡng, chống nắng, tẩy trang từ CeraVe, La Roche-Posay, Bioderma, Anessa, Cetaphil... Giá niêm yết rõ ràng, thanh toán khi nhận hàng hoặc chuyển khoản.</p>
                     <div class="hero-actions">
                         <a href="#/products" class="btn btn-lg hero-cta">Mua sắm ngay</a>
-                        <a href="#/products?category=chong-nang" class="btn btn-lg btn-light">Kem chống nắng</a>
+                        <a href="#/products?category=son-moi" class="btn btn-lg btn-light">Son &amp; trang điểm</a>
                     </div>
                     <ul class="hero-features">
                         <li>Hàng chính hãng</li>
