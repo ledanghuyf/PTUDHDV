@@ -14,9 +14,13 @@
 Ứng dụng web bán mỹ phẩm dạng SPA (Single Page Application - không reload trang).
 
 ### Phía khách hàng
-- Trang chủ: banner động (chữ đổi luân phiên, bộ mỹ phẩm bay nhẹ, vệt sáng, lấp lánh), dải thương hiệu chạy ngang,
-  danh mục, **Đang giảm giá**, sản phẩm nổi bật, tất cả sản phẩm
-- Thanh thông báo khuyến mãi đầu trang, ô tìm kiếm trên header
+- Trang chủ: banner động (chữ đổi luân phiên, bộ mỹ phẩm bay nhẹ, vệt sáng, lấp lánh) → dải cam kết dịch vụ
+  → 3 ô khuyến mãi theo nhóm → **Deal hot** → dải thương hiệu chạy ngang → **Gợi ý cho bạn**
+  (sản phẩm Quản lý gắn "Nổi bật" lên trước)
+- Header 2 tầng: logo, ô tìm kiếm, tài khoản, tra cứu đơn, yêu thích, giỏ hàng + thanh danh mục; thanh thông báo khuyến mãi
+- **Đăng nhập / Đăng ký** (`#/dang-nhap`, `#/dang-ky`): đăng nhập bằng email, số điện thoại hoặc tên tài khoản;
+  trang **Tài khoản** (`#/tai-khoan`) xem thông tin và lịch sử đơn hàng; khi đã đăng nhập, thanh toán tự điền
+  họ tên / SĐT / email và đơn được gắn với tài khoản
 - Danh sách sản phẩm: tìm kiếm, lọc theo danh mục / **thương hiệu** / khoảng giá, sắp xếp (bán chạy, đánh giá,
   **giảm giá nhiều**, giá), nút **Xóa bộ lọc**
 - Giá khuyến mãi: giá gốc gạch ngang + nhãn **-x%** + "Tiết kiệm ..."
@@ -34,7 +38,7 @@
 - Email xác nhận đơn và email khi đơn được duyệt/hủy (Google Apps Script)
 - Giao diện điện thoại: thanh điều hướng nhanh, không tràn ngang
 
-### Trang quản lý (`#/admin`, tài khoản **Quản lý**)
+### Trang quản lý (`#/admin`, tài khoản vai trò **Quản lý**)
 - **Đơn hàng**: duyệt (trừ kho chính thức) / từ chối / đã giao; thống kê; tự cập nhật mỗi 10 giây và báo đơn mới
   (thông báo trên trang, số đơn chờ trên tab, thông báo trình duyệt nếu bật) + email bản sao về Gmail cửa hàng
 - **Sản phẩm**: thêm / sửa (tên, thương hiệu, danh mục, giá bán, giá gốc, tồn kho, ảnh, mô tả, nhãn Nổi bật) / xóa;
@@ -43,9 +47,18 @@
 - **Nội dung trang**: thanh thông báo, chữ trên banner, các cụm từ đổi luân phiên, phí ship, ngưỡng freeship,
   hotline, email liên hệ — lưu là khách thấy ngay
 
-Tài khoản mặc định: `quanly`. Mật khẩu lưu dạng mã băm SHA-256 trong `adminAccounts` ở `src/js/config.js`
-(muốn thêm tài khoản thì thêm một dòng; hướng dẫn tạo mã ngay trong file). Đây là chặn ở giao diện;
-json-server không có đăng nhập nên API vẫn mở — đủ cho đồ án, không dùng cho cửa hàng thật.
+- **Tài khoản**: danh sách khách hàng & quản lý, số đơn của từng người; **cấp / gỡ quyền quản lý**
+  (không tự gỡ quyền của chính mình)
+
+### Tài khoản & bảo mật
+- Tài khoản lưu ở bảng `users` trong `src/db.json`; vai trò `customer` (khách) hoặc `manager` (quản lý).
+  Khách tự đăng ký; quyền quản lý chỉ do Quản lý cấp.
+- Quản lý mặc định: tài khoản **`quanly`**, mật khẩu **`(đã ẩn)`** (đăng nhập ở trang Đăng nhập chung, xong vào thẳng
+  trang quản lý). Muốn đổi: tạo tài khoản mới, cấp quyền quản lý, rồi gỡ quyền tài khoản cũ.
+- Mật khẩu băm **PBKDF2-SHA256** (100.000 vòng) với muối riêng từng tài khoản, không lưu mật khẩu gốc;
+  mật khẩu cần ít nhất 8 ký tự, có cả chữ và số.
+- Hạn chế: kiểm tra mật khẩu và phân quyền chạy ở trình duyệt vì json-server không có đăng nhập — API `/users`,
+  `/orders` vẫn đọc/ghi được trực tiếp. Đủ cho đồ án; cửa hàng thật cần backend kiểm tra mật khẩu và cấp token.
 
 ## Quy trình đặt hàng & duyệt đơn
 
@@ -71,7 +84,7 @@ Dữ liệu cấu hình nằm trong `src/db.json`: `settings` (nội dung trang,
 ```bash
 npm test
 ```
-Chạy kiểm tra tính tiền (mã giảm giá, phí ship) và script gửi email.
+Chạy kiểm tra tính tiền (mã giảm giá, phí ship), băm mật khẩu / quy tắc mật khẩu và script gửi email.
 
 ## Nguồn dữ liệu
 100 sản phẩm thuộc 9 danh mục (serum, kem dưỡng, sữa rửa mặt, chống nắng, mặt nạ, toner, tẩy trang, son môi, trang điểm)

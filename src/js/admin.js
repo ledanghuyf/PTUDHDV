@@ -1,16 +1,16 @@
 /**
  * Admin Module - Trang quản lý (#/admin) cho tài khoản Quản lý:
- * Đơn hàng (duyệt/hủy/giao), Sản phẩm (thêm/sửa/xóa), Mã giảm giá, Nội dung trang (banner, thông báo, phí ship...)
+ * Đơn hàng (duyệt/hủy/giao), Sản phẩm (thêm/sửa/xóa), Mã giảm giá, Nội dung trang (banner, thông báo, phí ship...),
+ * Tài khoản (xem người dùng, cấp/gỡ quyền quản lý). Đăng nhập dùng chung trang #/dang-nhap (auth.js).
  *
- * shortcut: đăng nhập chỉ chặn ở giao diện, json-server không có xác thực nên API vẫn mở;
+ * shortcut: phân quyền chỉ chặn ở giao diện, json-server không có xác thực nên API vẫn mở;
  * muốn bảo mật thật cần backend có đăng nhập + phân quyền.
  */
 
 import * as api from './api.js';
 import * as ui from './components.js';
-import { SHOP } from './config.js';
+import * as auth from './auth.js';
 
-const SESSION_KEY = 'admin_session';
 const POLL_MS = 10000;
 const LOW_STOCK = 5;
 
@@ -21,80 +21,29 @@ const SECTIONS = [
     ['products', 'Sản phẩm'],
     ['coupons', 'Mã giảm giá'],
     ['settings', 'Nội dung trang'],
+    ['users', 'Tài khoản'],
 ];
 
 const COUPON_TYPES = { percent: 'Giảm %', fixed: 'Giảm tiền', freeship: 'Miễn phí ship' };
-
-async function sha256Hex(text) {
-    const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
-    return [...new Uint8Array(digest)].map(b => b.toString(16).padStart(2, '0')).join('');
-}
-
-function currentAccount() {
-    try {
-        const s = JSON.parse(sessionStorage.getItem(SESSION_KEY) || 'null');
-        return (SHOP.adminAccounts || []).find(a => s && a.username === s.username && a.passwordHash === s.hash) || null;
-    } catch {
-        return null;
-    }
-}
 
 const sortNewest = orders => [...orders].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 const canAskNotify = () => 'Notification' in window && Notification.permission === 'default';
 
 /**
- * @param {Object} ctx - { app, toast, setTitle, router, getSettings, applySettings, notifyCustomer }
+ * @param {Object} ctx - { app, toast, getSettings, applySettings, notifyCustomer, logout }
  */
 export function createAdmin(ctx) {
-    const { app, toast, setTitle, router } = ctx;
+    const { app, toast } = ctx;
     let pollTimer = null;
     let orders = [];
     let products = [];
     let coupons = [];
+    let users = [];
     let orderTab = 'pending';
     let productFilter = { q: '', category: '', stock: '' };
     let section = 'orders';
 
     const stop = () => clearInterval(pollTimer);
-
-    // ===================== Đăng nhập =====================
-
-    function LoginPage() {
-        return `
-            <div class="admin-login">
-                <h1 class="page-title">Đăng nhập quản lý</h1>
-                <form id="admin-login-form" class="checkout-form">
-                    <div class="form-group">
-                        <label for="admin-username">Tài khoản</label>
-                        <input type="text" id="admin-username" required autocomplete="username" placeholder="VD: quanly">
-                    </div>
-                    <div class="form-group">
-                        <label for="admin-password">Mật khẩu</label>
-                        <input type="password" id="admin-password" required autocomplete="current-password">
-                    </div>
-                    <button type="submit" class="btn">Đăng nhập</button>
-                </form>
-            </div>
-        `;
-    }
-
-    function mountLogin() {
-        setTitle('Đăng nhập quản lý');
-        app.innerHTML = `<div class="container">${LoginPage()}</div>`;
-        document.getElementById('admin-login-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const username = document.getElementById('admin-username').value.trim();
-            const hash = await sha256Hex(document.getElementById('admin-password').value);
-            const account = (SHOP.adminAccounts || []).find(a => a.username === username && a.passwordHash === hash);
-            if (!account) {
-                toast('Sai tài khoản hoặc mật khẩu.', 'error');
-                return;
-            }
-            try { sessionStorage.setItem(SESSION_KEY, JSON.stringify({ username, hash })); } catch { /* ẩn danh: đăng nhập lại mỗi lần */ }
-            toast(`Xin chào ${account.displayName}!`);
-            router();
-        });
-    }
 
     // ===================== Khung trang quản lý =====================
 
@@ -105,7 +54,7 @@ export function createAdmin(ctx) {
                 <div class="admin-head">
                     <div>
                         <h1 class="page-title">Trang quản lý</h1>
-                        <p class="admin-hello">Xin chào <strong>${esc(account.displayName)}</strong> · tự cập nhật đơn mới mỗi 10 giây</p>
+                        <p class="admin-hello">Xin chào <strong>${esc(account.name)}</strong> · tự cập nhật đơn mới mỗi 10 giây</p>
                     </div>
                     <div class="admin-head-actions">
                         ${canAskNotify() ? '<button type="button" class="btn btn-secondary" id="admin-notify-btn">Bật thông báo trình duyệt</button>' : ''}
@@ -123,32 +72,46 @@ export function createAdmin(ctx) {
     }
 
     function render() {
-        const account = currentAccount();
+        const account = auth.currentUser();
         const pending = orders.filter(isPendingOrder).length;
         document.title = `${pending ? `(${pending}) ` : ''}Quản lý | Cosmetics Store`;
-        const body = { orders: OrdersSection, products: ProductsSection, coupons: CouponsSection, settings: SettingsSection }[section]();
+        const body = { orders: OrdersSection, products: ProductsSection, coupons: CouponsSection, settings: SettingsSection, users: UsersSection }[section]();
         app.innerHTML = `<div class="container">${Shell(account, body)}</div>`;
         if (section === 'settings') bindSettingsForm();
         if (section === 'coupons') bindCouponForm();
         if (section === 'products') bindProductFilters();
     }
 
-    // Luôn tải đơn (để đếm đơn chờ duyệt); sản phẩm/mã giảm giá chỉ tải khi mở mục đó
+    // Luôn tải đơn (để đếm đơn chờ duyệt); sản phẩm/mã giảm giá/tài khoản chỉ tải khi mở mục đó
     async function loadData() {
-        const [o, p, c] = await Promise.all([
+        const [o, p, c, u] = await Promise.all([
             api.getOrders(),
             section === 'products' ? api.getAllProducts() : products,
             section === 'coupons' ? api.getCoupons() : coupons,
+            section === 'users' ? api.getUsers() : users,
         ]);
         orders = sortNewest(o);
         products = p;
         coupons = c;
+        users = u;
     }
 
     /** Route #/admin hoặc #/admin/<mục> */
     async function view(sub) {
         stop();
-        if (!currentAccount()) return mountLogin;
+        // Kiểm tra lại quyền với dữ liệu mới nhất (Quản lý khác có thể vừa gỡ quyền)
+        const me = auth.currentUser();
+        if (me?.role === auth.ROLES.MANAGER) {
+            const fresh = await api.findUser(me.email || me.username || me.phone).catch(() => null);
+            if (fresh) auth.setSession(fresh);
+            else auth.clearSession();
+        }
+        if (!auth.isManager()) {
+            // Khách hàng đã đăng nhập không có quyền; chưa đăng nhập thì mời đăng nhập rồi quay lại đây
+            if (auth.currentUser()) toast('Tài khoản của bạn không có quyền quản lý.', 'error');
+            window.location.hash = auth.currentUser() ? '#/' : '#/dang-nhap?next=admin';
+            return null;
+        }
         section = SECTIONS.some(([key]) => key === sub) ? sub : 'orders';
         await loadData();
         return () => {
@@ -628,6 +591,54 @@ export function createAdmin(ctx) {
         });
     }
 
+    // ===================== Tài khoản =====================
+
+    function UsersSection() {
+        const me = auth.currentUser();
+        const orderCount = id => orders.filter(o => o.userId === id).length;
+        const managers = users.filter(u => u.role === auth.ROLES.MANAGER).length;
+        return `
+            <div class="admin-stats">
+                <div><span>Tài khoản</span><strong>${users.length}</strong></div>
+                <div><span>Khách hàng</span><strong>${users.length - managers}</strong></div>
+                <div><span>Quản lý</span><strong>${managers}</strong></div>
+            </div>
+            <div class="table-wrap">
+                <table class="admin-table">
+                    <thead><tr><th>Họ tên</th><th>Liên hệ</th><th>Vai trò</th><th>Ngày tạo</th><th>Đơn hàng</th><th></th></tr></thead>
+                    <tbody>
+                        ${users.map(u => `
+                            <tr>
+                                <td><strong>${esc(u.name)}</strong>${u.username ? `<br><small>@${esc(u.username)}</small>` : ''}</td>
+                                <td>${esc(u.email)}${u.phone ? `<br><small>${esc(u.phone)}</small>` : ''}</td>
+                                <td><span class="status-badge">${auth.ROLE_NAMES[u.role] || esc(u.role)}</span></td>
+                                <td>${u.createdAt ? new Date(u.createdAt).toLocaleDateString('vi-VN') : '—'}</td>
+                                <td>${orderCount(u.id)}</td>
+                                <td>${u.id === me.id ? '<small>(bạn)</small>' : `<button type="button" class="btn btn-secondary" data-user-role="${esc(u.id)}">
+                                    ${u.role === auth.ROLES.MANAGER ? 'Gỡ quyền quản lý' : 'Cấp quyền quản lý'}</button>`}</td>
+                            </tr>`).join('')}
+                    </tbody>
+                </table>
+            </div>
+            <p class="admin-note-text">Khách tự đăng ký tại trang Đăng ký. Quyền quản lý chỉ do Quản lý cấp tại đây; không thể tự gỡ quyền của chính mình.</p>
+        `;
+    }
+
+    async function toggleManager(id) {
+        const user = users.find(u => String(u.id) === id);
+        if (!user || user.id === auth.currentUser().id) return;
+        const toManager = user.role !== auth.ROLES.MANAGER;
+        if (!confirm(`${toManager ? 'Cấp' : 'Gỡ'} quyền quản lý cho "${user.name}"?`)) return;
+        try {
+            await api.updateUser(user.id, { role: toManager ? auth.ROLES.MANAGER : auth.ROLES.CUSTOMER });
+            toast(`Đã ${toManager ? 'cấp' : 'gỡ'} quyền quản lý cho ${user.name}.`);
+            users = await api.getUsers();
+            render();
+        } catch (error) {
+            toast(error.message, 'error');
+        }
+    }
+
     // ===================== Sự kiện chung =====================
 
     async function handleClick(e) {
@@ -636,15 +647,15 @@ export function createAdmin(ctx) {
         const d = target.dataset;
         if (d.tab) { orderTab = d.tab; render(); }
         else if (target.id === 'admin-logout-btn') {
-            try { sessionStorage.removeItem(SESSION_KEY); } catch { /* bỏ qua */ }
             stop();
-            router();
+            ctx.logout();
         } else if (target.id === 'admin-notify-btn') { await Notification.requestPermission(); render(); }
         else if (d.action) await runOrderAction(target);
         else if (d.productEdit !== undefined) openProductDialog(d.productEdit);
         else if (d.productDelete) await deleteProduct(d.productDelete);
         else if (d.couponToggle) await couponAction(d.couponToggle, 'toggle');
         else if (d.couponDelete) await couponAction(d.couponDelete, 'delete');
+        else if (d.userRole) await toggleManager(d.userRole);
     }
 
     return { view, stop, handleClick };

@@ -52,6 +52,35 @@ export const createProduct = (data) =>
 export const deleteProduct = (id) =>
     request(`/products/${id}`, 'Không thể xóa sản phẩm.', { method: 'DELETE' });
 
+// ===== Tài khoản (khách hàng / quản lý) =====
+/**
+ * Tìm tài khoản theo email, số điện thoại hoặc tên đăng nhập
+ * @returns {Promise<Object|null>}
+ */
+export async function findUser(identifier) {
+    const value = identifier.trim();
+    const email = value.toLowerCase();
+    const phone = value.replace(/\D/g, '');
+    // Lọc ở trình duyệt: json-server đổi "?phone=0911222333" thành số 911222333 nên không khớp SĐT có số 0 đầu.
+    // shortcut: tải cả danh sách tài khoản mỗi lần đăng nhập, ổn với vài nghìn tài khoản; lớn hơn cần backend tìm kiếm.
+    const users = await request('/users', 'Không thể kiểm tra tài khoản. Vui lòng thử lại.');
+    return users.find(u => (u.email && u.email === email)
+        || (phone.length >= 10 && u.phone === phone)
+        || (u.username && u.username === value)) || null;
+}
+
+export const getUsers = () =>
+    request('/users', 'Không thể tải danh sách tài khoản.');
+
+export const createUser = (data) =>
+    request('/users', 'Không thể tạo tài khoản. Vui lòng thử lại.', sendJson('POST', data));
+
+export const updateUser = (id, data) =>
+    request(`/users/${id}`, 'Không thể cập nhật tài khoản.', sendJson('PATCH', data));
+
+export const getOrdersByUser = (userId) =>
+    request(`/orders?userId=${encodeURIComponent(userId)}`, 'Không thể tải đơn hàng của bạn.');
+
 // ===== Cấu hình nội dung trang (thanh thông báo, banner, phí ship...) =====
 export const getSettings = () =>
     request('/settings', 'Không thể tải cấu hình cửa hàng.');
@@ -65,8 +94,10 @@ export const getCoupons = () =>
 
 /** @returns {Promise<Object|null>} Mã giảm giá theo code (không phân biệt hoa thường) hoặc null */
 export async function findCoupon(code) {
-    const list = await request(`/coupons?code=${encodeURIComponent(code.trim().toUpperCase())}`, 'Không thể kiểm tra mã giảm giá.');
-    return list[0] || null;
+    // Lọc ở trình duyệt: json-server đổi "?code=2024" thành số nên không khớp mã toàn chữ số
+    const wanted = code.trim().toUpperCase();
+    const list = await request('/coupons', 'Không thể kiểm tra mã giảm giá.');
+    return list.find(c => String(c.code).toUpperCase() === wanted) || null;
 }
 
 export const createCoupon = (data) =>

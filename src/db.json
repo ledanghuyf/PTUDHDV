@@ -1687,5 +1687,18 @@
       "description": "Giảm 50.000₫ cho đơn từ 500.000₫"
     }
   ],
+  "users": [
+    {
+      "id": "u-quanly",
+      "username": "quanly",
+      "name": "Quản lý",
+      "email": "quanly@cosmeticsstore.com",
+      "phone": "",
+      "role": "manager",
+      "salt": "71a2d4b1306dd82478d01125da898a30",
+      "passwordHash": "323ad89facea513718b731531f942475d5086e665b710ca262ea417ab33b7d24",
+      "createdAt": "2026-11-17T00:00:00.000Z"
+    }
+  ],
   "$schema": "./node_modules/json-server/schema.json"
 }

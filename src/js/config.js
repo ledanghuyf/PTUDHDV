@@ -17,13 +17,7 @@ export const SHOP = {
     // URL Web app Google Apps Script gửi email xác nhận đơn bằng Gmail của cửa hàng (miễn phí)
     // Cách lấy URL: xem setup/email-script/README.md. VD: 'https://script.google.com/macros/s/AKfy.../exec'
     emailScriptUrl: '',
-
-    // Tài khoản trang Quản lý (#/admin). Mật khẩu lưu dạng SHA-256, muốn thêm tài khoản thì thêm một dòng.
-    // Tạo mã mật khẩu: node -e "console.log(require('crypto').createHash('sha256').update('MAT_KHAU_MOI').digest('hex'))"
-    // shortcut: chỉ chặn ở giao diện, json-server vẫn mở; muốn bảo mật thật cần backend có đăng nhập.
-    adminAccounts: [
-        { username: 'quanly', displayName: 'Quản lý', passwordHash: '' },
-    ],
+    // Tài khoản khách hàng & quản lý lưu trong db.json (bảng "users"), đăng nhập ở #/dang-nhap — xem auth.js
 };
 
 // Nội dung mặc định khi db.json chưa có "settings" (Quản lý sửa ở #/admin/settings)

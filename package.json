@@ -1,6 +1,7 @@
 {
   "name": "mypham-cosmetics-store",
   "private": true,
+  "type": "module",
   "description": "Website bán mỹ phẩm SPA - kiểm tra tự động",
   "scripts": {
     "test": "node --test \"tests/*.test.mjs\" && node setup/email-script/check.js"
