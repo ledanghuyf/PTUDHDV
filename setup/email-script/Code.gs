@@ -9,6 +9,11 @@
 
 const NOTIFY_SHOP = true;         // true = gửi bản sao mỗi đơn về Gmail cửa hàng
 const MAX_PER_EMAIL_PER_HOUR = 5; // chống lạm dụng: tối đa số email/giờ cho một địa chỉ nhận
+const STATUS_NOTES = {
+    'Chờ duyệt': 'cửa hàng sẽ kiểm tra và duyệt đơn, duyệt xong sẽ đóng gói và giao hàng ngay.',
+    'Đang giao hàng': 'đơn đã được duyệt và đang trên đường giao tới bạn.',
+    'Đã hủy': 'đơn hàng đã bị hủy. Liên hệ cửa hàng nếu bạn cần hỗ trợ.',
+};
 
 function doPost(e) {
     try {
@@ -22,8 +27,11 @@ function doPost(e) {
         const sent = Number(cache.get(key) || 0);
         if (sent >= MAX_PER_EMAIL_PER_HOUR) return reply({ ok: false, error: 'Gửi quá nhiều email tới địa chỉ này, thử lại sau.' });
 
-        const options = { to: d.to_email, subject: `Xác nhận đơn hàng #${d.order_id} - ${d.shop_name}`, htmlBody: buildHtml(d), name: d.shop_name };
-        if (NOTIFY_SHOP) options.bcc = Session.getEffectiveUser().getEmail();
+        const isNew = !d.order_status || d.order_status === 'Chờ duyệt';
+        const subject = isNew ? `Xác nhận đơn hàng #${d.order_id} - ${d.shop_name}` : `Đơn hàng #${d.order_id}: ${d.order_status} - ${d.shop_name}`;
+        const options = { to: d.to_email, subject, htmlBody: buildHtml(d), name: d.shop_name };
+        // Bản sao chỉ gửi khi có đơn mới (báo cửa hàng vào duyệt), không gửi lại khi cập nhật trạng thái
+        if (NOTIFY_SHOP && isNew) options.bcc = Session.getEffectiveUser().getEmail();
         MailApp.sendEmail(options);
 
         cache.put(key, String(sent + 1), 3600);
@@ -57,6 +65,9 @@ function buildHtml(d) {
             <td style="padding:8px 0;border-bottom:1px solid #f6d9e5">${esc(i.name)} <span style="color:#7d5f6d">× ${esc(i.quantity)}</span></td>
             <td style="padding:8px 0;border-bottom:1px solid #f6d9e5;text-align:right;white-space:nowrap">${esc(i.total)}</td>
         </tr>`).join('');
+    // Tạm tính / giảm giá / phí ship (nếu web gửi kèm)
+    const lines = (Array.isArray(d.summary_lines) ? d.summary_lines.slice(0, 5) : []).map(l => `
+        <tr><td style="padding:4px 0;color:#7d5f6d">${esc(l.label)}</td><td style="padding:4px 0;text-align:right">${esc(l.value)}</td></tr>`).join('');
 
     return `
     <div style="font-family:Arial,sans-serif;max-width:560px;margin:auto;color:#3a1d2c">
@@ -64,8 +75,8 @@ function buildHtml(d) {
         <p>Chào <strong>${esc(d.to_name)}</strong>,</p>
         <p>Cảm ơn bạn đã đặt hàng lúc ${esc(d.order_date)}. Mã đơn của bạn: <strong>#${esc(d.order_id)}</strong></p>
         ${d.order_status ? `<p style="padding:8px 12px;background:#fff0f6;border-radius:8px">Trạng thái: <strong>${esc(d.order_status)}</strong> —
-            cửa hàng sẽ kiểm tra và duyệt đơn, duyệt xong sẽ đóng gói và giao hàng ngay.</p>` : ''}
-        <table style="width:100%;border-collapse:collapse;font-size:14px">${rows}
+            ${esc(STATUS_NOTES[d.order_status] || '')}</p>` : ''}
+        <table style="width:100%;border-collapse:collapse;font-size:14px">${rows}${lines}
             <tr><td style="padding:10px 0"><strong>Tổng cộng</strong></td>
                 <td style="padding:10px 0;text-align:right;color:#c92f6f"><strong>${esc(d.order_total)}</strong></td></tr>
         </table>

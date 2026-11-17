@@ -27,6 +27,12 @@ assert.strictEqual(sent[0].to, 'khach@gmail.com');
 assert.strictEqual(sent[0].bcc, 'shop@gmail.com');
 assert.ok(sent[0].htmlBody.includes('&lt;b&gt;Lan&lt;/b&gt;') && !sent[0].htmlBody.includes('<script>'));
 
+// email cập nhật trạng thái: không gửi bản sao cho cửa hàng, tiêu đề ghi trạng thái, có dòng phí ship
+assert.deepStrictEqual(post({ ...order, to_email: 'b@gmail.com', order_status: 'Đang giao hàng', summary_lines: [{ label: 'Phí vận chuyển', value: 'Miễn phí' }] }), { ok: true });
+assert.strictEqual(sent[1].bcc, undefined);
+assert.ok(sent[1].subject.includes('Đang giao hàng') && sent[1].htmlBody.includes('Phí vận chuyển'));
+sent.splice(1, 1);
+
 // dữ liệu sai bị từ chối, không gửi
 assert.strictEqual(post({ ...order, to_email: 'not-an-email' }).ok, false);
 assert.strictEqual(post({ ...order, items: [] }).ok, false);

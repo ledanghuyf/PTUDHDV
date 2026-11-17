@@ -18,10 +18,25 @@ export const SHOP = {
     // Cách lấy URL: xem setup/email-script/README.md. VD: 'https://script.google.com/macros/s/AKfy.../exec'
     emailScriptUrl: '',
 
-    // Mật khẩu trang Quản trị (#/admin), lưu dạng SHA-256. Đã đổi mật khẩu mặc định.
-    // Tạo mã mới: node -e "console.log(require('crypto').createHash('sha256').update('MAT_KHAU_MOI').digest('hex'))"
+    // Tài khoản trang Quản lý (#/admin). Mật khẩu lưu dạng SHA-256, muốn thêm tài khoản thì thêm một dòng.
+    // Tạo mã mật khẩu: node -e "console.log(require('crypto').createHash('sha256').update('MAT_KHAU_MOI').digest('hex'))"
     // shortcut: chỉ chặn ở giao diện, json-server vẫn mở; muốn bảo mật thật cần backend có đăng nhập.
-    adminPasswordHash: '',
+    adminAccounts: [
+        { username: 'quanly', displayName: 'Quản lý', passwordHash: '' },
+    ],
+};
+
+// Nội dung mặc định khi db.json chưa có "settings" (Quản lý sửa ở #/admin/settings)
+export const DEFAULT_SETTINGS = {
+    announcement: '',
+    heroEyebrow: 'Mỹ phẩm · Skincare · Makeup',
+    heroTitle: 'Mỹ phẩm chính hãng',
+    heroRotating: ['làn da rạng rỡ'],
+    heroSubtitle: 'Son môi, kem nền, serum, kem dưỡng, chống nắng, tẩy trang chính hãng. Thanh toán khi nhận hàng hoặc chuyển khoản.',
+    shippingFee: 30000,
+    freeShipThreshold: 499000,
+    hotline: '1900-xxxx',
+    contactEmail: 'contact@cosmeticsstore.com',
 };
 
 export const isBankConfigured = () => Boolean(SHOP.bank.bankId && SHOP.bank.accountNo && SHOP.bank.accountName);

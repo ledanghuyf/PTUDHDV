@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+    <div class="announcement-bar" id="announcement-bar" hidden></div>
     <header>
         <nav class="navbar" aria-label="Điều hướng chính">
             <div class="container">
@@ -31,9 +32,26 @@
                     </span>
                 </a>
 
+                <form class="header-search" id="header-search" role="search">
+                    <label for="header-search-input" class="visually-hidden">Tìm sản phẩm</label>
+                    <input type="search" id="header-search-input" name="q" placeholder="Tìm son, serum..." autocomplete="off">
+                    <button type="submit" aria-label="Tìm kiếm">
+                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.8"/><path d="M16 16l4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+                    </button>
+                </form>
+
                 <ul class="nav-links">
-                    <li><a href="#/">Trang chủ</a></li>
-                    <li><a href="#/products">Sản phẩm</a></li>
+                    <li class="nav-text"><a href="#/">Trang chủ</a></li>
+                    <li class="nav-text"><a href="#/products">Sản phẩm</a></li>
+                    <li class="nav-text"><a href="#/tra-cuu">Tra cứu đơn</a></li>
+                    <li>
+                        <a href="#/wishlist" class="cart-link wish-link" aria-label="Sản phẩm yêu thích">
+                            <span class="cart-icon">
+                                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 20s-7-4.4-8.7-8.7C2.2 8.4 4.1 5 7.4 5c1.9 0 3.4 1 4.6 2.6C13.2 6 14.7 5 16.6 5c3.3 0 5.2 3.4 4.1 6.3C19 15.6 12 20 12 20z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                            </span>
+                            <span class="cart-count is-empty" id="wishCount">0</span>
+                        </a>
+                    </li>
                     <li>
                         <a href="#/cart" class="cart-link" aria-label="Giỏ hàng">
                             <span class="cart-icon">
@@ -47,6 +65,10 @@
                     </li>
                 </ul>
             </div>
+        </nav>
+        <!-- Điều hướng dạng chữ cho màn hình nhỏ -->
+        <nav class="mobile-nav" aria-label="Điều hướng nhanh">
+            <a href="#/">Trang chủ</a><a href="#/products">Sản phẩm</a><a href="#/tra-cuu">Tra cứu đơn</a><a href="#/wishlist">Yêu thích</a>
         </nav>
     </header>
 
@@ -79,9 +101,10 @@
 
                 <div class="footer-col">
                     <h4>Liên hệ</h4>
-                    <p>Email: <a href="mailto:contact@cosmeticsstore.com">contact@cosmeticsstore.com</a></p>
-                    <p>Hotline: 1900-xxxx</p>
-                    <p><a href="#/admin">Quản trị đơn hàng</a></p>
+                    <p>Email: <a id="footer-email" href="mailto:contact@cosmeticsstore.com">contact@cosmeticsstore.com</a></p>
+                    <p>Hotline: <span id="footer-hotline">1900-xxxx</span></p>
+                    <p><a href="#/tra-cuu">Tra cứu đơn hàng</a></p>
+                    <p><a href="#/admin">Đăng nhập quản lý</a></p>
                 </div>
 
                 <div class="footer-col footer-student">

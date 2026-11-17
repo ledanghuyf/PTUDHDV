@@ -464,7 +464,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/kem-chong-nang-garnier-tuoi-mat-super-uv-cooling-watergel-sunscreen-spf50-pa",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://cdn.hstatic.net/products/1000006063/bth_90a47fccdba54e93bd97a8227f0314f2.jpg"
+      "imageSource": "https://cdn.hstatic.net/products/1000006063/bth_90a47fccdba54e93bd97a8227f0314f2.jpg",
+      "originalPrice": 169000
     },
     {
       "id": "32",
@@ -480,7 +481,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/b-o-m-green-uv-sun-off-50ml",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://product.hstatic.net/1000006063/product/2_0230c39b35eb465ea6bd3c7c20e22679.jpg"
+      "imageSource": "https://product.hstatic.net/1000006063/product/2_0230c39b35eb465ea6bd3c7c20e22679.jpg",
+      "originalPrice": 508000
     },
     {
       "id": "33",
@@ -496,7 +498,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/kem-chong-nang-bioderma-cho-da-dau-mun",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://product.hstatic.net/1000006063/product/sg-11134201-22100-c7uvn0nv03ived_0fd48d8cc764401cb80075d912864f3e.jpg"
+      "imageSource": "https://product.hstatic.net/1000006063/product/sg-11134201-22100-c7uvn0nv03ived_0fd48d8cc764401cb80075d912864f3e.jpg",
+      "originalPrice": 515000
     },
     {
       "id": "34",
@@ -512,7 +515,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/kem-chong-nang-skin1004-madagascar-centella-poremizing-velvet-finish-sunscreen",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://cdn.hstatic.net/products/1000006063/download__9__aa7b2807abf4412a87e01f221bb52a13.jpg"
+      "imageSource": "https://cdn.hstatic.net/products/1000006063/download__9__aa7b2807abf4412a87e01f221bb52a13.jpg",
+      "originalPrice": 595000
     },
     {
       "id": "35",
@@ -528,7 +532,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/kem-chong-nang-ho-tro-giam-mun-acnes-blemish-control-sunscreen-50g",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://product.hstatic.net/1000006063/product/vn-11134201-23030-scu1mi2xkpov69_ea5a65254a374a0a89a267fd4eed714f.jpg"
+      "imageSource": "https://product.hstatic.net/1000006063/product/vn-11134201-23030-scu1mi2xkpov69_ea5a65254a374a0a89a267fd4eed714f.jpg",
+      "originalPrice": 180000
     },
     {
       "id": "36",
@@ -544,7 +549,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/kem-chong-nang-the-thao-banana-boat-sport-ultra-sunscreen-lotion-90ml",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://cdn.hstatic.net/products/1000006063/079656150483_-_front__1__2d1bee7662714645ac469b220ac915c8.jpg"
+      "imageSource": "https://cdn.hstatic.net/products/1000006063/079656150483_-_front__1__2d1bee7662714645ac469b220ac915c8.jpg",
+      "originalPrice": 249000
     },
     {
       "id": "37",
@@ -560,7 +566,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/kem-chong-nang-hatomugi-nang-tone-cho-da-dau-spf50-pa-70g",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://product.hstatic.net/1000006063/product/gel-chong-nang-hatomugi-nang-tong-mau-xanh-bac-ha-70g_7b4277bd758a4dd9b19f88343b4c32ce.jpg"
+      "imageSource": "https://product.hstatic.net/1000006063/product/gel-chong-nang-hatomugi-nang-tong-mau-xanh-bac-ha-70g_7b4277bd758a4dd9b19f88343b4c32ce.jpg",
+      "originalPrice": 199000
     },
     {
       "id": "38",
@@ -576,7 +583,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/caryophy-skin-repair-cream-50ml",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://cdn.hstatic.net/products/1000006063/vn-11134207-81ztc-mm9p8emyymf88d_e345bfee707648d4a1a434cb0b4c41ac.jpg"
+      "imageSource": "https://cdn.hstatic.net/products/1000006063/vn-11134207-81ztc-mm9p8emyymf88d_e345bfee707648d4a1a434cb0b4c41ac.jpg",
+      "originalPrice": 680000
     },
     {
       "id": "39",
@@ -592,7 +600,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/kem-duong-am-klairs-lam-diu-phuc-hoi-da-ban-dem",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://product.hstatic.net/1000006063/product/7f6261929e5123c838723395248e2b58_7e3a43e3b38142ceb5123f43c5c0f23a.jpeg"
+      "imageSource": "https://product.hstatic.net/1000006063/product/7f6261929e5123c838723395248e2b58_7e3a43e3b38142ceb5123f43c5c0f23a.jpeg",
+      "originalPrice": 465000
     },
     {
       "id": "40",
@@ -608,7 +617,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/kem-duong-cap-am-ho-tro-phuc-hoi-cang-bong-da-beplain-cica-pdrn-repair-cream",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://cdn.hstatic.net/products/1000006063/bthe_eb13f682c4e54482ad0a94153aef99f3.jpg"
+      "imageSource": "https://cdn.hstatic.net/products/1000006063/bthe_eb13f682c4e54482ad0a94153aef99f3.jpg",
+      "originalPrice": 698000
     },
     {
       "id": "41",
@@ -624,7 +634,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/kem-duong-olay-ho-tro-duong-sang-da-lam-mo-vet-tham-dom-nau-luminous-niacinamide-vitamin-c-moisturiser",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://cdn.hstatic.net/products/1000006063/hbth_024a2689d356471a87625b252e5be17c.jpg"
+      "imageSource": "https://cdn.hstatic.net/products/1000006063/hbth_024a2689d356471a87625b252e5be17c.jpg",
+      "originalPrice": 549000
     },
     {
       "id": "42",
@@ -640,7 +651,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/kem-duong-vichy-collagen-cai-thien-lao-hoa",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://product.hstatic.net/1000006063/product/vichy_ngay_f4f02af551cc450eb0353ef6cfcc7333.jpg"
+      "imageSource": "https://product.hstatic.net/1000006063/product/vichy_ngay_f4f02af551cc450eb0353ef6cfcc7333.jpg",
+      "originalPrice": 1300000
     },
     {
       "id": "43",
@@ -656,7 +668,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/curel-intensive-moisture-care-moisture-facial-cream-40g",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://product.hstatic.net/1000006063/product/curel_intensive_moisture_care_moisture_facial_cream_1_9126b02deed84617915504f00ee96abe.jpg"
+      "imageSource": "https://product.hstatic.net/1000006063/product/curel_intensive_moisture_care_moisture_facial_cream_1_9126b02deed84617915504f00ee96abe.jpg",
+      "originalPrice": 637200
     },
     {
       "id": "44",
@@ -672,7 +685,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/kem-duong-acnes-ho-tro-giam-mun-chuyen-sau-lab-acne-repair-cream-20g",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://cdn.hstatic.net/products/1000006063/bt_f1d6a26da06f461aa9c740909a2a7940.jpg"
+      "imageSource": "https://cdn.hstatic.net/products/1000006063/bt_f1d6a26da06f461aa9c740909a2a7940.jpg",
+      "originalPrice": 185000
     },
     {
       "id": "45",
@@ -688,7 +702,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/mat-na-duong-am-bao-ve-da-khoe-manh-klairs-rich-moist-soothing-tencel-sheet-mask",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://product.hstatic.net/1000006063/product/klairs_rich_moist_soothing_tencel_sheet_mask_94678ee3e2134354b5a039b569cff87e.jpg"
+      "imageSource": "https://product.hstatic.net/1000006063/product/klairs_rich_moist_soothing_tencel_sheet_mask_94678ee3e2134354b5a039b569cff87e.jpg",
+      "originalPrice": 65000
     },
     {
       "id": "46",
@@ -704,7 +719,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/mat-na-ngu-cho-moi-laneige-lip-sleeping-mask",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://cdn.hstatic.net/products/1000006063/apple_lime_5ce0fb2656344ce7a7315de85a7a013d.jpg"
+      "imageSource": "https://cdn.hstatic.net/products/1000006063/apple_lime_5ce0fb2656344ce7a7315de85a7a013d.jpg",
+      "originalPrice": 500000
     },
     {
       "id": "47",
@@ -720,7 +736,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/mat-na-rua-cocoon-chiet-xuat-bi-dao-giam-dau-mun",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://product.hstatic.net/1000006063/product/_da_dau_va_mun_an_chiet_xuat_bi_dao_cocoon_winter_melon_face_mask_30ml_e08b0831f32044c391c6b68c98b517ae.jpg"
+      "imageSource": "https://product.hstatic.net/1000006063/product/_da_dau_va_mun_an_chiet_xuat_bi_dao_cocoon_winter_melon_face_mask_30ml_e08b0831f32044c391c6b68c98b517ae.jpg",
+      "originalPrice": 145000
     },
     {
       "id": "48",
@@ -736,7 +753,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/mat-na-phoi-dua-emmie-by-happyskin-ho-tro-phuc-hoi-duong-min-da",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://cdn.hstatic.net/products/1000006063/download__14___1__f3a0b57e1b0c4650a648349c3d6a05a5.jpg"
+      "imageSource": "https://cdn.hstatic.net/products/1000006063/download__14___1__f3a0b57e1b0c4650a648349c3d6a05a5.jpg",
+      "originalPrice": 299000
     },
     {
       "id": "49",
@@ -752,7 +770,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/mat-na-ngu-belif-super-knights-multi-vitamin-mask-75ml",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://cdn.hstatic.net/products/1000006063/8809949538719_bf_sk_multi_vitamin_mask_75ml__y25__273d0c5ebcee4556a043e1c286c8f27f.jpg"
+      "imageSource": "https://cdn.hstatic.net/products/1000006063/8809949538719_bf_sk_multi_vitamin_mask_75ml__y25__273d0c5ebcee4556a043e1c286c8f27f.jpg",
+      "originalPrice": 850000
     },
     {
       "id": "50",
@@ -768,7 +787,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/mat-na-giay-jmsolution-mask",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://product.hstatic.net/1000006063/product/467802a379517330d85e247255b9c866_361c79256cb848c59ab6d67352d5633e.jpeg"
+      "imageSource": "https://product.hstatic.net/1000006063/product/467802a379517330d85e247255b9c866_361c79256cb848c59ab6d67352d5633e.jpeg",
+      "originalPrice": 40000
     },
     {
       "id": "51",
@@ -784,7 +804,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/mat-na-some-by-mi-yuja-niacin-30days-25g-blemish-care-serum-mask-1",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://product.hstatic.net/1000006063/product/somebymi_somebymi_yuja_niacin_blemish_care_serum_mask_full05_o893myrh_e2813d03581b4d4da292d68024507f3a.jpg"
+      "imageSource": "https://product.hstatic.net/1000006063/product/somebymi_somebymi_yuja_niacin_blemish_care_serum_mask_full05_o893myrh_e2813d03581b4d4da292d68024507f3a.jpg",
+      "originalPrice": 31000
     },
     {
       "id": "52",
@@ -800,7 +821,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/serumm-celimax-duong-am-ho-tro-phuc-hoi-lam-diu-the-real-noni-energy-ampoule",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://cdn.hstatic.net/products/1000006063/bth_8546f371d55e4d15a40351f9caaf7e60.jpg"
+      "imageSource": "https://cdn.hstatic.net/products/1000006063/bth_8546f371d55e4d15a40351f9caaf7e60.jpg",
+      "originalPrice": 644000
     },
     {
       "id": "53",
@@ -816,7 +838,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/the-cocoon-winter-melon-serum-70ml",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://cdn.hstatic.net/products/1000006063/new_project_db31a312d8eb440db31acb2cdb9bd0fc.jpg"
+      "imageSource": "https://cdn.hstatic.net/products/1000006063/new_project_db31a312d8eb440db31acb2cdb9bd0fc.jpg",
+      "originalPrice": 295000
     },
     {
       "id": "54",
@@ -832,7 +855,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/serum-skin1004-rau-ma-giam-mun-phuc-hoi-da",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://product.hstatic.net/1000006063/product/94f328f61fff8c56ebe40669cd06e1c2_731616bfd96241ed9ddcde132ca7ce58.jpg"
+      "imageSource": "https://product.hstatic.net/1000006063/product/94f328f61fff8c56ebe40669cd06e1c2_731616bfd96241ed9ddcde132ca7ce58.jpg",
+      "originalPrice": 610000
     },
     {
       "id": "55",
@@ -848,7 +872,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/serum-olay-ho-tro-duong-sang-da-mo-tham-mun",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://cdn.hstatic.net/products/1000006063/bt_d29e486d05014196bf4568bbb504007a.jpg"
+      "imageSource": "https://cdn.hstatic.net/products/1000006063/bt_d29e486d05014196bf4568bbb504007a.jpg",
+      "originalPrice": 549000
     },
     {
       "id": "56",
@@ -864,7 +889,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/neogen-dermalogy-real-vitamin-c-serum-32g",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://product.hstatic.net/1000006063/product/sg-11134201-22110-20u26n4ty0jvec_02f1a78441694228ad717b6711950d85.jpg"
+      "imageSource": "https://product.hstatic.net/1000006063/product/sg-11134201-22110-20u26n4ty0jvec_02f1a78441694228ad717b6711950d85.jpg",
+      "originalPrice": 615000
     },
     {
       "id": "57",
@@ -880,7 +906,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/serum-drceutics-tinh-chat-duong-cap-am-lam-diu-da-drceutics-dexpanthenol-10-centella-extract-ha",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://cdn.hstatic.net/products/1000006063/bt_759c2d28d2534aa5b14197f849dcf8dd.jpg"
+      "imageSource": "https://cdn.hstatic.net/products/1000006063/bt_759c2d28d2534aa5b14197f849dcf8dd.jpg",
+      "originalPrice": 210000
     },
     {
       "id": "58",
@@ -896,7 +923,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/serum-torriden-tinh-chat-rau-ma-lam-diu-da-giam-man-do-cho-da",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://cdn.hstatic.net/products/1000006063/bt__1__dbba7a6013a44e5680cb352397e66aff.jpg"
+      "imageSource": "https://cdn.hstatic.net/products/1000006063/bt__1__dbba7a6013a44e5680cb352397e66aff.jpg",
+      "originalPrice": 506000
     },
     {
       "id": "59",
@@ -912,7 +940,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/gel-rua-mat-eucerin-giam-dau-tri-mun",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://product.hstatic.net/1000006063/product/31323ew_4545078fcdfb49ccb579f04df34dece5.jpg"
+      "imageSource": "https://product.hstatic.net/1000006063/product/31323ew_4545078fcdfb49ccb579f04df34dece5.jpg",
+      "originalPrice": 392000
     },
     {
       "id": "60",
@@ -928,7 +957,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/sua-rua-mat-dang-gel-svr-danh-cho-da-nhay-cam",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://product.hstatic.net/1000006063/product/mini_svr_physiopure_gelee_moussante_-_gel_rua_mat_da_nhay_cam_tuyp_nho_7305221cb7904ce9be912794c2c35829.jpg"
+      "imageSource": "https://product.hstatic.net/1000006063/product/mini_svr_physiopure_gelee_moussante_-_gel_rua_mat_da_nhay_cam_tuyp_nho_7305221cb7904ce9be912794c2c35829.jpg",
+      "originalPrice": 398000
     },
     {
       "id": "61",
@@ -944,7 +974,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/sua-rua-mat-kose-softymo-duong-am-cleansing-foam-hyaluronic-acid",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://cdn.hstatic.net/products/1000006063/11_802d17b617804c3ca014d204a1bc4089.jpg"
+      "imageSource": "https://cdn.hstatic.net/products/1000006063/11_802d17b617804c3ca014d204a1bc4089.jpg",
+      "originalPrice": 139000
     },
     {
       "id": "62",
@@ -960,7 +991,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/sua-rua-mat-innisfree-duong-am-chiet-xuat-tu-tra-xanh-150g",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://product.hstatic.net/1000006063/product/bt_c7cda0608cde479db15a31a3f92ab7ef.jpg"
+      "imageSource": "https://product.hstatic.net/1000006063/product/bt_c7cda0608cde479db15a31a3f92ab7ef.jpg",
+      "originalPrice": 280000
     },
     {
       "id": "63",
@@ -992,7 +1024,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/sua-rua-mat-cerave-ho-tro-giam-mun-blemish-control-cleanser",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://product.hstatic.net/1000006063/product/88ml_38ef7306c0dd417ab18740f5815082f1.jpg"
+      "imageSource": "https://product.hstatic.net/1000006063/product/88ml_38ef7306c0dd417ab18740f5815082f1.jpg",
+      "originalPrice": 195000
     },
     {
       "id": "65",
@@ -1008,7 +1041,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/gel-rua-mat-cetaphil-gentle-exfoliating-sa-cleanser",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://cdn.hstatic.net/products/1000006063/new_project_5ac19b1d2341414a89fea538b611ab82.jpg"
+      "imageSource": "https://cdn.hstatic.net/products/1000006063/new_project_5ac19b1d2341414a89fea538b611ab82.jpg",
+      "originalPrice": 372000
     },
     {
       "id": "66",
@@ -1024,7 +1058,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/la-roche-posay-micellar-water-ultra-sensitive-skin",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://product.hstatic.net/1000006063/product/100ml_f86644c34dda4f5e8032e9c54e505e61.jpg"
+      "imageSource": "https://product.hstatic.net/1000006063/product/100ml_f86644c34dda4f5e8032e9c54e505e61.jpg",
+      "originalPrice": 579000
     },
     {
       "id": "67",
@@ -1040,7 +1075,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/nivea-micellar-water-200ml",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://product.hstatic.net/1000006063/product/z3393228246669_65703deef63bd6da7b48c7cf95e421f1_528306af245c427bb2f2f2d1de3aa0cd.jpg"
+      "imageSource": "https://product.hstatic.net/1000006063/product/z3393228246669_65703deef63bd6da7b48c7cf95e421f1_528306af245c427bb2f2f2d1de3aa0cd.jpg",
+      "originalPrice": 130000
     },
     {
       "id": "68",
@@ -1056,7 +1092,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/nuoc-tay-trang-cocoon-tu-nuoc-cat-hoa-hong",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://product.hstatic.net/1000006063/product/f0dd5f3d79c486a923a1bd913c808718_copy_b764912cb3524b34aae38b6f6d053fdf.jpg"
+      "imageSource": "https://product.hstatic.net/1000006063/product/f0dd5f3d79c486a923a1bd913c808718_copy_b764912cb3524b34aae38b6f6d053fdf.jpg",
+      "originalPrice": 245000
     },
     {
       "id": "69",
@@ -1072,7 +1109,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/dau-tay-trang-zakka-naturals-lam-sach-sau-100ml",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://cdn.hstatic.net/products/1000006063/8936209580550_-_front_e948ef22f58a496e9cc0f950716156e7.jpg"
+      "imageSource": "https://cdn.hstatic.net/products/1000006063/8936209580550_-_front_e948ef22f58a496e9cc0f950716156e7.jpg",
+      "originalPrice": 330000
     },
     {
       "id": "70",
@@ -1088,7 +1126,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/dau-tay-trang-lam-sach-sau-bioderma-sensibio-micellar-cleansing-oil-150ml",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://cdn.hstatic.net/products/1000006063/bt_f0421d7dacb14a1095327f0f694b5e51.jpg"
+      "imageSource": "https://cdn.hstatic.net/products/1000006063/bt_f0421d7dacb14a1095327f0f694b5e51.jpg",
+      "originalPrice": 565000
     },
     {
       "id": "71",
@@ -1104,7 +1143,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/b-o-m-eight-tea-cleansing-water-500ml",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://product.hstatic.net/1000006063/product/download__4__8c2701a5a4224ad7a15393e477650719.jpg"
+      "imageSource": "https://product.hstatic.net/1000006063/product/download__4__8c2701a5a4224ad7a15393e477650719.jpg",
+      "originalPrice": 478000
     },
     {
       "id": "72",
@@ -1120,7 +1160,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/nuoc-hoa-hong-curel-duong-am-cho-da-lao-hoa-140ml",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://product.hstatic.net/1000006063/product/5f63e5afedf7da2d946e3889c511e104_1064d6b565f64a0fb125c2fe038d0e5f.jpg"
+      "imageSource": "https://product.hstatic.net/1000006063/product/5f63e5afedf7da2d946e3889c511e104_1064d6b565f64a0fb125c2fe038d0e5f.jpg",
+      "originalPrice": 629400
     },
     {
       "id": "73",
@@ -1136,7 +1177,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/nuoc-hoa-hong-cap-am-bad-skin-hyaluronic-spa-toner",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://product.hstatic.net/1000006063/product/bt_100ml_9327b9b6d6ff4c4985082059aac15459.jpg"
+      "imageSource": "https://product.hstatic.net/1000006063/product/bt_100ml_9327b9b6d6ff4c4985082059aac15459.jpg",
+      "originalPrice": 250000
     },
     {
       "id": "74",
@@ -1152,7 +1194,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/nuoc-hoa-hong-d-alba-cai-thien-lo-chan-long-duong-am-vita-toning-serum-toner",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://cdn.hstatic.net/products/1000006063/bthe_db32c5ab752141e6811263920909588b.jpg"
+      "imageSource": "https://cdn.hstatic.net/products/1000006063/bthe_db32c5ab752141e6811263920909588b.jpg",
+      "originalPrice": 717600
     },
     {
       "id": "75",
@@ -1168,7 +1211,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/nuoc-can-bang-belif-lam-diu-aqua-bomb-frozen-toner-300ml",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://cdn.hstatic.net/products/1000006063/8809949520110_belif_aqua_bomb_-_frozen_toner_300ml_4ba81dbb5416432bb6c056b7a35401fc.jpg"
+      "imageSource": "https://cdn.hstatic.net/products/1000006063/8809949520110_belif_aqua_bomb_-_frozen_toner_300ml_4ba81dbb5416432bb6c056b7a35401fc.jpg",
+      "originalPrice": 690000
     },
     {
       "id": "76",
@@ -1184,7 +1228,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/nuoc-hoa-hong-klairs-danh-cho-da-nhay-cam-180ml",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://product.hstatic.net/1000006063/product/7116f9ec2c0423f262ef65450364075b_quot_ea89c16e35004962ae4e65be3ef1313f.jpg"
+      "imageSource": "https://product.hstatic.net/1000006063/product/7116f9ec2c0423f262ef65450364075b_quot_ea89c16e35004962ae4e65be3ef1313f.jpg",
+      "originalPrice": 435000
     },
     {
       "id": "77",
@@ -1200,7 +1245,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/nuoc-hoa-hong-bioderma-cho-da-nhay-cam-250ml",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://cdn.hstatic.net/products/1000006063/untitled-1_053f4609d3a448379fd985cdae0ddded.jpg"
+      "imageSource": "https://cdn.hstatic.net/products/1000006063/untitled-1_053f4609d3a448379fd985cdae0ddded.jpg",
+      "originalPrice": 465000
     },
     {
       "id": "78",
@@ -1216,7 +1262,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/nuoc-hoa-hong-duong-am-lam-diu-da-tuc-thi-torriden-dive-in-low-molecular-hyaluronic-acid-toner-300ml",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://product.hstatic.net/1000006063/product/biem_the_4f5fb06e4f3844bf88c2dc3a5e0facfc.jpg"
+      "imageSource": "https://product.hstatic.net/1000006063/product/biem_the_4f5fb06e4f3844bf88c2dc3a5e0facfc.jpg",
+      "originalPrice": 462000
     },
     {
       "id": "79",
@@ -1232,7 +1279,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/bang-phan-ma-hong-bat-sang-veecci-easy-blend-face-contouring-palette",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://cdn.hstatic.net/products/1000006063/mahong_c94d15025eb740cc9e0e493e7cbb7521.jpg"
+      "imageSource": "https://cdn.hstatic.net/products/1000006063/mahong_c94d15025eb740cc9e0e493e7cbb7521.jpg",
+      "originalPrice": 239000
     },
     {
       "id": "80",
@@ -1248,7 +1296,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/bang-che-khuyet-diem-silkygirl-da-nang-4-o-fix-it-concealer-palette",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://cdn.hstatic.net/products/1000006063/h1_16db73849a4546f79b3748263e1d86ca.png"
+      "imageSource": "https://cdn.hstatic.net/products/1000006063/h1_16db73849a4546f79b3748263e1d86ca.png",
+      "originalPrice": 208000
     },
     {
       "id": "81",
@@ -1264,7 +1313,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/bang-phan-mat-colorkey-7-o-mau-da-nang",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://cdn.hstatic.net/products/1000006063/bt_02_b8536d641ea1436f92b7428f9365d9ba.jpg"
+      "imageSource": "https://cdn.hstatic.net/products/1000006063/bt_02_b8536d641ea1436f92b7428f9365d9ba.jpg",
+      "originalPrice": 385000
     },
     {
       "id": "82",
@@ -1280,7 +1330,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/3ce-face-blush",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://product.hstatic.net/1000006063/product/93_d3108f0d4dba4f3e8780970cd241415e.png"
+      "imageSource": "https://product.hstatic.net/1000006063/product/93_d3108f0d4dba4f3e8780970cd241415e.png",
+      "originalPrice": 388000
     },
     {
       "id": "83",
@@ -1296,7 +1347,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/phan-nuoc-cang-bong-glamrr-q-vegan-super-glow-cushion",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://product.hstatic.net/1000006063/product/80697eba5242f1a8390bc007edc6c051.jpg_720x720q80.jpg__004a431fd2fa472a97b55650389cff54.jpg"
+      "imageSource": "https://product.hstatic.net/1000006063/product/80697eba5242f1a8390bc007edc6c051.jpg_720x720q80.jpg__004a431fd2fa472a97b55650389cff54.jpg",
+      "originalPrice": 650000
     },
     {
       "id": "84",
@@ -1312,7 +1364,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/mascara-dinh-hinh-mi-ukiss-little-flame-eyelash-primer-5g",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://cdn.hstatic.net/products/1000006063/bt_0587286e74f34baa9936010615a42365.jpg"
+      "imageSource": "https://cdn.hstatic.net/products/1000006063/bt_0587286e74f34baa9936010615a42365.jpg",
+      "originalPrice": 225000
     },
     {
       "id": "85",
@@ -1328,7 +1381,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/but-ke-mat-nuoc-24h-vacosi-waterproof-eyeliner-24h-vm29",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://cdn.hstatic.net/products/1000006063/bt_f753210c46ef409ea8f498849e95991b.jpg"
+      "imageSource": "https://cdn.hstatic.net/products/1000006063/bt_f753210c46ef409ea8f498849e95991b.jpg",
+      "originalPrice": 250000
     },
     {
       "id": "86",
@@ -1344,7 +1398,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/phan-phu-silkygirl-dang-bot-kiem-dau-fix-it-setting-powder-8g",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://cdn.hstatic.net/products/1000006063/h1_51bc939a7f4c4093979ec1827c0791a0.jpg"
+      "imageSource": "https://cdn.hstatic.net/products/1000006063/h1_51bc939a7f4c4093979ec1827c0791a0.jpg",
+      "originalPrice": 228000
     },
     {
       "id": "87",
@@ -1360,7 +1415,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/che-khuyet-diem-triet-sac-che-phu-cao-the-saem-cover-perfection-triple-pot-concealer",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://product.hstatic.net/1000006063/product/m01_690f290f93e042d09b4e72f29a563bde.jpg"
+      "imageSource": "https://product.hstatic.net/1000006063/product/m01_690f290f93e042d09b4e72f29a563bde.jpg",
+      "originalPrice": 500000
     },
     {
       "id": "88",
@@ -1376,7 +1432,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/mascara-lot-mi-ukiss-cong-mi-lau-troi-fireworks-eyelashes-base",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://cdn.hstatic.net/products/1000006063/01_m_u_den_7e29ebff9aa34ab390d1d5f25330a652.jpg"
+      "imageSource": "https://cdn.hstatic.net/products/1000006063/01_m_u_den_7e29ebff9aa34ab390d1d5f25330a652.jpg",
+      "originalPrice": 225000
     },
     {
       "id": "89",
@@ -1408,7 +1465,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/son-duong-moi-co-mau-cobote-natural-tinted-lip-balm-5g",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://cdn.hstatic.net/products/1000006063/bt_cam_224523ad6b4644c38798f221c2f1cbc3.jpg"
+      "imageSource": "https://cdn.hstatic.net/products/1000006063/bt_cam_224523ad6b4644c38798f221c2f1cbc3.jpg",
+      "originalPrice": 199000
     },
     {
       "id": "91",
@@ -1424,7 +1482,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/son-duong-co-mau-tu-nhien-lipice-sheer-color",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://product.hstatic.net/1000006063/product/vn-11134207-7r98o-llivv8fv551298_f93f9cdd7ba64fef99046663aa1ccac5.jpg"
+      "imageSource": "https://product.hstatic.net/1000006063/product/vn-11134207-7r98o-llivv8fv551298_f93f9cdd7ba64fef99046663aa1ccac5.jpg",
+      "originalPrice": 89000
     },
     {
       "id": "92",
@@ -1440,7 +1499,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/son-kem-li-peripera-ink-velvet-4g",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://product.hstatic.net/1000006063/product/bt_01_2b71a0695d3d49b9ba161fed600072e7.jpg"
+      "imageSource": "https://product.hstatic.net/1000006063/product/bt_01_2b71a0695d3d49b9ba161fed600072e7.jpg",
+      "originalPrice": 190000
     },
     {
       "id": "93",
@@ -1456,7 +1516,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/son-kem-li-thuan-chay-mem-min-lau-troi-foif-daily-blur-tint",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://product.hstatic.net/1000006063/product/bt1_f65d1efd1a6b42f384469ba1594e8951.jpg"
+      "imageSource": "https://product.hstatic.net/1000006063/product/bt1_f65d1efd1a6b42f384469ba1594e8951.jpg",
+      "originalPrice": 279000
     },
     {
       "id": "94",
@@ -1472,7 +1533,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/son-li-dang-thoi-joocyee-min-muot-lau-troi-velvet-rouge",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://cdn.hstatic.net/products/1000006063/bt_111_6f83093aee664a0b93b8e8da221a9aa4.jpg"
+      "imageSource": "https://cdn.hstatic.net/products/1000006063/bt_111_6f83093aee664a0b93b8e8da221a9aa4.jpg",
+      "originalPrice": 350000
     },
     {
       "id": "95",
@@ -1488,7 +1550,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/son-thoi-thuan-chay-b-o-m-cloud-blur-lipstick-3-3g",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://product.hstatic.net/1000006063/product/bt_01_74b360c3ffa045329dfa783c15a40c22.jpg"
+      "imageSource": "https://product.hstatic.net/1000006063/product/bt_01_74b360c3ffa045329dfa783c15a40c22.jpg",
+      "originalPrice": 342000
     },
     {
       "id": "96",
@@ -1504,7 +1567,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/son-tint-bong-dasique-juicy-dewy-tint-3-5g",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://cdn.hstatic.net/products/1000006063/bt_20_7ef4a240ed164885a2e559864e61cba5.jpg"
+      "imageSource": "https://cdn.hstatic.net/products/1000006063/bt_20_7ef4a240ed164885a2e559864e61cba5.jpg",
+      "originalPrice": 374000
     },
     {
       "id": "97",
@@ -1520,7 +1584,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/nhan-ban-tu-son-kem-li-colorkey-sieu-min-moi-soft-matte-water-tint",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://cdn.hstatic.net/products/1000006063/p307_9195a8bb95b6448fb1900af47581ba77.jpg"
+      "imageSource": "https://cdn.hstatic.net/products/1000006063/p307_9195a8bb95b6448fb1900af47581ba77.jpg",
+      "originalPrice": 238000
     },
     {
       "id": "98",
@@ -1536,7 +1601,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/son-bong-khoa-mau-2-lop-merzy-double-glaze-locker-3-8g",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://cdn.hstatic.net/products/1000006063/bt_01_f5fff621f057496293abe6b7b0163b6b.jpg"
+      "imageSource": "https://cdn.hstatic.net/products/1000006063/bt_01_f5fff621f057496293abe6b7b0163b6b.jpg",
+      "originalPrice": 359000
     },
     {
       "id": "99",
@@ -1552,7 +1618,8 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/son-bun-li-mo-too-cool-for-school-sway-lip-velvet-3-3g",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://cdn.hstatic.net/products/1000006063/bt_05_95ab975da52843a9b4dd288b0a13176f.jpg"
+      "imageSource": "https://cdn.hstatic.net/products/1000006063/bt_05_95ab975da52843a9b4dd288b0a13176f.jpg",
+      "originalPrice": 345000
     },
     {
       "id": "100",
@@ -1568,10 +1635,57 @@
       "featured": false,
       "sourceUrl": "https://thegioiskinfood.com/products/shell-beach-nude-collection-son-thoi-li-romand-new-zero-matte-lipstick",
       "sourceName": "Thế Giới Skinfood",
-      "imageSource": "https://product.hstatic.net/1000006063/product/lipstick_2_a15c2237ddc94260989a605377d224fe.jpg"
+      "imageSource": "https://product.hstatic.net/1000006063/product/lipstick_2_a15c2237ddc94260989a605377d224fe.jpg",
+      "originalPrice": 210000
     }
   ],
   "reviews": [],
   "orders": [],
+  "settings": {
+    "announcement": "Miễn phí vận chuyển cho đơn từ 499.000₫ · Nhập mã WELCOME10 giảm 10% cho đơn đầu tiên",
+    "heroEyebrow": "Mỹ phẩm · Skincare · Makeup",
+    "heroTitle": "Mỹ phẩm chính hãng",
+    "heroRotating": [
+      "làn da rạng rỡ",
+      "đôi môi quyến rũ",
+      "ánh mắt cuốn hút",
+      "vẻ đẹp tự tin"
+    ],
+    "heroSubtitle": "Son môi, kem nền, serum, kem dưỡng, chống nắng, tẩy trang từ CeraVe, La Roche-Posay, Bioderma, Anessa, Romand... Giá niêm yết rõ ràng, thanh toán khi nhận hàng hoặc chuyển khoản.",
+    "shippingFee": 30000,
+    "freeShipThreshold": 499000,
+    "hotline": "1900-xxxx",
+    "contactEmail": "contact@cosmeticsstore.com"
+  },
+  "coupons": [
+    {
+      "id": "c1",
+      "code": "WELCOME10",
+      "type": "percent",
+      "value": 10,
+      "maxDiscount": 50000,
+      "minOrder": 0,
+      "active": true,
+      "description": "Giảm 10% (tối đa 50.000₫)"
+    },
+    {
+      "id": "c2",
+      "code": "FREESHIP",
+      "type": "freeship",
+      "value": 0,
+      "minOrder": 199000,
+      "active": true,
+      "description": "Miễn phí vận chuyển cho đơn từ 199.000₫"
+    },
+    {
+      "id": "c3",
+      "code": "GIAM50K",
+      "type": "fixed",
+      "value": 50000,
+      "minOrder": 500000,
+      "active": true,
+      "description": "Giảm 50.000₫ cho đơn từ 500.000₫"
+    }
+  ],
   "$schema": "./node_modules/json-server/schema.json"
 }
