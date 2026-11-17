@@ -14,13 +14,10 @@ export const SHOP = {
         accountName: '',     // Tên chủ tài khoản, VIẾT HOA KHÔNG DẤU
     },
 
-    // Gửi email xác nhận đơn hàng qua EmailJS (https://www.emailjs.com) - xem hướng dẫn trong README.md
-    emailjs: {
-        serviceId: '',     // VD: 'service_xxxxxxx' (kết nối Gmail của cửa hàng)
-        templateId: '',    // VD: 'template_xxxxxxx'
-        publicKey: '',     // Account > General > Public Key
-    },
+    // URL Web app Google Apps Script gửi email xác nhận đơn bằng Gmail của cửa hàng (miễn phí)
+    // Cách lấy URL: xem setup/email-script/README.md. VD: 'https://script.google.com/macros/s/AKfy.../exec'
+    emailScriptUrl: '',
 };
 
 export const isBankConfigured = () => Boolean(SHOP.bank.bankId && SHOP.bank.accountNo && SHOP.bank.accountName);
-export const isEmailConfigured = () => Boolean(SHOP.emailjs.serviceId && SHOP.emailjs.templateId && SHOP.emailjs.publicKey);
+export const isEmailConfigured = () => Boolean(SHOP.emailScriptUrl);

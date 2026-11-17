@@ -506,7 +506,7 @@ async function handleCheckoutSubmit(event) {
 }
 
 /**
- * Biến truyền vào template EmailJS (xem README.md để tạo template)
+ * Dữ liệu gửi cho script email (setup/email-script/Code.gs dựng nội dung email từ đây)
  */
 function orderEmailParams(order) {
     const { bankId, bankName, accountNo, accountName } = SHOP.bank;
@@ -517,8 +517,7 @@ function orderEmailParams(order) {
         shop_name: SHOP.name,
         order_id: order.id,
         order_date: new Date(order.timestamp).toLocaleString('vi-VN'),
-        // Dùng {{{order_items}}} trong template để giữ thẻ <br>
-        order_items: order.items.map(i => `- ${ui.escapeHtml(i.name)} x${i.quantity}: ${ui.formatPrice(i.price * i.quantity)}`).join('<br>'),
+        items: order.items.map(i => ({ name: i.name, quantity: i.quantity, total: ui.formatPrice(i.price * i.quantity) })),
         order_total: total,
         phone: order.customerInfo.phone,
         shipping_address: order.customerInfo.address,

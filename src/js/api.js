@@ -73,19 +73,20 @@ export const getOrderById = (id) =>
 export const updateOrder = (id, data) =>
     request(`/orders/${id}`, 'Không thể cập nhật đơn hàng.', sendJson('PATCH', data));
 
-// ===== Email xác nhận (EmailJS REST API) =====
+// ===== Email xác nhận (Google Apps Script Web app) =====
 /**
- * Gửi email xác nhận đơn hàng tới email khách
- * @param {Object} templateParams - Biến dùng trong template EmailJS (to_email, order_id...)
+ * Gửi email xác nhận đơn hàng tới email khách (script: setup/email-script/Code.gs)
+ * @param {Object} params - { to_email, to_name, order_id, items: [{name, quantity, total}], order_total, ... }
  */
-export async function sendOrderEmail(templateParams) {
-    const { serviceId, templateId, publicKey } = SHOP.emailjs;
-    const response = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
+export async function sendOrderEmail(params) {
+    // text/plain để trình duyệt không gửi preflight CORS (Apps Script không trả lời OPTIONS)
+    const response = await fetch(SHOP.emailScriptUrl, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ service_id: serviceId, template_id: templateId, user_id: publicKey, template_params: templateParams })
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(params)
     });
-    if (!response.ok) {
-        throw new Error(`EmailJS lỗi ${response.status}: ${await response.text()}`);
+    const result = await response.json().catch(() => ({ ok: false, error: `HTTP ${response.status}` }));
+    if (!result.ok) {
+        throw new Error(`Gửi email lỗi: ${result.error}`);
     }
 }
