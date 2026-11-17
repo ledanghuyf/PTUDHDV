@@ -46,6 +46,38 @@ export const getProductById = (id) =>
 export const updateProduct = (id, data) =>
     request(`/products/${id}`, `Không thể cập nhật sản phẩm ID ${id}.`, sendJson('PATCH', data));
 
+export const createProduct = (data) =>
+    request('/products', 'Không thể thêm sản phẩm.', sendJson('POST', data));
+
+export const deleteProduct = (id) =>
+    request(`/products/${id}`, 'Không thể xóa sản phẩm.', { method: 'DELETE' });
+
+// ===== Cấu hình nội dung trang (thanh thông báo, banner, phí ship...) =====
+export const getSettings = () =>
+    request('/settings', 'Không thể tải cấu hình cửa hàng.');
+
+export const updateSettings = (data) =>
+    request('/settings', 'Không thể lưu cấu hình cửa hàng.', sendJson('PATCH', data));
+
+// ===== Mã giảm giá =====
+export const getCoupons = () =>
+    request('/coupons', 'Không thể tải mã giảm giá.');
+
+/** @returns {Promise<Object|null>} Mã giảm giá theo code (không phân biệt hoa thường) hoặc null */
+export async function findCoupon(code) {
+    const list = await request(`/coupons?code=${encodeURIComponent(code.trim().toUpperCase())}`, 'Không thể kiểm tra mã giảm giá.');
+    return list[0] || null;
+}
+
+export const createCoupon = (data) =>
+    request('/coupons', 'Không thể thêm mã giảm giá.', sendJson('POST', data));
+
+export const updateCoupon = (id, data) =>
+    request(`/coupons/${id}`, 'Không thể cập nhật mã giảm giá.', sendJson('PATCH', data));
+
+export const deleteCoupon = (id) =>
+    request(`/coupons/${id}`, 'Không thể xóa mã giảm giá.', { method: 'DELETE' });
+
 // ===== Đánh giá =====
 export const getAllReviews = () =>
     request('/reviews', 'Không thể tải đánh giá. Vui lòng thử lại.');
@@ -72,6 +104,17 @@ export const getOrderById = (id) =>
 
 export const getOrders = () =>
     request('/orders', 'Không thể tải danh sách đơn hàng.');
+
+/**
+ * Tìm đơn theo mã đơn (code) — đơn cũ không có code thì mã đơn chính là id
+ * @returns {Promise<Object|null>}
+ */
+export async function findOrderByCode(code) {
+    const byCode = await request(`/orders?code=${encodeURIComponent(code)}`, 'Không thể tra cứu đơn hàng.');
+    if (byCode[0]) return byCode[0];
+    const response = await fetch(`${BASE_URL}/orders/${encodeURIComponent(code)}`).catch(() => null);
+    return response && response.ok ? response.json() : null;
+}
 
 // ===== Đơn vị hành chính Việt Nam (sau sáp nhập 01/07/2025: Tỉnh/Thành phố → Phường/Xã) =====
 // API miễn phí, cho phép gọi từ trình duyệt: https://provinces.open-api.vn
