@@ -36,8 +36,8 @@
 | Giao xong | Admin | Đã giao (đã thanh toán) | — |
 | Từ chối đơn đang chờ | Admin | Đã hủy | Không đổi (đơn cũ đã trừ lúc đặt thì hoàn kho) |
 
-Trang quản trị: footer → **Quản trị đơn hàng** (`#/admin`). Mật khẩu mặc định `admin123`, đổi bằng
-`adminPasswordHash` trong `src/js/config.js` (hướng dẫn tạo mã ngay trong file). Đây là chặn ở giao diện;
+Trang quản trị: footer → **Quản trị đơn hàng** (`#/admin`). Mật khẩu lưu dạng mã băm SHA-256 ở
+`adminPasswordHash` trong `src/js/config.js` (hướng dẫn tạo mã mới ngay trong file). Đây là chặn ở giao diện;
 json-server không có đăng nhập nên API vẫn mở — đủ cho đồ án, không dùng cho cửa hàng thật.
 
 Địa chỉ lấy từ API miễn phí [provinces.open-api.vn](https://provinces.open-api.vn) (v2: 34 tỉnh/thành, phường/xã

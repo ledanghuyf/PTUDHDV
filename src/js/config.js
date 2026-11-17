@@ -18,7 +18,7 @@ export const SHOP = {
     // Cách lấy URL: xem setup/email-script/README.md. VD: 'https://script.google.com/macros/s/AKfy.../exec'
     emailScriptUrl: '',
 
-    // Mật khẩu trang Quản trị (#/admin), lưu dạng SHA-256. Mặc định: admin123 — NÊN ĐỔI.
+    // Mật khẩu trang Quản trị (#/admin), lưu dạng SHA-256. Đã đổi mật khẩu mặc định.
     // Tạo mã mới: node -e "console.log(require('crypto').createHash('sha256').update('MAT_KHAU_MOI').digest('hex'))"
     // shortcut: chỉ chặn ở giao diện, json-server vẫn mở; muốn bảo mật thật cần backend có đăng nhập.
     adminPasswordHash: '',
