@@ -10,7 +10,7 @@ import * as wishlist from './wishlist.js';
 import * as auth from './auth.js';
 import { calcTotals, couponError } from './pricing.js';
 import { createAdmin } from './admin.js';
-import { SHOP, DEFAULT_SETTINGS, isBankConfigured, isEmailConfigured } from './config.js';
+import { SHOP, DEFAULT_SETTINGS, isBankConfigured, isEmailConfigured, loadLocalConfig } from './config.js';
 
 const app = document.getElementById('app');
 const PRODUCTS_PER_PAGE = 12;    // 3 hàng x 4 cột
@@ -1236,6 +1236,7 @@ function show404Page() {
 // ===================== Khởi động =====================
 
 async function init() {
+    await loadLocalConfig(); // tài khoản ngân hàng, URL script email (file riêng, không lên GitHub)
     document.getElementById('category-bar').innerHTML = ui.CategoryBar();
     // Màn hình nhỏ: chữ gợi ý ngắn để không bị cắt
     if (window.innerWidth < 768) document.getElementById('header-search-input').placeholder = 'Tìm son, serum, thương hiệu...';

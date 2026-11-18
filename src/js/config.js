@@ -1,24 +1,31 @@
 /**
- * Cấu hình cửa hàng - ĐIỀN THÔNG TIN THẬT CỦA BẠN VÀO ĐÂY
- * Để trống thì web vẫn chạy: không hiện mã QR chuyển khoản / không gửi email.
+ * Cấu hình cửa hàng.
+ * Thông tin riêng (tài khoản ngân hàng, URL script email) KHÔNG ghi ở đây mà ở `config.local.js`
+ * (không đưa lên GitHub) — sao chép từ `config.local.example.js`. main.js nạp file đó lúc khởi động.
+ * Không có config.local.js thì web vẫn chạy: không hiện mã QR chuyển khoản / không gửi email.
  */
 export const SHOP = {
     name: 'Cosmetics Store',
 
-    // Tài khoản nhận chuyển khoản. Mã QR tạo bằng Quick Link của VietQR.io (https://vietqr.io):
+    // Tài khoản nhận chuyển khoản (điền trong config.local.js). Mã QR tạo bằng Quick Link của VietQR.io:
     // miễn phí, không cần đăng ký/API key; khách quét bằng app ngân hàng nào cũng được (chuẩn NAPAS 247).
-    bank: {
-        bankId: '',                  // Mã ngân hàng VietQR, VD: 'MB', 'VCB', 'TCB', 'ACB', 'VPB', 'BIDV', 'ICB' (VietinBank)
-        bankName: '',  // Tên hiển thị; để trống thì hiện bankId
-        accountNo: '',        // Số tài khoản
-        accountName: '',     // Tên chủ tài khoản, VIẾT HOA KHÔNG DẤU
-    },
+    bank: { bankId: '', bankName: '', accountNo: '', accountName: '' },
 
-    // URL Web app Google Apps Script gửi email xác nhận đơn bằng Gmail của cửa hàng (miễn phí)
-    // Cách lấy URL: xem setup/email-script/README.md. VD: 'https://script.google.com/macros/s/AKfy.../exec'
+    // URL Web app Google Apps Script gửi email xác nhận đơn (điền trong config.local.js)
     emailScriptUrl: '',
     // Tài khoản khách hàng & quản lý lưu trong db.json (bảng "users"), đăng nhập ở #/dang-nhap — xem auth.js
 };
+
+/** Ghép thông tin riêng từ config.local.js (nếu có) vào SHOP */
+export async function loadLocalConfig() {
+    try {
+        const { LOCAL } = await import('./config.local.js');
+        Object.assign(SHOP.bank, LOCAL.bank || {});
+        if (LOCAL.emailScriptUrl) SHOP.emailScriptUrl = LOCAL.emailScriptUrl;
+    } catch {
+        // Chưa có config.local.js (VD: vừa tải code từ GitHub) → chạy không có QR chuyển khoản / email
+    }
+}
 
 // Nội dung mặc định khi db.json chưa có "settings" (Quản lý sửa ở #/admin/settings)
 export const DEFAULT_SETTINGS = {
