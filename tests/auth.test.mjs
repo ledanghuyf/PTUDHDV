@@ -6,9 +6,9 @@ import { hashPassword, verifyPassword, passwordError, randomSalt } from '../src/
 test('băm cùng mật khẩu + muối cho cùng kết quả; khác muối thì khác', async () => {
     const salt = randomSalt();
     assert.equal(salt.length, 32);
-    const h1 = await hashPassword('(đã ẩn)', salt);
-    assert.equal(h1, await hashPassword('(đã ẩn)', salt));
-    assert.notEqual(h1, await hashPassword('(đã ẩn)', randomSalt()));
+    const h1 = await hashPassword('hoa12345', salt);
+    assert.equal(h1, await hashPassword('hoa12345', salt));
+    assert.notEqual(h1, await hashPassword('hoa12345', randomSalt()));
     assert.match(h1, /^[0-9a-f]{64}$/);
 });
 
@@ -25,6 +25,6 @@ test('passwordError: đủ 8 ký tự, có chữ và số', () => {
     assert.match(passwordError('abc12'), /8 ký tự/);
     assert.match(passwordError('abcdefgh'), /chữ và số/);
     assert.match(passwordError('12345678'), /chữ và số/);
-    assert.equal(passwordError('(đã ẩn)'), '');
+    assert.equal(passwordError('hoa12345'), '');
     assert.equal(passwordError('mậtkhẩu9'), '');
 });
