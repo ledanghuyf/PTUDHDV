@@ -19,7 +19,7 @@ mà gọi các dịch vụ qua API:
 | Lê Đăng Huy | 110123013 | DA23TTA | ledanghuy@student.tvu.edu.vn |
 | Phan Trần Trường Huy | 110123014 | DA23TTA | |
 
-- **GVHD:** Phạm Thị Trúc Mai
+- **GVHD:** ThS. Ngô Thanh Huy
 
 ## Cài đặt & chạy dự án
 
