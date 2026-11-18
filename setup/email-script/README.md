@@ -31,7 +31,7 @@ thì thay đổi mới có hiệu lực (URL giữ nguyên).
 ## Kiểm tra script trên máy
 
 ```bash
-node setup/email-script/check.js
+node setup/email-script/check.cjs
 ```
 
 ## Lưu ý bảo mật
