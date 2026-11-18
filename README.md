@@ -53,8 +53,9 @@
 ### Tài khoản & bảo mật
 - Tài khoản lưu ở bảng `users` trong `src/db.json`; vai trò `customer` (khách) hoặc `manager` (quản lý).
   Khách tự đăng ký; quyền quản lý chỉ do Quản lý cấp.
-- Quản lý mặc định: tài khoản **`quanly`**, mật khẩu **`(đã ẩn)`** (đăng nhập ở trang Đăng nhập chung, xong vào thẳng
-  trang quản lý). Muốn đổi: tạo tài khoản mới, cấp quyền quản lý, rồi gỡ quyền tài khoản cũ.
+- Quản lý mặc định: tài khoản **`quanly`** (mật khẩu do chủ dự án giữ riêng, không ghi trong mã nguồn). Đăng nhập ở
+  trang Đăng nhập chung, xong vào thẳng trang quản lý. Muốn đổi: tạo tài khoản mới, cấp quyền quản lý, rồi gỡ quyền
+  tài khoản cũ.
 - Mật khẩu băm **PBKDF2-SHA256** (100.000 vòng) với muối riêng từng tài khoản, không lưu mật khẩu gốc;
   mật khẩu cần ít nhất 8 ký tự, có cả chữ và số.
 - Hạn chế: kiểm tra mật khẩu và phân quyền chạy ở trình duyệt vì json-server không có đăng nhập — API `/users`,
@@ -145,7 +146,9 @@ không mất phí, và hầu hết ngân hàng (MB, Vietcombank, Techcombank, AC
 Không dùng cổng thanh toán (VNPay, MoMo...) hay dịch vụ tự xác nhận (SePay, Casso...) vì các dịch vụ này cần đăng ký
 doanh nghiệp/thu phí hoặc cần server backend HTTPS nhận webhook.
 
-Mở `src/js/config.js`, điền tài khoản nhận tiền:
+Thông tin riêng (tài khoản ngân hàng, URL script email) để trong `src/js/config.local.js` — file này nằm trong
+`.gitignore` nên **không bị đưa lên GitHub**. Sao chép `src/js/config.local.example.js` thành `config.local.js`
+rồi điền tài khoản nhận tiền:
 ```js
 bank: { bankId: 'MB', bankName: 'MB Bank (Quân Đội)', accountNo: '0123456789', accountName: 'NGUYEN VAN A' },
 ```
@@ -159,7 +162,7 @@ Email gửi bằng chính Gmail của cửa hàng qua Google Apps Script: miễn
 khách nhận email xác nhận và cửa hàng nhận bản sao báo đơn mới (giới hạn 100 người nhận/ngày với Gmail thường).
 
 Hướng dẫn triển khai từng bước: [setup/email-script/README.md](setup/email-script/README.md).
-Lấy được URL Web app thì điền vào `emailScriptUrl` trong `src/js/config.js`.
+Lấy được URL Web app thì điền vào `emailScriptUrl` trong `src/js/config.local.js` (file riêng, không lên GitHub).
 Mỗi lần sửa `setup/email-script/Code.gs` cần dán lại vào Apps Script và **Triển khai → Quản lý bản triển khai →
 Phiên bản mới** (URL giữ nguyên) thì email mới (dòng giảm giá/phí ship, email khi đơn được duyệt/hủy) mới có hiệu lực.
 

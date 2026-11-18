@@ -19,7 +19,7 @@ gửi email xác nhận cho khách và gửi bản sao (BCC) về Gmail cửa h�
    (Cảnh báo này bình thường vì script do chính bạn viết, chỉ xin quyền gửi email bằng tài khoản của bạn.)
 5. Copy **URL ứng dụng web** dạng `https://script.google.com/macros/s/AKfy.../exec`.
 6. Kiểm tra: dán URL vào trình duyệt, thấy `{"ok":true,"message":"Email script đang hoạt động",...}` là được.
-7. Dán URL vào `emailScriptUrl` trong `src/js/config.js`.
+7. Dán URL vào `emailScriptUrl` trong `src/js/config.local.js` (sao chép từ `config.local.example.js`; file này không lên GitHub vì ai có URL đều gửi được email qua Gmail của bạn).
 
 Đặt thử một đơn với email của bạn: trang "Đặt hàng thành công" sẽ ghi "Email xác nhận đã được gửi tới ...".
 
