@@ -1,14 +1,25 @@
-# Đồ án cơ sở ngành
-
-## Thông tin sinh viên
-- **Họ tên:** Lê Đăng Huy
-- **MSSV:** 110123013
-- **Lớp:** DA23TTA
-- **Email:** ledanghuy@student.tvu.edu.vn
-- **GVHD:** Phạm Thị Trúc Mai
+# Phát Triển Ứng Dụng Hướng Dịch Vụ
 
 ## Đề tài
-**Xây dựng ứng dụng web đơn trang bán mỹ phẩm với dữ liệu ứng từ API JSON**
+**Xây dựng hệ thống Website bán mỹ phẩm trực tuyến**
+
+Website bán mỹ phẩm dạng SPA (HTML, CSS, JavaScript) xây dựng theo hướng dịch vụ: giao diện không tự lưu dữ liệu
+mà gọi các dịch vụ qua API:
+
+| Dịch vụ | Vai trò trong hệ thống |
+|---------|------------------------|
+| **JSON Server** (REST API) | Sản phẩm, đơn hàng, tài khoản, đánh giá, mã giảm giá, nội dung trang |
+| **API đơn vị hành chính Việt Nam** ([provinces.open-api.vn](https://provinces.open-api.vn)) | Chọn Tỉnh/Thành phố → Phường/Xã khi nhập địa chỉ giao hàng |
+| **VietQR** ([vietqr.io](https://vietqr.io)) | Tạo mã QR chuyển khoản đúng số tiền và nội dung đơn |
+| **Google Apps Script** | Gửi email xác nhận / cập nhật trạng thái đơn bằng Gmail của cửa hàng |
+
+## Thông tin sinh viên
+| Họ và tên | MSSV | Lớp | Email |
+|-----------|------|-----|-------|
+| Lê Đăng Huy | 110123013 | DA23TTA | ledanghuy@student.tvu.edu.vn |
+| Phan Trần Trường Huy | 110123014 | DA23TTA | |
+
+- **GVHD:** Phạm Thị Trúc Mai
 
 ## Cài đặt & chạy dự án
 
