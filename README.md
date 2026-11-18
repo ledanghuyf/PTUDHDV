@@ -10,6 +10,68 @@
 ## Đề tài
 **Xây dựng ứng dụng web đơn trang bán mỹ phẩm với dữ liệu ứng từ API JSON**
 
+## Cài đặt & chạy dự án
+
+### Yêu cầu
+- **Node.js 18 trở lên** — tải tại https://nodejs.org (kiểm tra bằng lệnh `node -v`)
+- Trình duyệt Chrome / Edge / Firefox bản mới
+
+### Chạy lần đầu
+```bash
+git clone https://github.com/ledanghuyf/PTUDHDV.git
+cd PTUDHDV
+npm install      # cài json-server — chỉ cần chạy 1 lần
+npm start        # chạy API + trang web
+```
+Mở trình duyệt vào **http://localhost:3000** là dùng được. Dừng chương trình: bấm **Ctrl + C** trong cửa sổ lệnh.
+
+Những lần sau chỉ cần `npm start`.
+
+> `npm start` chạy `json-server src/db.json --port 3000 --static src`: một chương trình vừa phục vụ trang web
+> (thư mục `src`) vừa làm API (`/products`, `/orders`, `/users`...). Mọi thay đổi (đơn hàng, đánh giá, tài khoản)
+> được ghi thẳng vào `src/db.json`.
+
+**Lưu ý:**
+- Phải dùng cổng **3000** vì web gọi API ở `http://localhost:3000` (đổi cổng thì sửa `BASE_URL` trong `src/js/api.js`).
+- **Không** mở `src/index.html` bằng cách nhấp đúp (địa chỉ `file:///...`): trình duyệt sẽ chặn, trang không tải được dữ liệu.
+
+**Cách khác — dùng Live Server của VS Code:** chạy `npx json-server src/db.json --port 3000` để có API,
+rồi chuột phải `src/index.html` → **Open with Live Server** (mở `http://127.0.0.1:5500/src/`).
+
+### Tài khoản để dùng thử
+| Vai trò | Cách có tài khoản |
+|---------|-------------------|
+| Khách hàng | Tự đăng ký ở nút **Đăng nhập / Đăng ký** trên header |
+| Quản lý | Tài khoản `quanly` (mật khẩu chủ dự án giữ riêng). Người khác tải dự án về: đăng ký 1 tài khoản, mở `src/db.json`, tìm tài khoản đó trong `"users"`, đổi `"role": "customer"` thành `"role": "manager"`, lưu file, rồi đăng xuất và đăng nhập lại → vào được **Trang quản lý** (`#/admin`) |
+
+Mã giảm giá mẫu: `WELCOME10` (giảm 10%, tối đa 50.000₫), `FREESHIP` (đơn từ 199.000₫), `GIAM50K` (đơn từ 500.000₫).
+
+### Cấu hình riêng (không bắt buộc): mã QR chuyển khoản & email xác nhận
+Không cấu hình thì web vẫn chạy đầy đủ, chỉ là lựa chọn "Chuyển khoản ngân hàng" bị khóa và không gửi email.
+Muốn bật, sao chép file mẫu rồi điền thông tin (file này **không bị đưa lên GitHub**):
+```bash
+copy src\js\config.local.example.js src\js\config.local.js     # Windows (CMD)
+cp src/js/config.local.example.js src/js/config.local.js       # macOS / Linux / Git Bash
+```
+Chi tiết điền tài khoản ngân hàng và URL script email: xem mục [Cấu hình thanh toán chuyển khoản](#cấu-hình-thanh-toán-chuyển-khoản-miễn-phí)
+và [Cấu hình gửi email](#cấu-hình-gửi-email-xác-nhận-về-gmail-google-apps-script--miễn-phí) bên dưới.
+
+### Kiểm tra tự động
+```bash
+npm test
+```
+Chạy kiểm tra tính tiền (mã giảm giá, phí ship), băm mật khẩu / quy tắc mật khẩu và script gửi email.
+
+### Lỗi thường gặp
+| Hiện tượng | Cách xử lý |
+|------------|------------|
+| Trang báo "Không thể tải danh sách sản phẩm..." | Chưa chạy `npm start`, hoặc đang mở bằng `file:///` / sai cổng |
+| `npm start` báo `EADDRINUSE` (cổng 3000 bận) | Tắt chương trình khác đang dùng cổng 3000 (thường là một json-server cũ) rồi chạy lại |
+| `npm` / `node` không được nhận diện | Chưa cài Node.js hoặc chưa mở lại cửa sổ lệnh sau khi cài |
+| Sửa code mà trình duyệt không thấy thay đổi | Bấm **Ctrl + Shift + R** để tải lại hẳn |
+| Banner đứng yên, không có hiệu ứng | Windows đang tắt *Cài đặt → Trợ năng → Hiệu ứng hình ảnh → Hiệu ứng hoạt ảnh* |
+| Muốn xóa dữ liệu thử, về dữ liệu gốc | Tắt `npm start`, chạy `git checkout src/db.json` |
+
 ## Mô tả
 Ứng dụng web bán mỹ phẩm dạng SPA (Single Page Application - không reload trang).
 
@@ -80,13 +142,6 @@ Dữ liệu cấu hình nằm trong `src/db.json`: `settings` (nội dung trang,
 **Hiệu ứng banner:** nếu Windows tắt *Cài đặt → Trợ năng → Hiệu ứng hình ảnh → Hiệu ứng hoạt ảnh*, trình duyệt báo
 "giảm chuyển động" và web chỉ giữ hiệu ứng nhẹ (đổi chữ, lấp lánh, vệt sáng). Bật lại để thấy đầy đủ.
 
-## Kiểm tra tự động
-
-```bash
-npm test
-```
-Chạy kiểm tra tính tiền (mã giảm giá, phí ship), băm mật khẩu / quy tắc mật khẩu và script gửi email.
-
 ## Nguồn dữ liệu
 100 sản phẩm thuộc 9 danh mục (serum, kem dưỡng, sữa rửa mặt, chống nắng, mặt nạ, toner, tẩy trang, son môi, trang điểm)
 trong `src/db.json`:
@@ -108,36 +163,32 @@ chỉ dùng cho mục đích học tập. Tồn kho, lượt bán và đánh gi�
 ## Cấu trúc thư mục
 
 ```
-csn-da23tta-ledanghuy-spamyphamjson/
-├── setup/              # Hướng dẫn cài đặt, dependencies
-├── src/                # Mã nguồn ứng dụng
-│   ├── index.html
-│   ├── css/
-│   ├── js/
-│   ├── assets/
-│   └── db.json
-├── progress-report/    # Báo cáo tiến độ hàng tuần
-├── thesis/             # Tài liệu đồ án
-│   ├── doc/           # File .DOC
-│   ├── pdf/           # File .PDF
-│   ├── html/          # Tài liệu web
-│   ├── abs/           # Báo cáo PPT, video
-│   └── refs/          # Tài liệu tham khảo
-└── README.md          # File này
+PTUDHDV/
+├── src/                         # Mã nguồn web (npm start phục vụ thư mục này)
+│   ├── index.html               # Khung trang: header, thanh danh mục, footer
+│   ├── db.json                  # Dữ liệu json-server: products, orders, users, reviews, coupons, settings
+│   ├── css/style.css            # Giao diện
+│   ├── assets/images/           # Ảnh sản phẩm 800×800
+│   └── js/
+│       ├── main.js              # Điều hướng (SPA) và các trang phía khách
+│       ├── components.js        # HTML các trang / thành phần giao diện
+│       ├── admin.js             # Trang quản lý
+│       ├── api.js               # Gọi json-server + API đơn vị hành chính
+│       ├── auth.js              # Đăng nhập / đăng ký, băm mật khẩu
+│       ├── cart.js              # Giỏ hàng (localStorage)
+│       ├── wishlist.js          # Yêu thích (localStorage)
+│       ├── pricing.js           # Tính tiền: mã giảm giá, phí ship
+│       ├── config.js            # Cấu hình chung
+│       └── config.local.example.js   # Mẫu thông tin riêng (ngân hàng, email) → chép thành config.local.js
+├── setup/email-script/          # Script Google Apps Script gửi email + hướng dẫn triển khai
+├── tests/                       # Kiểm tra tự động (npm test)
+├── progress-report/             # Báo cáo tiến độ hàng tuần
+├── thesis/                      # Tài liệu đồ án (doc, pdf, html, abs, refs)
+├── package.json                 # Lệnh npm start / npm test
+└── README.md
 ```
 
-## Hướng dẫn sử dụng
-
-### Cài đặt
-Xem chi tiết trong [setup/README.md](setup/README.md)
-
-### Chạy ứng dụng
-1. Khởi động JSON Server:
-```bash
-json-server src/db.json --port 3000
-```
-
-2. Mở file `src/index.html` bằng Live Server hoặc trình duyệt
+## Cấu hình chi tiết
 
 ### Cấu hình thanh toán chuyển khoản (miễn phí)
 Dùng **VietQR Quick Link** (`img.vietqr.io`): ảnh QR chuẩn NAPAS 247 tạo trực tiếp từ URL, **không cần đăng ký,
@@ -179,13 +230,13 @@ Khi để trống, đơn hàng vẫn tạo bình thường nhưng không gửi e
 | 5 | 29/12-04/01 | Hoàn thiện, kiểm thử, viết báo cáo |
 
 ## Tiến độ hiện tại
-🔄 **Tuần 1:** Đang trong giai đoạn chuẩn bị
+✅ Đã hoàn thành các chức năng chính (xem mục [Mô tả](#mô-tả)); đang kiểm thử và viết báo cáo.
 
 Xem chi tiết: [progress-report/](progress-report/)
 
 ## Liên hệ
 - **Email:** ledanghuy@student.tvu.edu.vn
-- **GitHub:** https://github.com/ledanghuyf/csn-da23tta-ledanghuy-spamyphamjson
+- **GitHub:** https://github.com/ledanghuyf/PTUDHDV
 
 ---
-*Cập nhật lần cuối: 09/11/2025*
+*Cập nhật lần cuối: 18/11/2026*

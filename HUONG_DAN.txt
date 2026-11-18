@@ -1,91 +1,42 @@
 ========================================
-  HƯỚNG DẪN CHẠY ỨNG DỤNG
+  HUONG DAN CHAY UNG DUNG - COSMETICS STORE
 ========================================
 
-BƯỚC 1: CÀI ĐẶT JSON-SERVER
-----------------------------
-Mở Command Prompt (CMD) hoặc PowerShell và chạy:
-
-    npm install -g json-server
-
-Hoặc đơn giản hơn, chạy file: START_SERVER.bat
+BUOC 1: CAI NODE.JS (chi 1 lan)
+--------------------------------
+Tai tai https://nodejs.org (ban 18 tro len), cai dat xong mo lai cua so lenh.
+Kiem tra:   node -v
 
 
-BƯỚC 2: KHỞI ĐỘNG SERVER
--------------------------
-Chạy file: START_SERVER.bat
+BUOC 2: CAI THU VIEN (chi 1 lan)
+--------------------------------
+Mo CMD / PowerShell tai thu muc du an va chay:
 
-Hoặc mở CMD/PowerShell tại thư mục dự án và chạy:
-
-    json-server src/db.json --port 3000
-
-Server sẽ chạy tại: http://localhost:3000
+    npm install
 
 
-BƯỚC 3: MỞ ỨNG DỤNG
---------------------
-Có 2 cách:
+BUOC 3: CHAY UNG DUNG
+---------------------
+    npm start
 
-CÁCH 1: Chạy file OPEN_APP.bat
+Mo trinh duyet vao:  http://localhost:3000
+Dung chuong trinh:   bam Ctrl + C trong cua so lenh.
 
-CÁCH 2: Sử dụng Live Server (VS Code)
-   - Cài extension "Live Server" trong VS Code
-   - Click chuột phải vào file index.html
-   - Chọn "Open with Live Server"
-
-CÁCH 3: Sử dụng Python
-   - Mở CMD/PowerShell tại thư mục dự án
-   - Chạy: python -m http.server 8000
-   - Truy cập: http://localhost:8000
+(Lenh nay vua phuc vu trang web, vua lam API du lieu tu src/db.json.
+ KHONG mo file index.html bang cach nhap dup.)
 
 
-KIỂM TRA API
-------------
-Sau khi chạy json-server, bạn có thể kiểm tra API:
-
-- Tất cả sản phẩm: http://localhost:3000/products
-- Sản phẩm theo ID: http://localhost:3000/products/1
-- Đánh giá: http://localhost:3000/reviews
+TAI KHOAN DUNG THU
+------------------
+- Khach hang: tu dang ky o nut "Dang nhap / Dang ky" tren header.
+- Quan ly: xem muc "Tai khoan de dung thu" trong README.md.
+- Ma giam gia mau: WELCOME10, FREESHIP, GIAM50K
 
 
-CẤU TRÚC DỰ ÁN
----------------
-/project-root
-├── index.html          # File HTML chính
-├── db.json            # Dữ liệu cho json-server
-├── START_SERVER.bat   # Script khởi động server
-├── OPEN_APP.bat       # Script mở ứng dụng
-├── /css
-│   └── style.css      # CSS styling
-├── /js
-│   ├── main.js        # JavaScript chính
-│   ├── api.js         # API calls
-│   ├── components.js  # UI components
-│   └── cart.js        # Giỏ hàng logic
-└── /assets
-    └── /images        # Hình ảnh sản phẩm
+LOI THUONG GAP
+--------------
+- "Khong the tai danh sach san pham": chua chay npm start.
+- "EADDRINUSE": cong 3000 dang bi chuong trinh khac dung, tat no roi chay lai.
+- Sua code khong thay doi: bam Ctrl + Shift + R tren trinh duyet.
 
-
-TÍNH NĂNG
----------
-✓ Trang chủ với sản phẩm nổi bật
-✓ Danh sách sản phẩm với bộ lọc
-✓ Chi tiết sản phẩm và đánh giá
-✓ Giỏ hàng với localStorage
-✓ Thêm/xóa/cập nhật giỏ hàng
-✓ Viết đánh giá sản phẩm
-✓ Responsive design
-
-
-HỖ TRỢ
-------
-Nếu gặp vấn đề, kiểm tra:
-1. Node.js đã được cài đặt chưa? (node --version)
-2. json-server đã chạy chưa?
-3. Port 3000 có bị chiếm không?
-4. Console trong trình duyệt có lỗi gì không? (F12)
-
-
-========================================
-Chúc bạn sử dụng vui vẻ! 🎉
-========================================
+Huong dan day du, cau hinh ma QR chuyen khoan va email: xem README.md
