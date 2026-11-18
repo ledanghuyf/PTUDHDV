@@ -316,7 +316,7 @@ export function ProductDetail(product, reviews) {
                             <button class="btn btn-buy-now" data-id="${escapeHtml(product.id)}">Mua ngay</button>
                         </div>
                     ` : ''}
-                    <div class="detail-actions">${WishButton(product.id, 'wish-inline')}<span class="wish-label">Lưu vào yêu thích</span></div>
+                    <div class="detail-actions">${WishButton(product.id, 'wish-inline')}<span class="wish-label">${isWished(product.id) ? 'Đã lưu vào yêu thích' : 'Lưu vào yêu thích'}</span></div>
 
                     <ul class="product-perks">
                         <li>Hàng chính hãng</li>

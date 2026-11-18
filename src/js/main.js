@@ -451,6 +451,8 @@ function attachPurchaseButtons(product) {
 function attachReviewFormListener(productId) {
     const reviewForm = document.getElementById('review-form');
     if (!reviewForm) return;
+    const user = auth.currentUser();
+    if (user?.name) document.getElementById('review-author').value = user.name; // thành viên khỏi gõ lại tên
 
     reviewForm.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -470,7 +472,7 @@ function attachReviewFormListener(productId) {
 
         try {
             await api.postReview({
-                productId: String(productId), // id sản phẩm là chuỗi; lưu cùng kiểu để lọc ?productId= khớp
+                productId: String(productId), // id sản phẩm là chuỗi; lưu cùng kiểu cho thống nhất
                 author,
                 rating,
                 comment,
@@ -483,6 +485,7 @@ function attachReviewFormListener(productId) {
             document.getElementById('rating-summary').innerHTML = ui.RatingSummary(avg, updated.length);
 
             reviewForm.reset();
+            if (user?.name) document.getElementById('review-author').value = user.name;
             toast('Cảm ơn bạn đã đánh giá sản phẩm! 💕');
         } catch (error) {
             toast(error.message, 'error');
@@ -540,7 +543,7 @@ function attachCartListeners() {
         updateCartIcon();
         if (item) showUndo(`Đã xóa "${item.name}" khỏi giỏ.`, () => {
             cart.saveCart([...cart.getCart(), item]);
-            renderCart();
+            if (window.location.hash === '#/cart') renderCart(); // khách đã sang trang khác thì chỉ cập nhật số trên icon
         });
     });
 
@@ -911,9 +914,17 @@ function orderEmailParams(order) {
 
 async function orderView(id) {
     const order = await api.getOrderById(id);
+    // Vừa đặt xong (≤ 30 phút) → trang cảm ơn; xem lại đơn cũ (từ trang Tài khoản) → trang chi tiết đơn
+    const justPlaced = Date.now() - new Date(order.timestamp) < 30 * 60 * 1000;
     return () => {
-        setTitle('Đặt hàng thành công');
-        app.innerHTML = `<div class="container">${ui.OrderSuccess(order)}</div>`;
+        const code = ui.escapeHtml(ui.orderCodeOf(order));
+        setTitle(justPlaced ? 'Đặt hàng thành công' : `Đơn hàng #${ui.orderCodeOf(order)}`);
+        app.innerHTML = `<div class="container">${justPlaced ? ui.OrderSuccess(order) : `
+            <div class="lookup-page">
+                <nav class="breadcrumb" aria-label="Breadcrumb"><a href="#/tai-khoan">Tài khoản</a><span>/</span><span aria-current="page">Đơn #${code}</span></nav>
+                <h1 class="page-title">Đơn hàng #${code}</h1>
+                ${ui.OrderLookupResult(order)}
+            </div>`}</div>`;
     };
 }
 
@@ -927,6 +938,8 @@ async function lookupView() {
         setTitle('Tra cứu đơn hàng');
         app.innerHTML = `<div class="container">${ui.OrderLookupPage(code)}</div>`;
         const form = document.getElementById('lookup-form');
+        const user = auth.currentUser();
+        if (user?.phone) form.phone.value = user.phone;
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = form.querySelector('button[type="submit"]');
@@ -1137,6 +1150,8 @@ app.addEventListener('click', (e) => {
         b.classList.toggle('is-wished', wished);
         b.setAttribute('aria-pressed', wished);
         b.setAttribute('aria-label', wished ? 'Bỏ khỏi yêu thích' : 'Thêm vào yêu thích');
+        const label = b.nextElementSibling;
+        if (label?.classList.contains('wish-label')) label.textContent = wished ? 'Đã lưu vào yêu thích' : 'Lưu vào yêu thích';
     });
     toast(wished ? 'Đã lưu vào yêu thích 💗' : 'Đã bỏ khỏi yêu thích', 'info');
     if (!wished && window.location.hash === '#/wishlist') {
@@ -1223,7 +1238,7 @@ function show404Page() {
 async function init() {
     document.getElementById('category-bar').innerHTML = ui.CategoryBar();
     // Màn hình nhỏ: chữ gợi ý ngắn để không bị cắt
-    if (window.innerWidth < 768) document.getElementById('header-search-input').placeholder = 'Tìm kiếm...';
+    if (window.innerWidth < 768) document.getElementById('header-search-input').placeholder = 'Tìm son, serum, thương hiệu...';
     updateCartIcon();
     wishlist.updateWishCount();
     updateAccountLink();
