@@ -1884,3 +1884,28 @@ body.is-admin .announcement-bar { display: none; }
 @media (max-width: 480px) {
     .auth-form { padding: 20px 18px 24px; }
 }
+
+/* =====================================================================
+   23. SỬA SAU RÀ SOÁT: banner cân giữa cột, header điện thoại, lưới không bị nội dung rộng đẩy tràn
+   ===================================================================== */
+.hero-visual { margin: 0 auto; }
+.admin-shell { grid-template-columns: minmax(0, 1fr); }
+
+@media (max-width: 860px) {
+    /* minmax(0, …) để bảng/khối rộng cuộn bên trong thay vì đẩy cột rộng hơn màn hình */
+    .account-page, .shop-layout, .cart-layout, .checkout-content, .auth-page { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 768px) {
+    /* Header điện thoại: hàng 1 logo + nút, hàng 2 ô tìm kiếm rộng hết bề ngang */
+    .header-main .container { flex-wrap: wrap; height: auto; padding-top: 10px; padding-bottom: 10px; row-gap: 10px; }
+    .header-main .header-search { order: 3; flex: 1 0 100%; max-width: none; margin: 0; }
+    .header-actions { margin-left: auto; }
+    .product-detail-info .product-name { font-size: 1.3rem; }
+    .filter-panel { top: auto; }
+}
+
+/* Điện thoại: ẩn cột "Sản phẩm" ở bảng Đơn hàng của tôi để thấy ngay cột Trạng thái */
+@media (max-width: 600px) {
+    .account-orders .admin-table th:nth-child(3), .account-orders .admin-table td:nth-child(3) { display: none; }
+}

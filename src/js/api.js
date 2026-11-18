@@ -78,8 +78,9 @@ export const createUser = (data) =>
 export const updateUser = (id, data) =>
     request(`/users/${id}`, 'Không thể cập nhật tài khoản.', sendJson('PATCH', data));
 
-export const getOrdersByUser = (userId) =>
-    request(`/orders?userId=${encodeURIComponent(userId)}`, 'Không thể tải đơn hàng của bạn.');
+// Lọc ở trình duyệt: json-server đổi giá trị toàn chữ số thành số nên ?userId= không đáng tin
+export const getOrdersByUser = async (userId) =>
+    (await request('/orders', 'Không thể tải đơn hàng của bạn.')).filter(o => String(o.userId) === String(userId));
 
 // ===== Cấu hình nội dung trang (thanh thông báo, banner, phí ship...) =====
 export const getSettings = () =>
@@ -113,8 +114,9 @@ export const deleteCoupon = (id) =>
 export const getAllReviews = () =>
     request('/reviews', 'Không thể tải đánh giá. Vui lòng thử lại.');
 
-export const getReviewsByProductId = (productId) =>
-    request(`/reviews?productId=${productId}`, 'Không thể tải đánh giá. Vui lòng thử lại.');
+// Lọc ở trình duyệt: json-server đổi "?productId=92" thành số, không khớp id dạng chuỗi
+export const getReviewsByProductId = async (productId) =>
+    (await getAllReviews()).filter(r => String(r.productId) === String(productId));
 
 /**
  * @param {Object} reviewData - { productId, author, rating (1-5), comment, timestamp }
