@@ -1,4 +1,4 @@
-// Tự kiểm tra Code.gs bằng Node (giả lập các dịch vụ của Google). Chạy: node setup/email-script/check.js
+// Tự kiểm tra Code.gs bằng Node (giả lập các dịch vụ của Google). Chạy: node setup/email-script/check.cjs
 const fs = require('fs');
 const vm = require('vm');
 const assert = require('assert');
