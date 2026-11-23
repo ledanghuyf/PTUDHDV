@@ -3,7 +3,7 @@
  * Đơn hàng (duyệt/hủy/giao), Sản phẩm (thêm/sửa/xóa), Mã giảm giá, Nội dung trang (banner, thông báo, phí ship...),
  * Tài khoản (xem người dùng, cấp/gỡ quyền quản lý). Đăng nhập dùng chung trang #/dang-nhap (auth.js).
  *
- * shortcut: phân quyền chỉ chặn ở giao diện, json-server không có xác thực nên API vẫn mở;
+ * Lưu ý: phân quyền chỉ chặn ở giao diện, json-server không có xác thực nên API vẫn mở;
  * muốn bảo mật thật cần backend có đăng nhập + phân quyền.
  */
 
@@ -222,7 +222,7 @@ export function createAdmin(ctx) {
         `;
     }
 
-    /** Cộng/trừ tồn kho theo đơn (sign = -1 trừ kho khi duyệt, +1 hoàn kho khi hủy đơn cũ đã trừ) */
+    /** Cộng/trừ tồn kho theo đơn (sign = -1: trừ kho khi duyệt đơn, +1: hoàn kho khi hủy đơn đã trừ kho) */
     async function applyStock(order, sign) {
         const latest = await Promise.all(order.items.map(i => api.getProductById(i.id)));
         if (sign < 0) {
@@ -237,7 +237,7 @@ export function createAdmin(ctx) {
 
     const ORDER_ACTIONS = {
         async approve(order) {
-            // Đơn theo quy trình mới (stockApplied === false) mới trừ kho; đơn cũ đã trừ lúc đặt
+            // Chỉ trừ kho khi đơn chưa trừ (stockApplied === false)
             if (order.stockApplied === false) await applyStock(order, -1);
             const updated = await api.updateOrder(order.id, {
                 status: ORDER_STATUS.SHIPPING,
@@ -251,7 +251,7 @@ export function createAdmin(ctx) {
         },
         async cancel(order) {
             if (!confirm(`Từ chối và hủy đơn #${orderCodeOf(order)}?`)) return null;
-            if (order.stockApplied !== false) await applyStock(order, +1); // hoàn kho cho đơn cũ đã trừ lúc đặt
+            if (order.stockApplied !== false) await applyStock(order, +1); // đơn đã trừ kho thì hoàn lại kho
             const updated = await api.updateOrder(order.id, { status: ORDER_STATUS.CANCELLED, stockApplied: false, cancelledAt: new Date().toISOString() });
             ctx.notifyCustomer(updated);
             return `Đã hủy đơn #${orderCodeOf(order)}.`;

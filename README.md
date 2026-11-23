@@ -193,8 +193,6 @@ PTUDHDV/
 │       └── config.local.example.js   # Mẫu thông tin riêng (ngân hàng, email) → chép thành config.local.js
 ├── setup/email-script/          # Script Google Apps Script gửi email + hướng dẫn triển khai
 ├── tests/                       # Kiểm tra tự động (npm test)
-├── progress-report/             # Báo cáo tiến độ hàng tuần
-├── thesis/                      # Tài liệu đồ án (doc, pdf, html, abs, refs)
 ├── package.json                 # Lệnh npm start / npm test
 └── README.md
 ```
@@ -216,8 +214,8 @@ bank: { bankId: 'MB', bankName: 'MB Bank (Quân Đội)', accountNo: '0123456789
 ```
 `bankId` là mã ngân hàng theo VietQR (MB, VCB, TCB, ACB, BIDV, ICB...). Khi để trống, lựa chọn
 "Chuyển khoản ngân hàng" bị khóa. Sau khi đặt hàng, trang xác nhận hiện mã VietQR đã điền sẵn số tiền
-và nội dung `CS<mã đơn>` (có nút sao chép số tài khoản, số tiền, nội dung). Cửa hàng tự đối soát tiền về
-rồi cập nhật trạng thái đơn trong `db.json`.
+và nội dung `CS<mã đơn>` (có nút sao chép số tài khoản, số tiền, nội dung). Quản lý đối soát tiền về
+rồi duyệt đơn trong Trang quản lý.
 
 ### Cấu hình gửi email xác nhận về Gmail (Google Apps Script – miễn phí)
 Email gửi bằng chính Gmail của cửa hàng qua Google Apps Script: miễn phí, không qua dịch vụ trung gian,
@@ -226,7 +224,7 @@ khách nhận email xác nhận và cửa hàng nhận bản sao báo đơn mớ
 Hướng dẫn triển khai từng bước: [setup/email-script/README.md](setup/email-script/README.md).
 Lấy được URL Web app thì điền vào `emailScriptUrl` trong `src/js/config.local.js` (file riêng, không lên GitHub).
 Mỗi lần sửa `setup/email-script/Code.gs` cần dán lại vào Apps Script và **Triển khai → Quản lý bản triển khai →
-Phiên bản mới** (URL giữ nguyên) thì email mới (dòng giảm giá/phí ship, email khi đơn được duyệt/hủy) mới có hiệu lực.
+Phiên bản mới** (URL giữ nguyên) thì thay đổi mới có hiệu lực.
 
 Khi để trống, đơn hàng vẫn tạo bình thường nhưng không gửi email.
 
@@ -242,9 +240,6 @@ Khi để trống, đơn hàng vẫn tạo bình thường nhưng không gửi e
 
 ## Tiến độ hiện tại
 ✅ Đã hoàn thành các chức năng chính (xem mục [Mô tả](#mô-tả)); đang kiểm thử và viết báo cáo.
-
-Xem chi tiết: [progress-report/](progress-report/)
-
 ## Liên hệ
 - **Email:** ledanghuy@student.tvu.edu.vn
 - **GitHub:** https://github.com/ledanghuyf/PTUDHDV

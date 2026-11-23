@@ -127,7 +127,7 @@ export function updateQuantity(productId, quantity) {
         return;
     }
 
-    // Không vượt tồn kho (item cũ chưa lưu stock thì bỏ qua)
+    // Không vượt quá tồn kho (chỉ kiểm tra khi sản phẩm có thông tin stock)
     if (cart[itemIndex].stock !== undefined && quantity > cart[itemIndex].stock) {
         return false;
     }

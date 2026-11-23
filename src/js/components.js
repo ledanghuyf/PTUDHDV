@@ -11,13 +11,13 @@ export const PAYMENT_METHODS = {
     bank: 'Chuyển khoản ngân hàng',
 };
 
-// Nội dung chuyển khoản để cửa hàng đối soát đơn (đơn mới dùng mã đơn `code`, đơn cũ dùng id)
+// Nội dung chuyển khoản để cửa hàng đối soát đơn: CS + mã đơn (`code`, hoặc id nếu đơn không có code)
 export const transferContent = orderCode => `CS${orderCode}`;
 export const orderCodeOf = order => order.code || order.id;
 
 // Quy trình duyệt đơn: Chờ duyệt → (Admin duyệt, trừ kho) Đang giao hàng → Đã giao; hoặc Đã hủy
 export const ORDER_STATUS = { PENDING: 'Chờ duyệt', SHIPPING: 'Đang giao hàng', DONE: 'Đã giao', CANCELLED: 'Đã hủy' };
-// Đơn tạo trước khi có quy trình duyệt: đã trừ kho lúc đặt
+// Các trạng thái chờ khác vẫn được xem là đơn chờ duyệt
 const LEGACY_PENDING = ['Chờ xác nhận', 'Chờ chuyển khoản'];
 export const isPendingOrder = order => order.status === ORDER_STATUS.PENDING || LEGACY_PENDING.includes(order.status);
 

@@ -22,3 +22,6 @@ GHI_CHU.txt
 
 # Thông tin riêng của cửa hàng (tài khoản ngân hàng, URL script email)
 src/js/config.local.js
+
+# Cấu hình Claude Code trên máy cá nhân
+.claude/

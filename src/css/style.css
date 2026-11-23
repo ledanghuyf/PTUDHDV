@@ -1643,7 +1643,7 @@ body.is-admin .announcement-bar { display: none; }
     .band .products-grid { grid-template-columns: repeat(6, 1fr); }
 }
 
-/* ----- Banner: gọn hơn khi đã có dải dịch vụ bên dưới ----- */
+/* ----- Banner trang chủ (phía trên dải dịch vụ) ----- */
 .hero-section { padding: 28px 0 64px; }
 .hero-container { grid-template-columns: 1fr 1fr; gap: 48px; }
 .hero-visual { max-width: 500px; }

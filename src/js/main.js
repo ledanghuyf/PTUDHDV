@@ -591,7 +591,7 @@ async function checkoutView() {
     }
 
     // Cập nhật giá/tồn kho mới nhất vào giỏ để số tiền trên mã QR khớp với đơn sẽ tạo.
-    // Sản phẩm đã bị Quản lý xóa thì bỏ khỏi giỏ (lỗi toàn bộ = mất kết nối server → báo lỗi như cũ)
+    // Sản phẩm không còn trên cửa hàng thì loại khỏi giỏ; không tải được sản phẩm nào = mất kết nối server → báo lỗi
     const latest = await Promise.all(cartItems.map(item => api.getProductById(item.id).catch(() => null)));
     if (latest.every(p => !p)) throw new Error('Không thể tải thông tin sản phẩm. Vui lòng kiểm tra kết nối và thử lại.');
     const kept = cartItems.map((item, i) => latest[i] && { ...item, price: latest[i].price, stock: latest[i].stock }).filter(Boolean);
@@ -914,7 +914,7 @@ function orderEmailParams(order) {
 
 async function orderView(id) {
     const order = await api.getOrderById(id);
-    // Vừa đặt xong (≤ 30 phút) → trang cảm ơn; xem lại đơn cũ (từ trang Tài khoản) → trang chi tiết đơn
+    // Vừa đặt xong (≤ 30 phút) → trang cảm ơn; xem lại đơn đã đặt (từ trang Tài khoản) → trang chi tiết đơn
     const justPlaced = Date.now() - new Date(order.timestamp) < 30 * 60 * 1000;
     return () => {
         const code = ui.escapeHtml(ui.orderCodeOf(order));

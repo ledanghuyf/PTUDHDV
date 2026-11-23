@@ -62,7 +62,7 @@ export async function findUser(identifier) {
     const email = value.toLowerCase();
     const phone = value.replace(/\D/g, '');
     // Lọc ở trình duyệt: json-server đổi "?phone=0911222333" thành số 911222333 nên không khớp SĐT có số 0 đầu.
-    // shortcut: tải cả danh sách tài khoản mỗi lần đăng nhập, ổn với vài nghìn tài khoản; lớn hơn cần backend tìm kiếm.
+    // Lưu ý: tải cả danh sách tài khoản mỗi lần đăng nhập, phù hợp với vài nghìn tài khoản; nhiều hơn cần backend tìm kiếm.
     const users = await request('/users', 'Không thể kiểm tra tài khoản. Vui lòng thử lại.');
     return users.find(u => (u.email && u.email === email)
         || (phone.length >= 10 && u.phone === phone)
@@ -139,7 +139,7 @@ export const getOrders = () =>
     request('/orders', 'Không thể tải danh sách đơn hàng.');
 
 /**
- * Tìm đơn theo mã đơn (code) — đơn cũ không có code thì mã đơn chính là id
+ * Tìm đơn theo mã đơn (code); đơn không có code thì dùng id làm mã đơn
  * @returns {Promise<Object|null>}
  */
 export async function findOrderByCode(code) {

@@ -2,7 +2,7 @@
  * Auth Module - Đăng nhập / đăng ký cho khách hàng và quản lý
  * Mật khẩu băm PBKDF2-SHA256 với muối (salt) riêng từng tài khoản; phiên đăng nhập lưu trong trình duyệt.
  *
- * shortcut: xác thực chạy ở trình duyệt vì json-server không có đăng nhập — API /users vẫn đọc được
+ * Lưu ý: xác thực chạy ở trình duyệt vì json-server không có đăng nhập — API /users vẫn đọc được
  * (lộ email, SĐT, mã băm). Đủ cho đồ án; cửa hàng thật cần backend tự kiểm mật khẩu và cấp token.
  */
 
